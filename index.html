@@ -1,11 +1,352 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+<head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>UIU NLP 263</title>
-<body style="font-family:system-ui,sans-serif;max-width:40rem;margin:4rem auto;padding:0 1rem">
-<h1>Hello, world</h1>
-<p>Natural Language Processing, United International University, Fall 2026.</p>
-<p>This is a test page. The course website will appear here.</p>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- Direction: the UIU CSE department site, measured on 2026-11-06 at cse.uiu.ac.bd/faculty/muhammad-anwarul-azim/.
+     Open Sans throughout, body 20/30. Brand orange #F68B1F for marks and the photo ring (never as text on white),
+     slate #2F4858 for the bars and footer, teal #2c5d73 for links, near-black #160c0c for text, #415462 for secondary
+     text, warm band #F3F0EC behind the hero, 5 px radii, 1130 px content width, 40 px bands, 20 px below headings.
+     Month colours come from the site's own accent set: rust #994D33, teal, purple #865994, navy #485680. -->
+<title>Natural Language Processing, UIU, Fall 2026</title>
+<meta name="description" content="Students build language models step by step, from n-gram models to the transformer, and train them on Bangla and English text.">
+<link rel="canonical" href="https://muhammad-anwarul-azim.github.io/uiu-nlp-263/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Natural Language Processing, UIU, Fall 2026">
+<meta property="og:description" content="Students build language models step by step, from n-gram models to the transformer, and train them on Bangla and English text.">
+<meta property="og:url" content="https://muhammad-anwarul-azim.github.io/uiu-nlp-263/">
+<meta property="og:image" content="https://muhammad-anwarul-azim.github.io/uiu-nlp-263/img/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Natural Language Processing, CSE 4811 / DS 4213, Fall 2026, United International University">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#2F4858">
+<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="preload" href="fonts/open-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Open Sans";font-style:normal;font-weight:400 700;font-display:swap;src:url(fonts/open-sans-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+:root{--orange:#F68B1F;--grey:#6b6560;--slate:#2F4858;--teal:#2c5d73;--ink:#160c0c;--text:#415462;--band:#F3F0EC;--cream:#FFFBF6;--rust:#994D33;
+  --purple:#865994;--navy:#485680;--light:#ebebeb;--line:#dcd7d0;--white:#fff;
+  --oct:var(--rust);--nov:var(--teal);--dec:var(--purple);--jan:var(--navy);
+  --sans:"Open Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--white);color:var(--ink);font-family:var(--sans);font-size:20px;line-height:30px;-webkit-font-smoothing:antialiased}
+a{color:var(--teal);text-decoration:none;font-weight:600}a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--slate);outline-offset:2px}.bar :focus-visible,footer :focus-visible{outline-color:var(--white)}
+h1,h2,h3{margin:0;font-weight:700;color:var(--ink)}
+h1,h2,h3,h4{text-wrap:balance}p,li{text-wrap:pretty}
+img{display:block}
+.page{max-width:1170px;margin:0 auto;padding:0 20px}
+
+.bar{background:var(--slate);color:var(--white)}
+.bar .page{display:flex;justify-content:space-between;align-items:center;min-height:64px;gap:24px}
+.brand{display:flex;align-items:center;gap:12px;color:var(--white);font-size:15px;line-height:18px;font-weight:700}
+.brand img{width:44px;height:44px;object-fit:contain}
+.brand small{display:block;font-size:15px;font-weight:400}
+.nav{display:flex;gap:4px;font-size:15px;line-height:18px}
+.nav a{color:var(--white);font-weight:500;padding:10px;border-radius:5px}.nav a:hover{background:rgba(255,255,255,.2);text-decoration:none}
+
+.band{background:var(--band);padding:40px 0}
+.hero h1{font-size:44px;line-height:66px}
+.hero .course{margin:0;font-size:25px;line-height:37.5px;font-weight:500}
+.teacher{display:flex;align-items:center;gap:20px;margin:20px 0 0}
+.teacher img{width:80px;height:80px;border-radius:50%;border:3px solid var(--orange);object-fit:cover;flex:0 0 auto}
+.teacher b{font-weight:700}.teacher b a{color:inherit;text-decoration:none}.teacher b a:hover{text-decoration:underline}.teacher>a{flex:0 0 auto;display:block}
+.hero .lead{margin:20px 0 0;max-width:38em}
+.spec{margin:30px 0 0;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.spec .c{padding:20px 24px 20px 0}.spec .c:nth-child(n+5){border-top:1px solid var(--line)}
+.spec .c:not(:nth-child(4n+1)){border-left:1px solid var(--line);padding-left:24px}
+.spec .k{display:block;font-size:15px;line-height:22.5px;font-weight:700}.spec p{margin:2px 0 0}
+
+.sh{font-size:30px;line-height:45px;margin:60px 0 20px}
+.score{display:grid;grid-template-columns:repeat(5,1fr);gap:0 30px}
+.score .b{height:5px;border-radius:3px;background:var(--light)}.score .b i{display:block;height:100%;border-radius:3px;background:var(--orange)}
+.score .v{font-size:44px;line-height:66px;font-weight:700;margin-top:10px}
+.score .l{font-weight:600}
+.score p{margin:4px 0 0;font-size:15px;line-height:22.5px;font-weight:500;color:var(--text)}
+
+.shrow{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin:60px 0 20px}.shrow h2{font-size:30px;line-height:45px;margin:0}
+.tools{display:flex;align-items:center;gap:20px}.sw{display:flex;gap:6px}
+.xall{font:inherit;font-size:15px;line-height:18px;font-weight:600;color:var(--teal);background:none;border:0;padding:0;height:44px;cursor:pointer;white-space:nowrap}.xall:hover{text-decoration:underline}
+.sw button{font:inherit;font-size:15px;line-height:18px;font-weight:600;background:var(--white);color:var(--text);border:1px solid var(--line);border-radius:5px;height:44px;padding:0 16px;cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.sw button:hover{border-color:var(--slate)}.sw button.on{background:var(--slate);color:var(--white);border-color:var(--slate)}
+.chk{display:none;width:6px;height:11px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg);margin:-4px 2px 0}
+.sw button.on .chk{display:inline-block}
+
+
+.line{position:relative;padding:20px 30px 20px 240px;background:var(--band);border-radius:5px}
+.line:before{content:"";position:absolute;left:200px;top:36px;bottom:36px;width:4px;border-radius:2px;background:var(--line)}
+.line .prog{position:absolute;left:200px;top:36px;width:4px;border-radius:2px;background:var(--orange)}
+.part{position:relative;padding:16px 0 10px}
+.part h3{position:absolute;left:-210px;width:160px;top:22px;font-size:15px;line-height:22.5px;font-weight:700}
+.part h3 .pn{display:block;font-weight:400;color:var(--text)}
+.part ol{list-style:none;margin:0;padding:0}
+.st{position:relative;border-radius:5px}
+.st .hd{display:grid;grid-template-columns:36px minmax(0,1fr) 170px 24px;gap:0 24px;align-items:start;padding:20px 20px;cursor:pointer;border-radius:5px;outline:none;-webkit-tap-highlight-color:transparent}
+.st .hd:hover,.st.peek .hd{background:rgba(47,72,88,.06)}.st .hd:focus-visible{box-shadow:inset 0 0 0 2px var(--slate)}
+.st .chev{width:11px;height:11px;border:solid var(--text);border-width:0 2px 2px 0;transform:rotate(45deg);margin:7px 7px 0 0;justify-self:end;transition:transform .2s,margin .2s}
+.st.open .chev,.st.peek .chev{transform:rotate(-135deg);margin-top:13px}
+.st .x{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease}.st.open .x,.st.peek .x{grid-template-rows:1fr}.st .x>div{overflow:hidden;min-height:0}
+.st .bd{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:0 24px;align-items:start;padding:0 68px 20px 80px}
+@media (prefers-reduced-motion:reduce){.st .x,.st .chev{transition:none}}
+.st.next{background:var(--white)}
+.st:before{content:"";position:absolute;left:-48px;top:25px;width:20px;height:20px;border-radius:50%;background:var(--band);border:2px solid var(--line);box-sizing:border-box}
+.st.done:before{background:var(--orange);border-color:var(--orange)}
+.st.done:after{content:"";position:absolute;left:-41px;top:28px;width:5px;height:9px;border:solid var(--ink);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.st.next:before{border-color:var(--orange);background:var(--white)}
+.st .no{font-size:16px;line-height:30px;font-weight:600;color:var(--text)}
+
+.tag{display:inline-block;margin-left:10px;font-size:15px;line-height:22.5px;font-weight:600;padding:1px 8px;border-radius:5px;background:var(--orange);color:var(--ink)}.tag.now{background:var(--ink);color:var(--white)}
+.st h4{margin:0;font-size:20px;line-height:30px;font-weight:400;color:var(--ink)}.st.done h4,.st.next h4{font-weight:600}
+.st .tp{margin:0;font-size:16px;line-height:24px;color:var(--text)}
+.st .rd{display:grid;grid-template-columns:96px 1fr;gap:0 8px;margin:8px 0 0;font-size:16px;line-height:24px}.st .rd>span:first-child{font-weight:600;color:var(--text)}.st .pl{margin:0;padding:0;list-style:none}.st .pl li{margin:0 0 2px}.st .ml{list-style:none;margin:0;padding:0}.st .ml li{display:grid;grid-template-columns:72px 1fr;gap:0 8px;margin:0 0 2px}.st .ml b{font-weight:600;color:var(--text)}
+.st .ev{margin:8px 0 0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.st .d{display:block;font-size:18px;line-height:30px;font-weight:600;color:var(--ink)}.st .d small{font-size:15px;line-height:22.5px;font-weight:500;color:var(--text)}
+.st .m{list-style:none;margin:0;padding:0;font-size:16px;line-height:24px}.st .m li{margin:0 0 2px}.st .m .mute{color:var(--grey)}
+
+.calw{position:relative}
+.months{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 40px;align-items:start}
+.mo h3{font-size:20px;line-height:30px;font-weight:700;margin:0 0 12px}.mo h3 span{font-weight:400;color:var(--text)}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));row-gap:2px}
+.grid>b{font-size:13px;line-height:18px;font-weight:600;color:var(--text);text-align:center;padding:0 0 8px}
+.dc{display:flex;justify-content:center;align-items:flex-start;height:46px;padding-top:3px}
+.dc.ex{background:var(--band)}.dc.exs{border-radius:6px 0 0 6px}.dc.exe{border-radius:0 6px 6px 0}.dc.exs.exe{border-radius:6px}
+.dc.off{background:repeating-linear-gradient(135deg,#ebe6df 0 2px,transparent 2px 7px)}
+.dc[data-cls]{cursor:pointer}
+.dn{position:relative;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;font-size:15px;line-height:1;font-weight:500;color:var(--ink)}
+.dn.cls{background:var(--slate);color:var(--white);font-weight:600}
+.dn.ct{background:var(--purple);color:var(--white);font-weight:600}
+.dn.onl{box-shadow:inset 0 0 0 2px var(--slate);color:var(--slate);font-weight:700}
+.dn.miss{border:1.5px dashed #8d867d;color:var(--grey)}
+.dn.hol{color:var(--rust);font-weight:700}
+.dn.past{color:var(--grey)}.dn.past.cls{background:#d5dce1;color:var(--slate)}.dn.past.ct{background:#e6dcea;color:#5e3a6a}.dn.past.onl{box-shadow:inset 0 0 0 2px #a7b3bb;color:var(--slate)}
+.dn.out{color:#bdb6ad;font-weight:400}
+.dn.tdy{box-shadow:0 0 0 2px var(--ink);font-weight:700}
+.dn.tdy.cls,.dn.tdy.ct{box-shadow:0 0 0 2px var(--white),0 0 0 4px var(--ink)}
+.dn.tdy.onl{box-shadow:inset 0 0 0 2px var(--slate),0 0 0 2px var(--white),0 0 0 4px var(--ink)}
+.dot{position:absolute;left:50%;top:calc(100% + 3px);width:6px;height:6px;margin-left:-3px;border-radius:50%;background:var(--orange)}
+.dates{list-style:none;margin:14px 0 0;padding:14px 0 0;border-top:1px solid var(--line);font-size:15px;line-height:22px}
+.dates li{display:grid;grid-template-columns:54px minmax(0,1fr);gap:0 10px;margin:0 0 8px}
+.dates .dt{font-weight:600;white-space:nowrap}.dates .pcs>span{display:block}
+.dates li.past{color:var(--text)}.dates li.past .dt{font-weight:500}
+.mk{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;vertical-align:1px}
+.mk.k-ct{background:var(--purple)}.mk.k-due{background:var(--orange)}.mk.k-hol{background:var(--rust)}.mk.k-term{background:var(--slate)}
+.mk.k-exam{border-radius:2px;background:var(--band);box-shadow:inset 0 0 0 1px #c9c1b6}
+.mk.k-onl{box-shadow:inset 0 0 0 2px var(--slate)}.mk.k-miss,.mk.k-off{box-shadow:inset 0 0 0 1.5px #9b948b}
+.legend{margin:24px 0 0;display:flex;flex-wrap:wrap;gap:10px 28px;font-size:15px;line-height:22px;font-weight:500;color:var(--text)}
+.legend>span{display:inline-flex;align-items:center;gap:10px}.legend i{display:inline-block}
+.legend .dn{width:20px;height:20px}.legend .dn.tdy{box-shadow:inset 0 0 0 2px var(--ink)}
+.lg-due{width:7px;height:7px;border-radius:50%;background:var(--orange)}
+.lg-ex,.lg-off{width:26px;height:16px;border-radius:4px}
+.lg-ex{background:var(--band);box-shadow:inset 0 0 0 1px #d6cfc5}
+.lg-off{background:repeating-linear-gradient(135deg,#d9d3cb 0 2px,var(--white) 2px 6px);box-shadow:inset 0 0 0 1px #e1dbd3}
+.lg-hol{color:var(--rust);font-weight:700}
+.mtabs{display:none}
+.tip{position:absolute;z-index:20;transform:translate(-50%,calc(-100% - 12px));width:max-content;max-width:300px;background:var(--ink);color:var(--white);font-size:14px;line-height:20px;padding:8px 12px;border-radius:5px;pointer-events:none;box-shadow:0 4px 16px rgba(22,12,12,.2)}
+.tip:after{content:"";position:absolute;left:calc(50% + var(--ax,0px));bottom:-5px;width:10px;height:10px;margin-left:-5px;background:var(--ink);transform:rotate(45deg)}
+.tip b{font-weight:700}
+
+footer{margin:60px 0 0;background:var(--slate);color:var(--white);padding:50px 0}
+footer .cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:30px}
+footer h3{color:var(--white);font-size:20px;line-height:24px;font-weight:600;text-decoration:underline;margin:0 0 20px}
+footer p{margin:0 0 8px;font-size:15px;line-height:21px}
+footer a{color:var(--white);font-weight:400}
+footer .end{margin:40px 0 0;font-size:15px;line-height:21px;color:rgba(255,255,255,.8)}
+
+@media(max-width:860px){
+  .bar .page{min-height:56px}.nav{display:none}.brand img{width:40px;height:40px}
+  .band{padding:30px 0}.hero h1{font-size:34px;line-height:46px}.hero .course{font-size:20px;line-height:30px}
+  .teacher img{width:64px;height:64px}
+  .spec{grid-template-columns:1fr 1fr}.spec .c{padding:14px 16px 14px 0}.spec .c:not(:nth-child(4n+1)){border-left:0;padding-left:0}
+  .spec .c:nth-child(2n){border-left:1px solid var(--line);padding-left:16px}.spec .c:nth-child(n+3){border-top:1px solid var(--line)}
+  .sh{font-size:26px;line-height:36px;margin:48px 0 16px}.shrow{margin:48px 0 16px;gap:16px}.shrow h2{font-size:26px;line-height:36px}
+  .tools{width:100%;flex-wrap:wrap;gap:8px 16px}.sw{width:100%}.sw button{flex:1;justify-content:center;padding:0 12px}
+  .score{grid-template-columns:1fr;gap:0}.score .c{display:grid;grid-template-columns:64px 1fr;gap:0 16px;padding:12px 0;border-top:1px solid var(--line)}
+  .score .b{display:none}.score .v{font-size:30px;line-height:40px;margin:0;grid-row:span 2}.score p{margin:0}
+  .line{padding:8px 16px 8px 52px}.line:before,.line .prog{left:22px}
+  .part h3{position:static;width:auto;margin:0 0 8px 20px}.part h3 .pn{display:inline;margin-right:8px}
+  .st .hd{grid-template-columns:30px 1fr 20px;gap:0 12px;padding:16px 14px}.st .no,.st .chev{grid-row:1}.st h4,.st .d{grid-column:2}.st .chev{grid-column:3;margin-top:9px}.st.open .chev,.st.peek .chev{margin-top:15px}.st .d{font-size:16px;line-height:24px}
+  .st .bd{grid-template-columns:1fr;padding:0 14px 16px 56px}.st .m{display:flex;flex-wrap:wrap;gap:2px 16px;margin-top:8px}.st .rd{grid-template-columns:1fr;gap:0}.st .ml li{display:block}.st .ml b{margin-right:8px}.st:before{left:-38px}.st.done:after{left:-31px}
+  .mtabs{display:flex;gap:6px;margin:0 0 20px}
+  .mtabs button{flex:1;font:inherit;font-size:15px;line-height:18px;font-weight:600;height:44px;padding:0;border:1px solid var(--line);border-radius:5px;background:var(--white);color:var(--text);cursor:pointer}
+  .mtabs button.on{background:var(--slate);border-color:var(--slate);color:var(--white)}
+  .months{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:100%;gap:0 24px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+  .months::-webkit-scrollbar{display:none}.mo{scroll-snap-align:start;min-width:0}
+  .months .dn{width:38px;height:38px;font-size:16px}.months .dc{height:54px}.legend{gap:8px 20px}
+  footer .cols{grid-template-columns:1fr}
+}
+@media print{
+  @page{margin:14mm}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .bar,.band,.line,footer{background:none}
+  .bar,.brand,footer,footer h3,footer a,footer .end{color:var(--ink)}
+  .bar{border-bottom:1px solid var(--line)}
+  .nav,.xall,.mtabs,.tip,.st .chev{display:none!important}
+  .sw button:not(.on){display:none}.sw button.on{background:none;border:0;color:var(--text);padding:0;height:auto}.sw button.on .chk{display:none}
+  .st .x{grid-template-rows:1fr!important}.st,.mo,.score .c,.spec .c,.legend{break-inside:avoid}h2,h3,.shrow{break-after:avoid}
+  .months{display:grid!important;grid-template-columns:1fr 1fr!important;grid-auto-flow:row!important;gap:28px 40px!important;overflow:visible!important}
+  footer{margin-top:40px;padding:24px 0 0;border-top:1px solid var(--line)}
+  a{color:var(--ink)}
+}
+</style>
+</head>
+<body>
+<header class="bar"><div class="page">
+  <div class="brand"><img src="img/uiu-logo.png" alt="" width="44" height="44"><span>United International University<small>Department of Computer Science and Engineering</small></span></div>
+  <nav class="nav" aria-label="Page"><a href="#assessment">Assessment</a><a href="#classes">Classes</a><a href="#calendar">Calendar</a></nav>
+</div></header>
+<div class="band"><div class="page hero">
+  <h1>Natural Language Processing</h1>
+  <p class="course">CSE&nbsp;4811 / DS&nbsp;4213, Fall&nbsp;2026</p>
+  <div class="teacher"><a href="https://cse.uiu.ac.bd/faculty/muhammad-anwarul-azim/" tabindex="-1" aria-hidden="true"><img src="img/teacher.jpg" alt="" width="80" height="80"></a><div><b><a href="https://cse.uiu.ac.bd/faculty/muhammad-anwarul-azim/">Muhammad Anwarul Azim</a></b>, Lecturer, Department of Computer Science and Engineering<br>Room:&nbsp;619&nbsp;(D)</div></div>
+  <p class="lead">Natural Language Processing is the study of how machines read, write and understand human language. In this course students build language models step by step: n-gram models, word vectors, recurrent networks, and the transformer. Every model is trained on Bangla and English text, and the results are compared on a class leaderboard that runs through the term. Later classes open the trained model and ask what it has learned, and cover tokenization, scaling, interpretability, evaluation and post-training. By the end of the course, students will be able to read a current research paper, reproduce its main result and judge whether the claim holds. They will also understand how chat assistants such as ChatGPT and Claude are built, where the field stands today, and where it is moving.</p>
+  <div class="spec">
+    <div class="c"><span class="k">Course code</span><p>CSE&nbsp;4811 / DS&nbsp;4213</p></div>
+    <div class="c"><span class="k">Trimester and year</span><p>Fall 2026</p></div>
+    <div class="c"><span class="k">Prerequisite</span><p>Machine Learning</p></div>
+    <div class="c"><span class="k">Credit hours</span><p>3.0</p></div>
+    <div class="c"><span class="k">Class hours, BA</span><p>Sat and Tue, 8:30&nbsp;am<br>Room:&nbsp;708</p></div>
+    <div class="c"><span class="k">Class hours, BB</span><p>Sun and Wed, 12:31&nbsp;pm<br>Room:&nbsp;707</p></div>
+    <div class="c"><span class="k">Counselling hours</span><p>See UCAM</p></div>
+    <div class="c"><span class="k">Textbook</span><p><a href="https://web.stanford.edu/~jurafsky/slp3/">Speech and Language Processing</a>, Jurafsky and Martin, 2025</p></div>
+  </div>
+</div></div>
+<div class="page">
+<h2 class="sh" id="assessment">Assessment</h2>
+<div class="score">
+  <div class="c"><div class="b"><i style="width:5%"></i></div><div class="v">5</div><div class="l">Attendance</div></div>
+  <div class="c"><div class="b"><i style="width:20%"></i></div><div class="v">20</div><div class="l">Class tests</div></div>
+  <div class="c"><div class="b"><i style="width:10%"></i></div><div class="v">10</div><div class="l">Leaderboard</div></div>
+  <div class="c"><div class="b"><i style="width:25%"></i></div><div class="v">25</div><div class="l">Term paper</div></div>
+  <div class="c"><div class="b"><i style="width:40%"></i></div><div class="v">40</div><div class="l">Final examination</div></div>
+</div>
+<div class="shrow" id="classes"><h2>Classes</h2><div class="tools"><div class="sw" role="group" aria-label="Section"><button data-sec="A" class="on" aria-pressed="true" onclick="setSec('A')"><span class="chk" aria-hidden="true"></span>BA, Sat and Tue</button><button data-sec="C" aria-pressed="false" onclick="setSec('C')"><span class="chk" aria-hidden="true"></span>BB, Sun and Wed</button></div><button class="xall" id="xall" onclick="xAll()">Expand all</button></div></div>
+<div class="line" id="list"></div>
+<div class="shrow" id="calendar"><h2>Calendar</h2><div class="tools"><div class="sw" role="group" aria-label="Section"><button data-sec="A" class="on" aria-pressed="true" onclick="setSec('A')"><span class="chk" aria-hidden="true"></span>BA, Sat and Tue</button><button data-sec="C" aria-pressed="false" onclick="setSec('C')"><span class="chk" aria-hidden="true"></span>BB, Sun and Wed</button></div></div></div>
+<div class="calw"><div id="cal"></div><div class="tip" id="tip" hidden></div></div>
+</div>
+<footer><div class="page">
+  <div class="cols">
+    <div><h3>Class hours</h3><p>Section BA, Saturday and Tuesday, 8:30&nbsp;am<br>Room:&nbsp;708</p><p>Section BB, Sunday and Wednesday, 12:31&nbsp;pm<br>Room:&nbsp;707</p></div>
+    <div><h3>Course teacher</h3><p><a href="https://cse.uiu.ac.bd/faculty/muhammad-anwarul-azim/">Muhammad Anwarul Azim</a>, Lecturer</p><p>Room:&nbsp;619&nbsp;(D)</p></div>
+    <div><h3>Links</h3><p><a href="https://github.com/Muhammad-Anwarul-Azim/uiu-nlp-263">Website repository on GitHub</a></p><p><a href="https://cse.uiu.ac.bd/">Department of CSE</a></p></div>
+  </div>
+  <p class="end">Department of Computer Science and Engineering, United International University.</p>
+</div></footer>
+<script type="application/json" id="class-data">{
+"1":{"top":"The range of language tasks · corpus, tokens and types · bag of words and TF-IDF · cosine similarity · classification by the nearest topic average","read":{"book":["Sections 2.1, 2.4 and 2.5 (pages 34 to 36 and 42 to 47) and sections 5.3 and 5.4 (pages 132 to 135)","c01/reading/slp3_class01.pdf"],"papers":[["Radford et al. (2019), Language Models are Unsupervised Multitask Learners","https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf"],["Sparck Jones (1972), A statistical interpretation of term specificity and its application in retrieval","https://www.staff.city.ac.uk/~sbrp622/idfpapers/ksj_orig.pdf"],["Joulin et al. (2017), Bag of Tricks for Efficient Text Classification","https://aclanthology.org/E17-2068/"]],"more":[["Paper","Potrika: Raw and Balanced Newspaper Datasets in the Bangla Language with Eight Topics and Five Attributes","https://arxiv.org/abs/2210.09389"],["Blog","The Illustrated GPT-2 (Visualizing Transformer Language Models)","https://jalammar.github.io/illustrated-gpt2/"],["Tutorial","Working With Text Data (scikit-learn 1.4 documentation)","https://scikit-learn.org/1.4/tutorial/text_analytics/working_with_text_data.html"],["Website","Speech and Language Processing (3rd edition draft)","https://web.stanford.edu/~jurafsky/slp3/"],["Video","Large Language Models explained briefly (3Blue1Brown, 8 min)","https://www.youtube.com/watch?v=LPZh9BOjkQs"],["Code","openai/gpt-2","https://github.com/openai/gpt-2"]]},"mat":{"s":"c01/slides/c01.html","p":"c01/slides/c01.pdf","x":"c01/practice/c01_practice.pdf"}},
+"2":{"top":"Bayes’ rule and the naive Bayes classifier · negative log-likelihood and cross-entropy as the loss · sampling from a unigram language model","read":{"book":["Section 1.2 (pages 8 to 10) and sections 4.1 to 4.9 (pages 93 to 115)","c02/reading/slp3_class02.pdf"],"papers":[["Ng and Jordan (2002), On Discriminative vs. Generative Classifiers: A comparison of logistic regression and naive Bayes","https://proceedings.neurips.cc/paper/2001/hash/7b7a53e239400a13bd6be6c91c4f6c4e-Abstract.html"],["McCallum and Nigam (1998), A Comparison of Event Models for Naive Bayes Text Classification","http://www.cs.cmu.edu/~knigam/papers/multinomial-aaaiws98.pdf"],["Shannon (1948), A Mathematical Theory of Communication","https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf"]],"more":[["Paper","Baselines and Bigrams: Simple, Good Sentiment and Topic Classification","https://aclanthology.org/P12-2018/"],["Blog","Visual Information Theory","https://colah.github.io/posts/2015-09-Visual-Information/"],["Tutorial","6. Learning to Classify Text (Natural Language Processing with Python)","https://www.nltk.org/book/ch06.html"],["Website","Seeing Theory – Bayesian Inference","https://seeing-theory.brown.edu/bayesian-inference/index.html"],["Video","Naive Bayes, Clearly Explained!!! (StatQuest with Josh Starmer, 15 min)","https://www.youtube.com/watch?v=O2L2Uv9pdDA"],["Code","norvig/pytudes","https://github.com/norvig/pytudes/blob/main/ipynb/How%20to%20Do%20Things%20with%20Words.ipynb"]]},"mat":{"s":"c02/slides/c02.html","p":"c02/slides/c02.pdf","x":"c02/practice/c02_practice.pdf"}},
+"3":{"top":"The chain rule of probability and the Markov assumption · n-gram models of order 1 to 5 · sparsity, unseen n-grams and smoothing · the neural language model of Bengio et al. (2003): word embeddings, the hidden layer, the softmax output","read":{"book":["Chapter 3, sections 3.1 to 3.7 (pages 68 to 88), to read before the class","c03/reading/slp3_class03.pdf"],"papers":[["Bengio et al. (2003), A Neural Probabilistic Language Model","https://www.jmlr.org/papers/v3/bengio03a.html"],["Shannon (1951), Prediction and Entropy of Printed English","https://www.princeton.edu/~wbialek/rome/refs/shannon_51.pdf"],["Chen and Goodman (1996), An Empirical Study of Smoothing Techniques for Language Modeling","https://aclanthology.org/P96-1041/"]],"more":[["Paper","Infini-gram: Scaling Unbounded n-gram Language Models to a Trillion Tokens","https://arxiv.org/abs/2401.17377"],["Blog","A Review of the Recent History of Natural Language Processing","https://www.ruder.io/a-review-of-the-recent-history-of-nlp/"],["Tutorial","Word Embeddings: Encoding Lexical Semantics (PyTorch Tutorials)","https://docs.pytorch.org/tutorials/beginner/nlp/word_embeddings_tutorial.html"],["Website","Google Ngram Viewer","https://books.google.com/ngrams/"],["Video","The spelled-out intro to language modeling: building makemore (Andrej Karpathy, about 1 h 58 min)","https://www.youtube.com/watch?v=PaCmpygFfXo"],["Code","karpathy/makemore","https://github.com/karpathy/makemore"]]}},
+"4":{"top":"Perplexity · properties of learned embeddings · word2vec: continuous bag of words (CBOW), skip-gram with negative sampling (SGNS) · recurrent neural networks and the LSTM · limitations: sequential computation, long-range dependence, the encoder-decoder bottleneck","read":{"papers":[["Mikolov et al. (2013), Efficient Estimation of Word Representations in Vector Space","https://arxiv.org/abs/1301.3781"],["Mikolov et al. (2013), Distributed Representations of Words and Phrases and their Compositionality","https://arxiv.org/abs/1310.4546"],["Hochreiter and Schmidhuber (1997), Long Short-Term Memory","https://deeplearning.cs.cmu.edu/F23/document/readings/LSTM.pdf"]],"more":[["Paper","Sequence to Sequence Learning with Neural Networks","https://arxiv.org/abs/1409.3215"],["Blog","Understanding LSTM Networks","https://colah.github.io/posts/2015-08-Understanding-LSTMs/"],["Tutorial","CS 224n Assignment 2: Word2Vec and Dependency Parsing (Winter 2026 handout; question 1 is Understanding word2vec)","https://web.stanford.edu/class/cs224n/assignments/a2.pdf"],["Website","Word vectors for 157 languages (fastText)","https://fasttext.cc/docs/en/crawl-vectors.html"],["Video","Stanford CS224N: NLP with Deep Learning | Winter 2021 | Lecture 1 – Intro & Word Vectors (Stanford Online, about 1 h 24 min)","https://www.youtube.com/watch?v=rmVRLeJRkl4"],["Code","tmikolov/word2vec","https://github.com/tmikolov/word2vec"]]}},
+"5":{"top":"Alignment in translation · attention as a soft lookup · queries, keys and values · scaled dot-product attention","read":{"papers":[["Bahdanau, Cho and Bengio (2015), Neural Machine Translation by Jointly Learning to Align and Translate","https://arxiv.org/abs/1409.0473"],["Luong, Pham and Manning (2015), Effective Approaches to Attention-based Neural Machine Translation","https://aclanthology.org/D15-1166/"],["Vaswani et al. (2017), Attention Is All You Need","https://arxiv.org/abs/1706.03762"]],"more":[["Paper","Not Low-Resource Anymore: Aligner Ensembling, Batch Filtering, and New Datasets for Bengali-English Machine Translation","https://aclanthology.org/2020.emnlp-main.207/"],["Blog","Visualizing A Neural Machine Translation Model (Mechanics of Seq2seq Models With Attention)","https://jalammar.github.io/visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention/"],["Tutorial","NLP From Scratch: Translation with a Sequence to Sequence Network and Attention","https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html"],["Website","Seq2seq and Attention (Lena Voita, NLP Course | For You)","https://lena-voita.github.io/nlp_course/seq2seq_and_attention.html"],["Video","Attention in transformers, step-by-step | Deep Learning Chapter 6 (3Blue1Brown, 26 min)","https://www.youtube.com/watch?v=eMlx5fFNoYc"],["Code","pytorch-seq2seq","https://github.com/bentrevett/pytorch-seq2seq"]]}},
+"6":{"top":"The matrix form · the causal mask · the quadratic cost · positional encodings","read":{"papers":[["Vaswani et al. (2017), Attention Is All You Need","https://arxiv.org/abs/1706.03762"],["Shaw, Uszkoreit and Vaswani (2018), Self-Attention with Relative Position Representations","https://aclanthology.org/N18-2074/"],["Su et al. (2021), RoFormer: Enhanced Transformer with Rotary Position Embedding","https://arxiv.org/abs/2104.09864"]],"more":[["Paper","Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation","https://arxiv.org/abs/2108.12409"],["Blog","Transformer Architecture: The Positional Encoding","https://kazemnejad.com/blog/transformer_architecture_positional_encoding/"],["Tutorial","Transformers from scratch","https://peterbloem.nl/blog/transformers"],["Website","Transformer Explainer: LLM Transformer Model Visually Explained (Polo Club of Data Science, Georgia Tech)","https://poloclub.github.io/transformer-explainer/"],["Video","Lecture 12.1 Self-attention (DLVU (Peter Bloem, VU Amsterdam), 22 min)","https://www.youtube.com/watch?v=KmAISyVvE1Y"],["Code","minGPT","https://github.com/karpathy/minGPT"]]}},
+"7":{"top":"Heads · the residual stream · layer normalization · the feed-forward layer · the language-modeling head · parameter counts","read":{"papers":[["Ba, Kiros and Hinton (2016), Layer Normalization","https://arxiv.org/abs/1607.06450"],["Elhage et al. (2021), A Mathematical Framework for Transformer Circuits","https://transformer-circuits.pub/2021/framework/index.html"],["Geva et al. (2021), Transformer Feed-Forward Layers Are Key-Value Memories","https://aclanthology.org/2021.emnlp-main.446/"]],"more":[["Paper","On Layer Normalization in the Transformer Architecture","https://proceedings.mlr.press/v119/xiong20b.html"],["Blog","The Illustrated GPT-2 (Visualizing Transformer Language Models)","https://jalammar.github.io/illustrated-gpt2/"],["Tutorial","Tutorial 6: Transformers and Multi-Head Attention","https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/tutorial6/Transformers_and_MHAttention.html"],["Website","LLM Visualization (Brendan Bycroft)","https://bbycroft.net/llm"],["Video","Let’s build GPT: from scratch, in code, spelled out. (Andrej Karpathy, 1 h 56 min)","https://www.youtube.com/watch?v=kCc8FmEb1nY"],["Code","nanoGPT","https://github.com/karpathy/nanoGPT"]]}},
+"8":{"top":"The encoder-decoder architecture · cross-attention · the training setup of the paper · beam search · decoder-only, encoder-only and encoder-decoder models: GPT, BERT, T5","read":{"papers":[["Vaswani et al. (2017), Attention Is All You Need","https://arxiv.org/abs/1706.03762"],["Devlin et al. (2019), BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding","https://aclanthology.org/N19-1423/"],["Raffel et al. (2020), Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer","https://jmlr.org/papers/v21/20-074.html"]],"more":[["Paper","BanglaBERT: Language Model Pretraining and Benchmarks for Low-Resource Language Understanding Evaluation in Bangla","https://aclanthology.org/2022.findings-naacl.98/"],["Blog","The Illustrated Transformer","https://jalammar.github.io/illustrated-transformer/"],["Tutorial","The Annotated Transformer","https://nlp.seas.harvard.edu/annotated-transformer/"],["Website","How do Transformers work? (Hugging Face LLM Course, chapter 1)","https://huggingface.co/learn/llm-course/chapter1/4"],["Video","Attention is all you need (Transformer) – Model explanation (including math), Inference and Training (Umar Jamil, 58 min)","https://www.youtube.com/watch?v=bCz4OMemCcA"],["Code","attention-is-all-you-need-pytorch","https://github.com/jadore801120/attention-is-all-you-need-pytorch"]]}},
+"9":{"top":"Word, character and subword vocabularies · byte-pair encoding · vocabulary size and sequence length · tokenization of Bangla and English · open problems in tokenization for Bangla","read":{"papers":[["Sennrich, Haddow and Birch (2016), Neural Machine Translation of Rare Words with Subword Units","https://aclanthology.org/P16-1162/"],["Kudo and Richardson (2018), SentencePiece: A simple and language independent subword tokenizer and detokenizer for Neural Text Processing","https://aclanthology.org/D18-2012/"],["Petrov et al. (2023), Language Model Tokenizers Introduce Unfairness Between Languages","https://arxiv.org/abs/2305.15425"]],"more":[["Paper","Between words and characters: A Brief History of Open-Vocabulary Modeling and Tokenization in NLP","https://arxiv.org/abs/2112.10508"],["Blog","All languages are NOT created (tokenized) equal","https://www.artfish.ai/p/all-languages-are-not-created-tokenized"],["Tutorial","The Tokenizers library (Hugging Face LLM Course, chapter 6)","https://huggingface.co/learn/llm-course/chapter6/1"],["Website","The Tokenizer Playground","https://huggingface.co/spaces/Xenova/the-tokenizer-playground"],["Video","Let’s build the GPT Tokenizer (Andrej Karpathy, 2 h 13 min)","https://www.youtube.com/watch?v=zduSFxRajkE"],["Code","minbpe","https://github.com/karpathy/minbpe"]]}},
+"10":{"top":"Data preparation and batching · the training recipe: optimizer, learning-rate schedule, gradient clipping · loss curves and overfitting · decoding: temperature, top-k and nucleus sampling","read":{"papers":[["Kingma and Ba (2015), Adam: A Method for Stochastic Optimization","https://arxiv.org/abs/1412.6980"],["Loshchilov and Hutter (2019), Decoupled Weight Decay Regularization","https://arxiv.org/abs/1711.05101"],["Holtzman et al. (2020), The Curious Case of Neural Text Degeneration","https://arxiv.org/abs/1904.09751"]],"more":[["Paper","Training Tips for the Transformer Model","https://arxiv.org/abs/1804.00247"],["Blog","A Recipe for Training Neural Networks","https://karpathy.github.io/2019/04/25/recipe/"],["Tutorial","Training a causal language model from scratch","https://huggingface.co/learn/llm-course/chapter7/6"],["Website","Generation strategies","https://huggingface.co/docs/transformers/generation_strategies"],["Video","Let’s reproduce GPT-2 (124M) (Andrej Karpathy, 4 h 1 min)","https://www.youtube.com/watch?v=l8pRSuU81PU"],["Code","build-nanogpt","https://github.com/karpathy/build-nanogpt"]]}},
+"11":{"top":"Scaling laws · compute-optimal training · pre-training data and contamination · open pre-trained models","read":{"papers":[["Kaplan et al. (2020), Scaling Laws for Neural Language Models","https://arxiv.org/abs/2001.08361"],["Hoffmann et al. (2022), Training Compute-Optimal Large Language Models","https://arxiv.org/abs/2203.15556"],["Grattafiori et al. (2024), The Llama 3 Herd of Models","https://arxiv.org/abs/2407.21783"]],"more":[["Paper","Documenting Large Webtext Corpora: A Case Study on the Colossal Clean Crawled Corpus","https://aclanthology.org/2021.emnlp-main.98/"],["Blog","FineWeb: decanting the web for the finest text data at scale","https://huggingface.co/spaces/HuggingFaceFW/blogpost-fineweb-v1"],["Tutorial","The Ultra-Scale Playbook: Training LLMs on GPU Clusters","https://huggingface.co/spaces/nanotron/ultrascale-playbook"],["Website","Data on AI models | Epoch AI","https://epoch.ai/data/notable-ai-models"],["Video","Stanford CS336 Language Modeling from Scratch | Spring 2025 | Lecture 9: Scaling laws 1 (Stanford Online, 1 h 5 min)","https://www.youtube.com/watch?v=6Q-ESEmDf4Q"],["Code","nanochat","https://github.com/karpathy/nanochat"]]}},
+"12":{"top":"The model as a sequence of updates to the residual stream · the logit lens · activations and hooks","read":{"papers":[["Elhage et al. (2021), A Mathematical Framework for Transformer Circuits","https://transformer-circuits.pub/2021/framework/index.html"],["Belrose et al. (2023), Eliciting Latent Predictions from Transformers with the Tuned Lens","https://arxiv.org/abs/2303.08112"],["Geva et al. (2022), Transformer Feed-Forward Layers Build Predictions by Promoting Concepts in the Vocabulary Space","https://aclanthology.org/2022.emnlp-main.3/"]],"more":[["Paper","A Primer on the Inner Workings of Transformer-based Language Models","https://arxiv.org/abs/2405.00208"],["Blog","interpreting GPT: the logit lens","https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens"],["Tutorial","Transformer Lens Main Demo Notebook","https://transformerlensorg.github.io/TransformerLens/generated/demos/Main_Demo.html"],["Website","A Comprehensive Mechanistic Interpretability Explainer & Glossary","https://www.neelnanda.io/mechanistic-interpretability/glossary"],["Video","A Walkthrough of A Mathematical Framework for Transformer Circuits (Neel Nanda, about 2 h 50 min)","https://www.youtube.com/watch?v=KV5gbOmHbjU"],["Code","TransformerLens","https://github.com/TransformerLensOrg/TransformerLens"]]}},
+"13":{"top":"Attention patterns · the induction circuit · in-context learning","read":{"papers":[["Olsson et al. (2022), In-context Learning and Induction Heads","https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html"],["Brown et al. (2020), Language Models are Few-Shot Learners","https://arxiv.org/abs/2005.14165"],["Xie et al. (2022), An Explanation of In-context Learning as Implicit Bayesian Inference","https://arxiv.org/abs/2111.02080"]],"more":[["Paper","What needs to go right for an induction head? A mechanistic study of in-context learning circuits and their formation","https://arxiv.org/abs/2404.07129"],["Blog","Induction heads – illustrated","https://www.lesswrong.com/posts/TvrfY4c9eaGLeyDkE/induction-heads-illustrated"],["Tutorial","[1.2] Intro to Mechanistic Interpretability: TransformerLens & induction circuits (exercises)","https://github.com/ARENA-education/ARENA_materials/blob/main/chapter1_transformer_interp/exercises/part2_intro_to_mech_interp/1.2_Intro_to_Mech_Interp_exercises.ipynb"],["Website","Transformer Circuits Thread","https://transformer-circuits.pub/"],["Video","A Walkthrough of In-Context Learning and Induction Heads Part 1 of 2 (w/ Charles Frye) (Neel Nanda, about 1 h 4 min)","https://www.youtube.com/watch?v=dCkQQYwPxdM"],["Code","CircuitsVis","https://github.com/TransformerLensOrg/CircuitsVis"]]}},
+"14":{"top":"Probing classifiers · concepts as directions in activation space · steering vectors","read":{"papers":[["Alain and Bengio (2017), Understanding intermediate layers using linear classifier probes","https://arxiv.org/abs/1610.01644"],["Park, Choe and Veitch (2024), The Linear Representation Hypothesis and the Geometry of Large Language Models","https://arxiv.org/abs/2311.03658"],["Turner et al. (2023), Steering Language Models With Activation Engineering","https://arxiv.org/abs/2308.10248"]],"more":[["Paper","Probing Classifiers: Promises, Shortcomings, and Advances","https://aclanthology.org/2022.cl-1.7/"],["Blog","Actually, Othello-GPT Has A Linear Emergent World Representation","https://www.lesswrong.com/posts/nmxzr2zsjNtjaHh7x/actually-othello-gpt-has-a-linear-emergent-world"],["Tutorial","[1.5.3] OthelloGPT (exercises)","https://github.com/ARENA-education/ARENA_materials/blob/main/chapter1_transformer_interp/exercises/part53_othellogpt/1.5.3_OthelloGPT_exercises.ipynb"],["Website","Neuronpedia","https://www.neuronpedia.org/steer"],["Video","How might LLMs store facts | Deep Learning Chapter 7 (3Blue1Brown, about 23 min)","https://www.youtube.com/watch?v=9-Jl0dxWQs8"],["Code","repeng","https://github.com/vgel/repeng"]]}},
+"15":{"top":"Ablation · activation patching · circuit discovery · standards of evidence for a mechanistic explanation","read":{"papers":[["Vig et al. (2020), Investigating Gender Bias in Language Models Using Causal Mediation Analysis","https://proceedings.neurips.cc/paper/2020/hash/92650b2e92217715fe312e6fa7b90d82-Abstract.html"],["Meng et al. (2022), Locating and Editing Factual Associations in GPT","https://arxiv.org/abs/2202.05262"],["Wang et al. (2023), Interpretability in the Wild: a Circuit for Indirect Object Identification in GPT-2 small","https://arxiv.org/abs/2211.00593"]],"more":[["Paper","How to use and interpret activation patching","https://arxiv.org/abs/2404.15255"],["Blog","Causal Scrubbing: a method for rigorously testing interpretability hypotheses [Redwood Research]","https://www.alignmentforum.org/posts/JvZhhzycHu2Yd57RN/causal-scrubbing-a-method-for-rigorously-testing"],["Tutorial","1.4.1 Indirect Object Identification exercises (ARENA, chapter 1 Transformer Interpretability)","https://github.com/ARENA-education/ARENA_materials/blob/main/chapter1_transformer_interp/exercises/part41_indirect_object_identification/1.4.1_Indirect_Object_Identification_exercises.ipynb"],["Website","TransformerLens Documentation","https://transformerlensorg.github.io/TransformerLens/"],["Video","A Walkthrough of Interpretability in the Wild Part 1/2: Overview (w/ authors Kevin, Arthur, Alex) (Neel Nanda, 57 min)","https://www.youtube.com/watch?v=gzwj0jWbvbo"],["Code","Automatic-Circuit-Discovery","https://github.com/ArthurConmy/Automatic-Circuit-Discovery"]]}},
+"16":{"top":"Polysemantic neurons and superposition · sparse autoencoders · evaluation of interpretability methods","read":{"papers":[["Elhage et al. (2022), Toy Models of Superposition","https://transformer-circuits.pub/2022/toy_model/index.html"],["Bricken et al. (2023), Towards Monosemanticity: Decomposing Language Models With Dictionary Learning","https://transformer-circuits.pub/2023/monosemantic-features/index.html"],["Templeton et al. (2024), Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet","https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html"]],"more":[["Paper","AxBench: Steering LLMs? Even Simple Baselines Outperform Sparse Autoencoders","https://arxiv.org/abs/2501.17148"],["Blog","An Intuitive Explanation of Sparse Autoencoders for LLM Interpretability","https://adamkarvonen.github.io/machine_learning/2024/06/11/sae-intuitions.html"],["Tutorial","1.3.3 Interpretability with SAEs exercises (ARENA, chapter 1 Transformer Interpretability)","https://github.com/ARENA-education/ARENA_materials/blob/main/chapter1_transformer_interp/exercises/part33_interp_with_saes/1.3.3_Interpretability_with_SAEs_exercises.ipynb"],["Website","Neuronpedia","https://www.neuronpedia.org/"],["Video","How might LLMs store facts | Deep Learning Chapter 7 (3Blue1Brown, 23 min)","https://www.youtube.com/watch?v=9-Jl0dxWQs8"],["Code","SAELens","https://github.com/decoderesearch/SAELens"]]}},
+"17":{"top":"The computational power of transformers · chain of thought · reasoning models · reinforcement learning with verifiable rewards · faithfulness of chain of thought","read":{"papers":[["Wei et al. (2022), Chain-of-Thought Prompting Elicits Reasoning in Large Language Models","https://arxiv.org/abs/2201.11903"],["DeepSeek-AI (2025), DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning","https://arxiv.org/abs/2501.12948"],["Merrill and Sabharwal (2024), The Expressive Power of Transformers with Chain of Thought","https://arxiv.org/abs/2310.07923"]],"more":[["Paper","Language Models Don’t Always Say What They Think: Unfaithful Explanations in Chain-of-Thought Prompting","https://arxiv.org/abs/2305.04388"],["Blog","Why We Think","https://lilianweng.github.io/posts/2025-05-01-thinking/"],["Tutorial","Post training an LLM for reasoning with GRPO in TRL","https://huggingface.co/learn/cookbook/en/fine_tuning_llm_grpo_trl"],["Website","Reasoning and Inference-Time Scaling | RLHF and Post-Training Book by Nathan Lambert","https://rlhfbook.com/c/14-reasoning.html"],["Video","LLM Agents MOOC | UC Berkeley CS294-196 Fall 2024 | LLM Reasoning by Denny Zhou (Berkeley RDI, about 64 minutes)","https://www.youtube.com/watch?v=QL-FS_Zcmyo"],["Code","nano-aha-moment","https://github.com/McGill-NLP/nano-aha-moment"]]}},
+"18":{"top":"Benchmark design · saturation, contamination and Goodhart’s law · model-as-judge · arenas · the low-resource language gap","read":{"papers":[["Hendrycks et al. (2021), Measuring Massive Multitask Language Understanding","https://arxiv.org/abs/2009.03300"],["Zheng et al. (2023), Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena","https://arxiv.org/abs/2306.05685"],["Singh et al. (2025), The Leaderboard Illusion","https://arxiv.org/abs/2504.20879"]],"more":[["Paper","The State and Fate of Linguistic Diversity and Inclusion in the NLP World","https://aclanthology.org/2020.acl-main.560/"],["Blog","Let’s talk about LLM evaluation","https://huggingface.co/blog/clefourrier/llm-evaluation"],["Tutorial","Using LLM-as-a-judge for an automated and versatile evaluation","https://huggingface.co/learn/cookbook/en/llm_judge"],["Website","AI benchmarks & capabilities | Epoch AI","https://epoch.ai/benchmarks"],["Video","Stanford CS224N: NLP with Deep Learning | Spring 2024 | Lecture 11 – Benchmarking by Yann Dubois (Stanford Online, about 84 minutes)","https://www.youtube.com/watch?v=TO0CqzqiArM"],["Code","lm-evaluation-harness","https://github.com/EleutherAI/lm-evaluation-harness"]]}},
+"19":{"top":"Variance over seeds and prompts · confidence intervals and the bootstrap · paired tests · inter-rater agreement · item response theory · controlled comparisons","read":{"papers":[["Miller (2024), Adding Error Bars to Evals: A Statistical Approach to Language Model Evaluations","https://arxiv.org/abs/2411.00640"],["Dror et al. (2018), The Hitchhiker’s Guide to Testing Statistical Significance in Natural Language Processing","https://aclanthology.org/P18-1128/"],["Koehn (2004), Statistical Significance Tests for Machine Translation Evaluation","https://aclanthology.org/W04-3250/"]],"more":[["Paper","Survey Article: Inter-Coder Agreement for Computational Linguistics","https://aclanthology.org/J08-4004/"],["Blog","A statistical approach to model evaluations","https://www.anthropic.com/research/statistical-approach-to-model-evals"],["Tutorial","Creating Confidence Intervals for Machine Learning Classifiers","https://sebastianraschka.com/blog/2022/confidence-intervals-for-ml.html"],["Website","Seeing Theory – Frequentist Inference","https://seeing-theory.brown.edu/frequentist-inference/index.html"],["Video","Bootstrapping Main Ideas!!! (StatQuest with Josh Starmer, about 9 minutes)","https://www.youtube.com/watch?v=Xz0x-8-cgaQ"],["Code","deep-significance","https://github.com/Kaleidophon/deep-significance"]]}},
+"20":{"top":"Supervised fine-tuning · reward models and reinforcement learning from human feedback · direct preference optimization · refusal directions · sycophancy and jailbreaks","read":{"papers":[["Ouyang et al. (2022), Training language models to follow instructions with human feedback","https://arxiv.org/abs/2203.02155"],["Rafailov et al. (2023), Direct Preference Optimization: Your Language Model is Secretly a Reward Model","https://arxiv.org/abs/2305.18290"],["Arditi et al. (2024), Refusal in Language Models Is Mediated by a Single Direction","https://arxiv.org/abs/2406.11717"]],"more":[["Paper","Towards Understanding Sycophancy in Language Models","https://arxiv.org/abs/2310.13548"],["Blog","RLHF: Reinforcement Learning from Human Feedback","https://huyenchip.com/2023/05/02/rlhf.html"],["Tutorial","Welcome to the smol-course","https://huggingface.co/learn/smol-course/unit0/1"],["Website","Reinforcement Learning from Human Feedback (the RLHF Book)","https://rlhfbook.com/"],["Video","Post-Training and RLHF Overview | Post-Training Book Course, Lecture 1 (Nathan Lambert, 46 min)","https://www.youtube.com/watch?v=o6l6tJQgUg4"],["Code","TRL: Train transformer language models with reinforcement learning","https://github.com/huggingface/trl"]]}},
+"21":{"top":"Prompting · retrieval-augmented generation · tool use and agents · the KV cache, quantization and long context","read":{"papers":[["Lewis et al. (2020), Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks","https://arxiv.org/abs/2005.11401"],["Yao et al. (2023), ReAct: Synergizing Reasoning and Acting in Language Models","https://arxiv.org/abs/2210.03629"],["Kwon et al. (2023), Efficient Memory Management for Large Language Model Serving with PagedAttention","https://arxiv.org/abs/2309.06180"]],"more":[["Paper","LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale","https://arxiv.org/abs/2208.07339"],["Blog","LLM Powered Autonomous Agents","https://lilianweng.github.io/posts/2023-06-23-agent/"],["Tutorial","Welcome to the AI Agents Course","https://huggingface.co/learn/agents-course/unit0/introduction"],["Website","Prompt Engineering Guide","https://www.promptingguide.ai/"],["Video","[1hr Talk] Intro to Large Language Models (Andrej Karpathy, 60 min)","https://www.youtube.com/watch?v=zjkBMFhNj_g"],["Code","llama.cpp: LLM inference in C/C++","https://github.com/ggml-org/llama.cpp"]]}},
+"22":{"top":"Experiment design · the paper checklist · reporting uncertainty · peer review","read":{"papers":[["NeurIPS (2026), Paper Checklist Guidelines","https://neurips.cc/public/guides/PaperChecklist"],["Dodge et al. (2019), Show Your Work: Improved Reporting of Experimental Results","https://aclanthology.org/D19-1224/"],["Lipton and Steinhardt (2019), Troubling Trends in Machine Learning Scholarship","https://arxiv.org/abs/1807.03341"]],"more":[["Paper","Improving Reproducibility in Machine Learning Research (A Report from the NeurIPS 2019 Reproducibility Program)","https://jmlr.org/papers/v22/20-303.html"],["Blog","Heuristics for Scientific Writing (a Machine Learning Perspective)","https://www.approximatelycorrect.com/2018/01/29/heuristics-technical-scientific-writing-machine-learning-perspective/"],["Tutorial","Creating Confidence Intervals for Machine Learning Classifiers","https://sebastianraschka.com/blog/2022/confidence-intervals-for-ml.html"],["Website","ARR Reviewer Guidelines","https://aclrollingreview.org/reviewerguidelines"],["Video","How to Write a Great Research Paper (Microsoft Research, 58 min)","https://www.youtube.com/watch?v=VK51E3gHENc"],["Code","testSignificanceNLP","https://github.com/rtmdrr/testSignificanceNLP"]]}},
+"23":{"top":"The transformer in ten equations · term paper lightning talks · final review","read":{"papers":[["Phuong and Hutter (2022), Formal Algorithms for Transformers","https://arxiv.org/abs/2207.09238"],["Vaswani et al. (2017), Attention Is All You Need","https://arxiv.org/abs/1706.03762"],["Turner (2023), An Introduction to Transformers","https://arxiv.org/abs/2304.10557"]],"more":[["Paper","A Survey of Large Language Models","https://arxiv.org/abs/2303.18223"],["Blog","The Illustrated GPT-2 (Visualizing Transformer Language Models)","https://jalammar.github.io/illustrated-gpt2/"],["Tutorial","The Annotated Transformer","https://nlp.seas.harvard.edu/annotated-transformer/"],["Website","Stanford CS336 | Language Modeling from Scratch (2025)","https://stanford-cs336.github.io/spring2025/"],["Video","Deep Dive into LLMs like ChatGPT (Andrej Karpathy, 3 h 31 min)","https://www.youtube.com/watch?v=7xTGNNLPyMI"],["Code","LLMs-from-scratch: Implement a ChatGPT-like LLM in PyTorch from scratch, step by step","https://github.com/rasbt/LLMs-from-scratch"]]}}
+}</script>
+<script>
+const CD=JSON.parse(document.getElementById("class-data").textContent);
+const P=["Words to probabilities","Build the transformer","Read the model","Judge the model","The assistant","Write and review"];
+const C=[[1,0,"2026-10-27","2026-10-28","Introduction to natural language processing"],[2,0,"2026-10-31","2026-11-01","Classification with probabilities"],[3,0,"2026-11-09o","2026-11-08","n-gram language models and the neural language model"],[4,0,"2026-11-10","2026-11-11","Word vectors and recurrent networks"],[5,1,"2026-11-12o","2026-11-15","Attention"],[6,1,"2026-11-14","2026-11-18","Self-attention"],[7,1,"2026-11-17","2026-11-22","Multi-head attention and the transformer block"],[8,1,"2026-11-21","2026-11-25","The transformer of Vaswani et al. (2017)"],[9,1,"2026-11-24","2026-11-26o","Tokenization"],[10,1,"2026-11-28","2026-11-29","Training a transformer"],[11,1,"2026-12-01","2026-12-02","Pre-training at scale"],[12,2,"2026-12-15","2026-12-13","The residual stream"],[13,2,"2026-12-19","2026-12-17o","Induction heads and in-context learning"],[14,2,"2026-12-22","2026-12-20","Linear representations"],[15,2,"2026-12-26","2026-12-23","Causal interventions"],[16,2,"2026-12-29","2026-12-27","Superposition and features"],[17,3,"2026-12-31o","2026-12-30","Reasoning"],[18,3,"2027-01-02","2027-01-03","Benchmarks"],[19,3,"2027-01-05","2027-01-06","The statistics of evaluation"],[20,4,"2027-01-09","2027-01-10","Post-training and alignment"],[21,4,"2027-01-12","2027-01-13","Language model systems"],[22,5,"2027-01-16","2027-01-17","Research methods and scientific writing"],[23,5,"2027-01-19","2027-01-20","Course review"]];
+const CT={6:"Class test 1 on classes 1 to 5",12:"Class test 2 on classes 6 to 11",16:"Class test 3 on classes 12 to 15",20:"Class test 4 on classes 16 to 19"},MS={14:"Proposal due",18:"Baseline due",22:"Draft due"};
+const DL={"2026-11-13":"R1","2026-11-20":"R2","2026-11-27":"R3","2026-12-04":"R4","2026-12-18":"R5","2026-12-25":"R6","2027-01-01":"R7","2027-01-08":"R8","2027-01-15":"R9","2027-01-22":"R10","2027-01-23":"Paper"};
+const EV=[["2026-10-27","term","Classes begin"],["2026-11-07","hol","Holiday"],["2026-12-05","exam","Mid-term exams","2026-12-12"],["2026-12-16","hol","Holiday"],["2026-12-23","term","Withdrawal closes"],["2026-12-25","hol","Christmas"],["2027-01-20","term","Last class day"],["2027-01-21","off","Classes suspended","2027-01-24"],["2027-01-24","hol","Shab-e-Barat"],["2027-01-25","exam","Final exams","2027-02-01"]];
+const MISS={A:["2026-11-03","2026-11-05"],C:["2026-11-04"]},TODAY=new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Dhaka"}),SECN={A:"BA",C:"BB"},SKEY="uiu-nlp-263-section";
+const TERM=["2026-10-27","2027-02-01"],MONTHS=[[2026,9],[2026,10],[2026,11],[2027,0]];
+const MON=["January","February","March","April","May","June","July","August","September","October","November","December"],WD=["Sa","Su","Mo","Tu","We","Th","Fr"];
+const LIST=document.getElementById("list"),CAL=document.getElementById("cal"),RM=matchMedia("(prefers-reduced-motion: reduce)"),HOV=matchMedia("(hover:hover)").matches;
+const day=d=>new Date(d.slice(0,10)+"T00:00");
+const iso=t=>`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,"0")}-${String(t.getDate()).padStart(2,"0")}`;
+const fmt=d=>day(d).toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});
+const long=d=>day(d).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+const sd=d=>day(d).toLocaleDateString("en-GB",{weekday:"short",day:"numeric"});
+const dm=d=>day(d).toLocaleDateString("en-GB",{day:"numeric",month:"short"}).replace(" "," ");
+const rg=(a,b)=>day(a).getMonth()==day(b).getMonth()?`${day(a).getDate()} to ${dm(b)}`:`${dm(a)} to ${dm(b)}`;
+const esc=v=>String(v).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const KINDS=[["s","Slides"],["p","Slides as PDF"],["x","Practice problems"]];
+// the section: from a link such as ?section=bb, else as last chosen in this browser, else BA
+let sec=(()=>{const q={ba:"A",bb:"C"}[(new URLSearchParams(location.search).get("section")||"").toLowerCase()];
+  try{if(q)localStorage.setItem(SKEY,q);else{const v=localStorage.getItem(SKEY);if(v=="A"||v=="C")return v}}catch(e){}return q||"A"})();
+
+// a class is done once its day has passed in Dhaka; the first class not done is the next one
+function schedule(){const di=sec=="A"?2:3,s=C.map(c=>{const d=CD[c[0]]||{};return {no:c[0],part:c[1],title:c[4],date:c[di].slice(0,10),online:c[di].endsWith("o"),
+    events:[CT[c[0]],MS[c[0]]].filter(Boolean),mat:d.mat||{},top:d.top||"",read:d.read||{}}});
+  s.forEach(c=>{c.done=c.date<TODAY;c.today=c.date==TODAY});const nx=s.find(c=>!c.done);if(nx)nx.next=true;return s}
+function keyDates(s){const L=[],add=(k,kind,sh,t,k2)=>L.push({k,k2:k2||k,kind,s:sh,t:t||sh}),o={term:0,exam:1,off:2,ct:3,onl:4,due:5,hol:6,miss:7};
+  EV.forEach(([k,kind,t,k2])=>add(k,kind,t,0,k2));
+  s.forEach(c=>{if(c.online)add(c.date,"onl",`Class ${c.no}, online`);
+    c.events.forEach(e=>e.startsWith("Class test")?add(c.date,"ct",e.replace(/ on classes.*/,""),e):add(c.date,"due",e,"Term paper "+e.toLowerCase()))});
+  MISS[sec].forEach(k=>add(k,"miss","No class"));
+  Object.entries(DL).forEach(([k,r])=>r=="Paper"?add(k,"due","Paper due","Term paper due"):add(k,"due",`Round ${r.slice(1)} due`,`Leaderboard round ${r.slice(1)} due`));
+  return L.sort((a,b)=>a.k<b.k?-1:a.k>b.k?1:o[a.kind]-o[b.kind])}
+function days(s,K,a,b){const by={},out=[];s.forEach(c=>by[c.date]=c);
+  for(const t=day(a);iso(t)<=b;t.setDate(t.getDate()+1)){const k=iso(t),its=K.filter(e=>e.k<=k&&k<=e.k2),has=n=>its.some(e=>e.kind==n);
+    out.push({k,d:t.getDate(),m:t.getMonth(),y:t.getFullYear(),w:(t.getDay()+1)%7,c:by[k]||null,its,inT:k>=TERM[0]&&k<=TERM[1],past:k<TODAY,today:k==TODAY,
+      exam:has("exam"),off:has("off"),hol:has("hol"),miss:has("miss"),due:has("due"),ct:has("ct")})}
+  out.forEach((x,i)=>{const p=out[i-1],n=out[i+1];x.exs=x.exam&&(x.w==0||!p||!p.exam);x.exe=x.exam&&(x.w==6||!n||!n.exam)});return out}
+function tipOf(x){const p=[];if(x.c)p.push(`Class ${x.c.no}${x.c.online?", online":""}, ${x.c.title}`);
+  x.its.forEach(e=>{if(e.kind!="onl")p.push(e.t+(e.k2!=e.k?`, ${rg(e.k,e.k2)}`:""))});return p.length?`<b>${long(x.k)}</b><br>${p.join("<br>")}`:""}
+function cell(x){const n=["dn"],c=["dc"],t=tipOf(x);if(x.c)n.push(x.c.online?"onl":x.ct?"ct":"cls");else if(x.miss)n.push("miss");
+  if(x.hol)n.push("hol");if(x.past)n.push("past");if(!x.inT)n.push("out");if(x.today)n.push("tdy");
+  if(x.exam)c.push("ex");if(x.exs)c.push("exs");if(x.exe)c.push("exe");if(x.off)c.push("off");
+  return `<div class="${c.join(" ")}"${t?` data-tip="${esc(t)}"`:""}${x.c?` data-cls="${x.c.no}"`:""}><span class="${n.join(" ")}">${x.d}${x.due?'<i class="dot"></i>':""}</span></div>`}
+const LEGEND=`<div class="legend"><span><i class="dn cls"></i>Class</span><span><i class="dn onl"></i>Online class</span><span><i class="dn ct"></i>Class with a class test</span><span><i class="lg-due"></i>Due date</span><span><i class="lg-ex"></i>Exams</span><span><i class="lg-off"></i>No classes</span><span><b class="lg-hol">16</b>Holiday</span><span><i class="dn tdy"></i>Today</span></div>`;
+function renderCal(s){const K=keyDates(s),D=days(s,K,"2026-10-01","2027-01-31"),cur=Math.max(0,MONTHS.findIndex(([y,m])=>TODAY.startsWith(`${y}-${String(m+1).padStart(2,"0")}`)));
+  CAL.innerHTML=`<div class="mtabs">${MONTHS.map(([y,m])=>`<button type="button">${MON[m].slice(0,3)}</button>`).join("")}</div><div class="months">${MONTHS.map(([y,m])=>{
+    const ds=D.filter(x=>x.y==y&&x.m==m),by={};K.filter(e=>{const t=day(e.k);return t.getFullYear()==y&&t.getMonth()==m}).forEach(e=>(by[e.k]=by[e.k]||[]).push(e));
+    const li=Object.keys(by).map(k=>`<li${by[k].every(e=>e.k2<TODAY)?' class="past"':""}><span class="dt">${sd(k)}</span><span class="pcs">${by[k].map(e=>`<span><i class="mk k-${e.kind}"></i>${e.s}${e.k2!=e.k?` to ${dm(e.k2)}`:""}</span>`).join("")}</span></li>`).join("");
+    return `<section class="mo"><h3>${MON[m]} <span>${y}</span></h3><div class="grid" aria-hidden="true">${WD.map(w=>`<b>${w}</b>`).join("")}${"<span></span>".repeat(ds[0].w)}${ds.map(cell).join("")}</div>${li?`<ul class="dates">${li}</ul>`:""}</section>`}).join("")}</div>${LEGEND}`;
+  // on a phone the months scroll sideways, one at a time, from the current month
+  const T=[...CAL.querySelectorAll(".mtabs button")],tr=CAL.querySelector(".months"),S=[...tr.children],st=()=>S[1].offsetLeft-S[0].offsetLeft;
+  const mark=i=>T.forEach((b,j)=>{b.classList.toggle("on",j==i);b.toggleAttribute("aria-current",j==i)});
+  T.forEach((b,i)=>b.onclick=()=>{tr.scrollTo({left:i*st(),behavior:RM.matches?"auto":"smooth"});mark(i)});
+  tr.onscroll=()=>mark(Math.round(tr.scrollLeft/st()));
+  if(tr.scrollWidth>tr.clientWidth+2)tr.scrollLeft=cur*st();mark(cur)}
+function label(){document.getElementById("xall").textContent=[...LIST.querySelectorAll(".st")].every(l=>l.classList.contains("open"))?"Collapse all":"Expand all"}
+function fit(){const ns=document.getElementById("nextst"),pg=document.getElementById("prog");if(!pg)return;const L=LIST.getBoundingClientRect();
+  pg.style.height=Math.max(0,ns?ns.getBoundingClientRect().top-L.top-1:L.height-72)+"px"}
+function openClass(n){const li=LIST.querySelectorAll(".st")[n-1];if(!li)return;li.classList.add("open");li.classList.remove("peek");li.querySelector(".hd").setAttribute("aria-expanded","true");label();
+  li.scrollIntoView({behavior:RM.matches?"auto":"smooth",block:"center"});setTimeout(fit,350)}
+function xAll(){const rows=[...LIST.querySelectorAll(".st")],o=rows.some(l=>!l.classList.contains("open"));
+  rows.forEach(l=>{l.classList.toggle("open",o);l.classList.remove("peek");l.querySelector(".hd").setAttribute("aria-expanded",o)});label();setTimeout(fit,300)}
+function setSec(s,init){sec=s;document.querySelectorAll("[data-sec]").forEach(b=>{const on=b.dataset.sec==s;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)});
+  if(!init){try{localStorage.setItem(SKEY,s)}catch(e){}const u=new URL(location.href);u.searchParams.set("section",SECN[s].toLowerCase());history.replaceState(null,"",u)}render()}
+
+function render(){
+  const s=schedule();
+  let t='<div class="prog" id="prog"></div>';P.forEach((name,p)=>{t+=`<div class="part"><h3><span class="pn">Part ${p+1}</span>${name}</h3><ol>`;s.filter(c=>c.part==p).forEach(c=>{t+=`<li class="st ${c.done?"done":c.next?"next open":"later"}" ${c.next?'id="nextst"':""}><div class="hd" role="button" tabindex="0" aria-expanded="${!!c.next}"><span class="no">${String(c.no).padStart(2,"0")}</span><h4>${c.title}${c.next?`<span class="tag${c.today?" now":""}">${c.today?"Today":"Next"}</span>`:""}</h4><span class="d">${fmt(c.date)}${c.online?"<small>, online</small>":""}</span><span class="chev" aria-hidden="true"></span></div><div class="x"><div><div class="bd"><div class="t">${c.top?`<p class="tp">${c.top}</p>`:""}${c.read.book?`<div class="rd"><span>Textbook</span><a href="${c.read.book[1]}">${c.read.book[0]}</a></div>`:""}${c.read.papers?`<div class="rd"><span>Papers</span><ol class="pl">${c.read.papers.map(([t,h])=>`<li><a href="${h}" target="_blank" rel="noopener">${t}</a></li>`).join("")}</ol></div>`:""}${c.read.more?`<div class="rd"><span>Resources</span><ul class="ml">${c.read.more.map(([k,t,h])=>`<li><b>${k}</b><a href="${h}" target="_blank" rel="noopener">${t}</a></li>`).join("")}</ul></div>`:""}${c.events.length?`<p class="ev">${c.events.join(", ")}</p>`:""}</div><ul class="m">${KINDS.map(([k,l])=>c.mat[k]?`<li><a href="${c.mat[k]}">${l}</a></li>`:`<li class="mute" title="Not yet available">${l}</li>`).join("")}</ul></div></div></div></li>`});t+="</ol></div>"});LIST.innerHTML=t;
+  [...LIST.querySelectorAll(".st")].forEach(li=>{const hd=li.querySelector(".hd");let tm;
+    const set=o=>{li.classList.toggle("open",o);li.classList.remove("peek");hd.setAttribute("aria-expanded",o);label()};
+    hd.addEventListener("click",()=>{set(!li.classList.contains("open"));li.dataset.hold=1});
+    hd.addEventListener("keydown",e=>{if(e.key=="Enter"||e.key==" "){e.preventDefault();hd.click()}});
+    if(HOV){li.addEventListener("mouseenter",()=>{tm=setTimeout(()=>{if(!li.classList.contains("open")&&!li.dataset.hold)li.classList.add("peek")},150)});
+      li.addEventListener("mouseleave",()=>{clearTimeout(tm);li.classList.remove("peek");delete li.dataset.hold})}});
+  label();fit();renderCal(s)}
+
+LIST.addEventListener("transitionend",fit);addEventListener("resize",fit);if(document.fonts)document.fonts.ready.then(fit);
+// the calendar: pointing at a day shows what happens on it; clicking a class day opens that class above
+(()=>{const T=document.getElementById("tip"),W=T.parentElement,hide=()=>T.hidden=true;
+  const show=t=>{T.innerHTML=t.dataset.tip;T.hidden=false;const w=W.getBoundingClientRect(),r=t.getBoundingClientRect(),x=r.left+r.width/2-w.left,tw=T.offsetWidth,cx=Math.max(tw/2+4,Math.min(w.width-tw/2-4,x));
+    T.style.left=cx+"px";T.style.top=(r.top-w.top)+"px";T.style.setProperty("--ax",(x-cx)+"px")};
+  CAL.addEventListener("pointerover",e=>{const t=e.target.closest("[data-tip]");t?show(t):hide()});CAL.addEventListener("pointerleave",hide);
+  CAL.addEventListener("click",e=>{const t=e.target.closest("[data-cls]");if(t&&HOV)openClass(+t.dataset.cls)});
+  CAL.addEventListener("scroll",hide,true);addEventListener("scroll",hide,{passive:true})})();
+setSec(sec,1);
+</script>
 </body>
 </html>

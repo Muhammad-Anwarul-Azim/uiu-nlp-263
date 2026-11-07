@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recap: class 1 in one scene</title>
+<!-- Standalone scene for class 2, slide 2 "Recap": nine steps, one key press each (→ or click: next,
+     ←: back, P: play all). Data: c02_recap_scene_data.js, built by c02_recap_scene_build.py from the class 1
+     notebook. Drawn with D3 from the theme, in the Carbon tokens of theme/tokens.json. The stage is the deck's
+     1280 x 720 canvas with its padding (48 top, 64 sides), scaled to fit the window, so the scene can drop
+     into the deck unchanged. -->
+<link rel="stylesheet" href="../../theme/katex/katex.min.css">
+<style>
+@font-face { font-family: "IBM Plex Sans"; font-weight: 300; font-display: block; src: local("IBM Plex Sans Light"), url("../../theme/fonts/IBMPlexSans-Light.otf") format("opentype"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-display: block; src: local("IBM Plex Sans"), url("../../theme/fonts/IBMPlexSans-Regular.otf") format("opentype"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 600; font-display: block; src: local("IBM Plex Sans SemiBold"), url("../../theme/fonts/IBMPlexSans-SemiBold.otf") format("opentype"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 400; font-display: block; src: local("IBM Plex Mono"), url("../../theme/fonts/IBMPlexMono-Regular.otf") format("opentype"); }
+:root {
+  --bg: #FFFFFF; --layer: #F4F4F4; --border: #E0E0E0; --border-strong: #8D8D8D;
+  --text: #161616; --text-2: #525252; --helper: #6F6F6F; --placeholder: #A8A8A8;
+  --blue: #0F62FE; --blue-20: #D0E2FF; --blue-10: #EDF5FF; --quiet: #C6C6C6; --context: #8D8D8D;
+  --sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", Menlo, monospace;
+  --bangla: "Kohinoor Bangla", "Noto Sans Bengali", "Bangla Sangam MN", sans-serif;
+  --ease: cubic-bezier(0.4, 0.14, 0.3, 1);
+}
+html, body { margin: 0; height: 100%; background: #262626; overflow: hidden; }
+body { position: relative; font-family: var(--sans); color: var(--text); }
+#stage { position: absolute; left: 50%; top: 50%; width: 1280px; height: 720px; background: var(--bg); overflow: hidden; transform-origin: center; }
+#stage * { box-sizing: border-box; }
+#stage.instant *, #stage.instant *::before, #stage.instant *::after { transition: none !important; }
+/* title band, as the deck */
+#title { position: absolute; left: 64px; top: 44px; margin: 0; font-size: 42px; line-height: 50px; font-weight: 300; }
+#sub { position: absolute; left: 64px; top: 102px; width: 1152px; font-size: 20px; line-height: 28px; color: var(--text-2); }
+#sub b { font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+#caption { position: absolute; left: 64px; bottom: 28px; width: 880px; font-size: 14px; line-height: 20px; color: var(--helper); }
+#stepno { position: absolute; right: 64px; bottom: 28px; font-size: 14px; line-height: 20px; color: var(--placeholder); font-variant-numeric: tabular-nums; }
+/* the figure area: y 150 .. 640 */
+.layer { position: absolute; left: 64px; top: 150px; width: 1152px; height: 490px; }
+/* step 1: six streams */
+#streams { display: grid; grid-template-columns: repeat(6, 176px); column-gap: 19.2px; transition: opacity 500ms var(--ease); }
+.col { position: relative; height: 490px; transition: opacity 600ms var(--ease); }
+.col .head { display: flex; align-items: flex-start; gap: 8px; height: 44px; font-size: 15px; line-height: 22px; color: var(--text-2); transition: opacity 400ms var(--ease); }
+.col .head i { display: inline-block; width: 12px; height: 12px; flex: none; margin-top: 5px; }
+.col .view { position: absolute; top: 52px; left: 0; width: 176px; height: 428px; overflow: hidden; }
+.col .view::before, .col .view::after { content: ""; position: absolute; left: 0; right: 0; height: 40px; z-index: 2; pointer-events: none; }
+.col .view::before { top: 0; background: linear-gradient(var(--bg), rgba(255,255,255,0)); }
+.col .view::after { bottom: 0; background: linear-gradient(rgba(255,255,255,0), var(--bg)); }
+.col .list { animation: scroll linear infinite; will-change: transform; }
+/* two lines per headline: the clip falls at the padding edge, so the space under the text is a transparent border,
+   not padding, where a third line would show; 20 px lines hold the Bangla vowel signs */
+.col .item { font-size: 14px; line-height: 20px; color: var(--text-2); padding: 6px 0 0; border-top: 1px solid var(--border); border-bottom: 5px solid transparent; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; height: 52px; }
+.col .item.bn { font-family: var(--bangla); }
+@keyframes scroll { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+#streams.dim .col { opacity: 0.14; }
+#streams.dim .head { opacity: 0; }
+#streams.off { opacity: 0; }
+/* steps 2-4: the focus article, its words, its vector */
+#focus { position: absolute; left: 0; top: 0; width: 740px; padding: 14px 20px; background: var(--layer); font-size: 24px; line-height: 32px; color: var(--text); border-left: 3px solid #24A148; opacity: 0; }
+#focus small { display: block; font-size: 14px; line-height: 20px; color: var(--helper); margin-bottom: 4px; }
+#chips { position: absolute; left: 0; top: 134px; width: 1152px; display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { font-family: var(--mono); font-size: 18px; line-height: 24px; padding: 5px 12px; border: 1px solid var(--border-strong); color: var(--text); background: var(--bg); opacity: 0; transform: translateY(14px); transition: opacity 320ms var(--ease), transform 320ms var(--ease); }
+.chip.on { opacity: 1; transform: none; }
+#vec { position: absolute; left: 0; top: 0; }
+.ax { font-size: 14px; fill: var(--helper); }
+.lab { font-size: 14px; fill: var(--text-2); }
+.num { font-family: var(--mono); font-size: 14px; fill: var(--text-2); }
+.w { font-family: var(--mono); font-size: 15px; fill: var(--text); }
+#formula { position: absolute; left: 640px; top: 300px; width: 512px; font-size: 20px; color: var(--text-2); opacity: 0; }
+#formula .katex { font-size: 1.05em; }
+/* steps 5-8: the space */
+#space { position: absolute; left: 0; top: 0; }
+.axis { stroke: var(--border-strong); stroke-width: 1; }
+.axis-lab { font-size: 15px; fill: var(--text-2); font-family: var(--mono); }
+.avg { stroke-width: 3; fill: none; stroke-linecap: round; }
+.name { font-size: 16px; fill: var(--text); }
+.cos { font-family: var(--mono); font-size: 16px; fill: var(--text-2); }
+#legend { position: absolute; right: 0; top: 8px; width: 210px; font-size: 15px; line-height: 26px; color: var(--text-2); opacity: 0; transition: opacity 500ms var(--ease); }
+#legend div { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+#legend i { display: inline-block; width: 12px; height: 12px; }
+#newcard { position: absolute; right: 0; top: 0; width: 300px; padding: 12px 16px; background: var(--blue-10); border-left: 3px solid var(--blue); font-size: 17px; line-height: 25px; color: var(--text); opacity: 0; transition: opacity 500ms var(--ease); }
+#newcard small { display: block; font-size: 14px; line-height: 20px; color: var(--helper); margin-bottom: 2px; }
+#newcard .bn { font-family: var(--bangla); }
+#newcard .verdict { margin-top: 10px; font-size: 15px; line-height: 22px; color: var(--text-2); opacity: 0; transition: opacity 400ms; }
+#newcard .verdict b { color: var(--text); font-weight: 600; }
+#newcard.below { top: 252px; }
+#tryit { position: absolute; right: 0; top: 0; width: 300px; display: none; }
+#tryit label { display: block; font-size: 13px; line-height: 18px; color: var(--text-2); margin: 0 0 4px; }
+#tryit textarea { display: block; width: 300px; height: 132px; padding: 8px 12px; font: 15px/21px var(--sans); color: var(--text); background: var(--layer); border: 0; border-bottom: 1px solid var(--border-strong); border-radius: 0; resize: none; outline: none; }
+#tryit textarea.bn { font-family: var(--bangla); }
+#tryit textarea:focus { outline: 2px solid var(--blue); outline-offset: -2px; }
+#tryit .row { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+#tryit button { font: 15px/20px var(--sans); color: #fff; background: var(--blue); border: 0; border-radius: 0; height: 36px; padding: 0 18px; cursor: pointer; }
+#tryit button:hover { background: #0050E6; }
+#tryit #trynote { font-size: 13px; line-height: 18px; color: var(--helper); }
+#play { position: absolute; right: 124px; bottom: 24px; font: 14px/20px var(--sans); color: var(--helper); background: none; border: 1px solid var(--border); padding: 3px 10px; cursor: pointer; }
+#play:hover { color: var(--text); border-color: var(--border-strong); }
+@media (prefers-reduced-motion: reduce) { .col .list { animation: none; } }
+/* embedded in the deck (c02.qmd slide 1 loads this page in an iframe with ?embed): the deck's footer takes the bottom band */
+body.embed { background: var(--bg); }
+body.embed #play, body.embed #stepno { display: none; }
+body.embed #caption { bottom: 72px; }
+body.embed .col .view { height: 400px; }
+body.embed #stage { left: 0; top: 0; transform: none !important; }   /* the deck scales the slide; the stage stays 1:1 at the slide's origin */
+</style>
+</head>
+<body>
+<div id="stage">
+  <h1 id="title">Recap</h1>
+  <div id="sub"></div>
+  <div class="layer" id="streams"></div>
+  <div class="layer" id="words">
+    <div id="focus"></div>
+    <div id="chips"></div>
+    <svg id="vec" width="1152" height="490"></svg>
+    <div id="formula"></div>
+  </div>
+  <div class="layer" id="spaceLayer">
+    <svg id="space" width="1152" height="490"></svg>
+    <div id="legend"></div>
+    <div id="newcard"></div>
+    <div id="tryit">
+      <label for="trytext">Your article</label>
+      <textarea id="trytext" rows="5" spellcheck="false" autocomplete="off" placeholder="Paste any Bangla or English news article"></textarea>
+      <div class="row"><button id="trybtn" type="button">Classify</button><span id="trynote"></span></div>
+    </div>
+  </div>
+  <div id="caption"></div>
+  <button id="play" type="button">Play all</button>
+  <div id="stepno"></div>
+</div>
+<script src="../../theme/d3/d3.min.js"></script>
+<script src="../../theme/katex/katex.min.js"></script>
+<script src="../../c01/slides/c01_nta_model.js"></script>
+<script src="c02_recap_scene_data.js"></script>
+<script>
+(function () {
+  'use strict';
+  const D = window.RECAP_SCENE;
+  const EMBED = /[?&]embed/.test(location.search);    // inside the deck: reveal.js fragments drive the steps
+  if (EMBED) document.body.classList.add('embed');
+  const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let INSTANT = false;                                   // true while a state is rebuilt for ← / →
+  const T = (ms) => (REDUCED || INSTANT) ? 0 : ms;
+  const EASE = d3.easeCubicInOut;
+  const fmt = d3.format(',');
+  const ORDER = ['sports', 'entertainment', 'science_technology', 'business_economy', 'international', 'national_politics'];
+  const topics = ORDER.map(l => D.topics.find(t => t.label === l));
+  const byLabel = Object.fromEntries(D.topics.map(t => [t.label, t]));
+  const W = 1152, CX = 470, CY = 246, R_MAX = 198, R_AVG = 170;   // the figure area, the origin of the space, the circle, the unit arrows of step 7
+  const stage = document.getElementById('stage');
+  const sub = document.getElementById('sub'), cap = document.getElementById('caption'), stepno = document.getElementById('stepno');
+
+  function fit() { if (!EMBED) stage.style.transform = `translate(-50%, -50%) scale(${Math.min(window.innerWidth / 1280, window.innerHeight / 720)})`; }
+  window.addEventListener('resize', fit); fit();
+
+  // anim(sel, ms, delay): a D3 transition, or, when motion is off, the same calls applied at once
+  function anim(sel, ms, delay) {
+    if (REDUCED || INSTANT) return shim(sel);
+    return sel.transition().delay(delay || 0).duration(ms).ease(EASE);
+  }
+  function shim(sel) {
+    const s = {
+      attr(k, v) { sel.attr(k, v); return s; }, style(k, v) { sel.style(k, v); return s; }, text(v) { sel.text(v); return s; },
+      attrTween(k, f) { sel.each(function (d, i) { const g = f.call(this, d, i); this.setAttribute(k, g(1)); }); return s; },
+      tween(k, f) { sel.each(function (d, i) { const g = f.call(this, d, i); if (g) g(1); }); return s; },
+      delay() { return s; }, duration() { return s; }, ease() { return s; }, transition() { return s; },
+      on(ev, cb) { if (ev === 'end') cb(); return s; }, remove() { sel.remove(); return s; }
+    };
+    return s;
+  }
+  let timers = [];                                       // pending delayed calls; a step change cancels them
+  const later = (fn, ms) => { if (REDUCED || INSTANT) fn(); else timers.push(setTimeout(fn, ms)); };
+
+  // ---------- step 1: six streams ----------
+  const streams = d3.select('#streams');
+  const cols = streams.selectAll('.col').data(topics).join('div').attr('class', 'col');
+  cols.append('div').attr('class', 'head').html(t => `<i style="background:${t.color}"></i>${t.name}`);
+  const lists = cols.append('div').attr('class', 'view').append('div').attr('class', 'list')
+    .style('animation-duration', (t, i) => `${[230, 260, 245, 275, 255, 290][i]}s`);
+  lists.each(function (t) {
+    const items = t.headlines.slice(0, 150);
+    d3.select(this).selectAll('.item').data(items.concat(items)).join('div')   // the second copy makes the loop seamless
+      .attr('class', h => /[ঀ-৿]/.test(h) ? 'item bn' : 'item').text(h => h);
+  });
+  lists.filter(t => t.label === 'sports').insert('div', '.item:nth-child(4)').attr('class', 'item').text(D.focus.text);
+
+  // ---------- steps 2-4 ----------
+  const focus = d3.select('#focus'), chips = d3.select('#chips'), vec = d3.select('#vec'), formula = d3.select('#formula');
+  const rows = D.focus.rows, tokens = D.focus.tokens;    // rows: largest unit value first
+
+  // ---------- steps 5-8: the space ----------
+  const space = d3.select('#space');
+  const gAxes = space.append('g'), gDots = space.append('g'), gAvg = space.append('g'), gNew = space.append('g'), gLab = space.append('g');
+  let yaw = 0.6, pitch = 0.35, spinning = false, spinHandle = null;
+  function proj(p) {                                     // data [x, y, z] (y up) -> screen [x, y]
+    const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+    const x1 = p[0] * cy + p[2] * sy, z1 = -p[0] * sy + p[2] * cy;
+    return [CX + x1, CY - (p[1] * cp - z1 * sp)];
+  }
+  const K_POINT = 2600;
+  function scaled(p, k) {                                // a soft clamp keeps every dot inside the figure area
+    const r = Math.hypot(p[0], p[1], p[2]) * k;
+    const f = r > 0 ? (R_MAX * Math.tanh(r / R_MAX)) / r : 0;
+    return [p[0] * k * f, p[1] * k * f, p[2] * k * f];
+  }
+  const cloud = topics.map(t => ({ t, pts: t.points.map(p => scaled(p, K_POINT)) }));
+  const rawCenter = k => [0, 1, 2].map(i => d3.mean(cloud[k].pts, p => p[i]));
+  const centers = topics.map((t, k) => ({ t, p: rawCenter(k) }));
+  // angles for the circle of step 8: the front-view direction of each average, pushed apart to 32 degrees or more
+  const ang = centers.map(c => (Math.atan2(c.p[1], c.p[0]) * 180 / Math.PI + 360) % 360);
+  (function relax() {
+    const idx = d3.range(6).sort((a, b) => ang[a] - ang[b]);
+    for (let it = 0; it < 300; it++) for (let k = 0; k < 6; k++) {
+      const a = idx[k], b = idx[(k + 1) % 6], gap = ((ang[b] - ang[a]) % 360 + 360) % 360;
+      if (gap < 32) { const push = (32 - gap) / 2; ang[a] -= push; ang[b] += push; }
+    }
+    for (let k = 0; k < 6; k++) ang[k] = ((ang[k] % 360) + 360) % 360;
+  })();
+  const newP = scaled(D.new.point, K_POINT);
+  let newAng = (Math.atan2(newP[1], newP[0]) * 180 / Math.PI + 360) % 360;
+  const kTrue = ORDER.indexOf(D.new.label);
+  if (Math.abs(((newAng - ang[kTrue] + 540) % 360) - 180) > 168) newAng = ang[kTrue] + 12;   // visibly apart from its topic's arrow
+  const onCircle = (deg, r) => [r * Math.cos(deg * Math.PI / 180), r * Math.sin(deg * Math.PI / 180), 0];
+  const AXES = [[205, 0, 0], [0, 205, 0], [0, 0, 205]];
+  function arrowPath(a, b, head) {
+    const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L;
+    const hx = b[0] - ux * head, hy = b[1] - uy * head, w = head * 0.55;
+    return `M${a[0]},${a[1]}L${hx},${hy}M${b[0]},${b[1]}L${hx - uy * w},${hy + ux * w}M${b[0]},${b[1]}L${hx + uy * w},${hy - ux * w}`;
+  }
+  function growArrow(sel, target, ms, delay) {           // the arrow of each datum grows from the origin to its tip
+    return anim(sel, ms, delay).attrTween('d', d => { const q = proj(target(d)); return t => arrowPath([CX, CY], [CX + (q[0] - CX) * t, CY + (q[1] - CY) * t], 9 * Math.min(1, t * 3)); });
+  }
+  function moveArrow(sel, from, to, ms, delay) {
+    return anim(sel, ms, delay).attrTween('d', d => { const q0 = proj(from(d)), q1 = proj(to(d)); return t => arrowPath([CX, CY], [q0[0] + (q1[0] - q0[0]) * t, q0[1] + (q1[1] - q0[1]) * t], 9); });
+  }
+  function labelPos(p) {                                 // a name sits 26 px beyond the arrow tip, on its side of the circle
+    const q = proj(p), dx = q[0] - CX, dy = q[1] - CY, L = Math.hypot(dx, dy) || 1;
+    return [q[0] + dx / L * 26, q[1] + dy / L * 26 + 5];
+  }
+  function labelAnchor(p) { const q = proj(p); return Math.abs(q[0] - CX) < 40 ? 'middle' : (q[0] < CX ? 'end' : 'start'); }
+  function redrawSpace() {
+    gAxes.selectAll('line').attr('x2', d => proj(d)[0]).attr('y2', d => proj(d)[1]);
+    gAxes.selectAll('text').attr('x', d => proj(d.a.map(v => v * 1.1))[0]).attr('y', d => proj(d.a.map(v => v * 1.1))[1] + 5);
+    gDots.selectAll('circle').attr('cx', d => proj(d.p)[0]).attr('cy', d => proj(d.p)[1]);
+    gAvg.selectAll('path').attr('d', d => arrowPath([CX, CY], proj(d.p), 9));
+    gLab.selectAll('text.name').attr('x', d => labelPos(d.p)[0]).attr('y', d => labelPos(d.p)[1]);
+    gNew.selectAll('path').attr('d', d => arrowPath([CX, CY], proj(d), 9));
+  }
+  function spin() { if (!spinning) return; yaw += 0.003; redrawSpace(); spinHandle = requestAnimationFrame(spin); }
+  function stopSpin() { spinning = false; if (spinHandle) cancelAnimationFrame(spinHandle); spinHandle = null; }
+  function turnTo(yaw1, pitch1, ms, cb) {
+    stopSpin();
+    yaw = ((yaw % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);          // turn the short way round
+    if (yaw - yaw1 > Math.PI) yaw -= 2 * Math.PI; else if (yaw1 - yaw > Math.PI) yaw += 2 * Math.PI;
+    if (T(ms) === 0) { yaw = yaw1; pitch = pitch1; redrawSpace(); cb(); return; }
+    const y0 = yaw, p0 = pitch;
+    space.transition().duration(ms).ease(EASE).tween('turn', () => t => { yaw = y0 + (yaw1 - y0) * t; pitch = p0 + (pitch1 - p0) * t; redrawSpace(); }).on('end', cb);
+  }
+
+  // ---------- the steps; each adds its own change to the state the step before it left ----------
+  const SUBS = ['',
+    '<b id="count">0</b> training articles, six topics.',
+    '',
+    `Tokenize: lowercase letters only. <b>${tokens.length}</b> words (tokens).`,
+    'TF-IDF: each word’s count in the article (TF), times a weight that is larger for rarer words (IDF).',
+    `Three of the ${fmt(D.vocabShown)} axes. The article is one vector.`,
+    `All ${fmt(D.vocabShown)} axes, drawn in three. Each dot stands for about <b>${Math.round(D.articles / 360 / 10) * 10}</b> articles.`,
+    'The average of each topic: six arrows.',
+    'A new article: its cosine with each average. The topic with the largest cosine similarity is selected.',
+    'A new article: its cosine with each average. The topic with the largest cosine similarity is selected.'];
+  const CAPS = ['', '', '', '', '', '',
+    'A sketch: 360 dots, a random sample of 60 real articles per topic out of 40,000; positions are a projection of the real vectors onto the three directions that separate the topics most.',
+    'A sketch: positions are a projection of the real vectors.',
+    'The six cosines are computed by the class 1 model; the angles are a sketch.',
+    'The six cosines are computed by the class 1 model; the angles are a sketch.'];
+  const steps = {};
+  let focusP = null;                                     // where the article's arrow is, in data units
+
+  steps[1] = () => {
+    streams.classed('dim', false).classed('off', false).style('display', null);
+    d3.select('#words').style('display', 'none'); d3.select('#spaceLayer').style('display', 'none');
+    const c = d3.select('#count');
+    anim(c, 1800).tween('n', () => t => c.text(fmt(Math.round(D.articles * t))));
+  };
+
+  steps[2] = () => {
+    streams.classed('dim', true);
+    d3.select('#words').style('display', null);
+    const col = cols.filter(t => t.label === 'sports').node().getBoundingClientRect();
+    const lay = document.getElementById('words').getBoundingClientRect();
+    const x0 = (col.left - lay.left) / (lay.width / 1152);
+    focus.html(`<small>sports</small>${D.focus.text}`).style('opacity', 1)
+      .style('left', `${x0}px`).style('top', '196px').style('width', '176px').style('font-size', '14px').style('line-height', '20px')
+      .style('padding', '7px 0').style('background', 'none').style('border-left', 'none').style('color', '#525252');
+    focus.select('small').style('display', 'none');
+    anim(focus, 700).style('left', '0px').style('top', '0px').style('width', '740px').style('font-size', '24px').style('line-height', '32px').style('padding', '14px 20px').style('color', '#161616')
+      .on('end', () => { anim(focus, 300).style('background', '#F4F4F4').style('border-left', '3px solid #24A148'); focus.select('small').style('display', null); });
+  };
+
+  steps[3] = () => {
+    streams.classed('off', true);
+    anim(focus, 400).style('font-size', '20px').style('line-height', '28px').style('color', '#525252');
+    const sel = chips.style('display', null).style('opacity', 1).selectAll('.chip').data(tokens).join('div').attr('class', 'chip').text(d => d);
+    sel.each(function (d, i) { later(() => this.classList.add('on'), 90 * i); });
+  };
+
+  steps[4] = () => {
+    anim(chips, 300).style('opacity', 0).on('end', () => chips.style('display', 'none'));
+    const g = vec.append('g').attr('transform', 'translate(0, 150)');
+    const x = d3.scaleLinear().domain([0, 0.4]).range([0, 300]);
+    const row = g.selectAll('g.row').data(rows).join('g').attr('class', 'row').attr('transform', (d, i) => `translate(0, ${i * 24})`);
+    row.append('text').attr('class', 'w').attr('x', 110).attr('y', 14).attr('text-anchor', 'end').text(d => d.word);
+    const t1 = row.append('text').attr('class', 'num').attr('x', 124).attr('y', 14).text(d => `${d.count} × ${d.idf.toFixed(2)}`).style('opacity', 0);
+    t1.each(function (d, i) { anim(d3.select(this), 300, 60 * i).style('opacity', 1); });
+    const bar = row.append('rect').attr('x', 230).attr('y', 3).attr('height', 14).attr('width', 0).attr('fill', (d, i) => i < 6 ? '#0F62FE' : '#8D8D8D');
+    bar.each(function (d, i) { anim(d3.select(this), 500, 60 * i + 300).attr('width', x(d.unit)); });
+    const t2 = row.append('text').attr('class', 'num').attr('x', d => 236 + x(d.unit)).attr('y', 14).text(d => d.unit.toFixed(3)).style('opacity', 0);
+    t2.each(function (d, i) { anim(d3.select(this), 300, 60 * i + 700).style('opacity', 1); });
+    g.append('text').attr('class', 'lab').attr('x', 124).attr('y', -10).text('count × idf');
+    g.append('text').attr('class', 'lab').attr('x', 230).attr('y', -10).text(`÷ length ${D.focus.norm}`);
+    // the whole vector as a strip: one tick per word at its real place in the vocabulary
+    const sx = 640, sw = 512, sy = 210;
+    const strip = vec.append('g');
+    strip.append('text').attr('class', 'lab').attr('x', sx).attr('y', sy - 36).text(`The whole vector: ${fmt(D.vocabShown)} positions, ${rows.length} of them not zero`);
+    strip.append('line').attr('x1', sx).attr('x2', sx + sw).attr('y1', sy).attr('y2', sy).attr('stroke', '#C6C6C6').attr('stroke-width', 2);
+    const tick = strip.selectAll('line.tick').data(rows).join('line').attr('class', 'tick')
+      .attr('x1', d => sx + sw * d.pos).attr('x2', d => sx + sw * d.pos).attr('y1', sy).attr('y2', sy).attr('stroke', '#0F62FE').attr('stroke-width', 2);
+    tick.each(function (d, i) { anim(d3.select(this), 500, 60 * i + 300).attr('y1', sy - 12 - 60 * d.unit); });
+    strip.append('text').attr('class', 'ax').attr('x', sx).attr('y', sy + 20).text('position 1');
+    strip.append('text').attr('class', 'ax').attr('x', sx + sw).attr('y', sy + 20).attr('text-anchor', 'end').text(fmt(D.vocabShown));
+    katex.render('x_w = \\frac{\\text{count}_w \\cdot \\log\\frac{N}{\\text{df}_w}}{\\lVert x \\rVert}', formula.node(), { throwOnError: false, displayMode: true });
+    anim(formula, 400, 900).style('opacity', 1);
+  };
+
+  steps[5] = () => {
+    d3.select('#words').style('display', 'none'); streams.style('display', 'none');
+    d3.select('#spaceLayer').style('display', null);
+    yaw = 0.6; pitch = 0.35;
+    const three = rows.slice(1, 4);                      // messi, suffers, knee: three real components
+    focusP = three.map(r => r.unit * 560);
+    gAxes.selectAll('line').data(AXES).join('line').attr('class', 'axis').attr('x1', CX).attr('y1', CY).attr('x2', CX).attr('y2', CY);
+    anim(gAxes.selectAll('line'), 600).attr('x2', d => proj(d)[0]).attr('y2', d => proj(d)[1]);
+    gAxes.selectAll('text').data(three.map((r, i) => ({ w: r.word, a: AXES[i] }))).join('text').attr('class', 'axis-lab').attr('text-anchor', 'middle')
+      .attr('x', d => proj(d.a.map(v => v * 1.1))[0]).attr('y', d => proj(d.a.map(v => v * 1.1))[1] + 5).text(d => d.w).style('opacity', 0);
+    anim(gAxes.selectAll('text'), 300, 500).style('opacity', 1);
+    const arrow = gNew.append('path').datum(focusP).attr('stroke', '#24A148').attr('stroke-width', 3).attr('fill', 'none').attr('stroke-linecap', 'round').attr('d', arrowPath([CX, CY], [CX, CY], 9));
+    growArrow(arrow, d => d, 700, 700);
+    const q = proj(focusP);
+    const tip = gLab.append('text').attr('class', 'cos').attr('x', q[0] + 14).attr('y', q[1] + 5).text(`(${three.map(r => r.unit.toFixed(3)).join(', ')}, …)`).style('opacity', 0);
+    anim(tip, 300, 1400).style('opacity', 1);
+  };
+
+  steps[6] = () => {
+    anim(gAxes.selectAll('text'), 400).style('opacity', 0).remove();
+    anim(gLab.selectAll('text'), 300).style('opacity', 0).remove();
+    const fp = scaled(D.focusPoint, K_POINT), from = focusP.slice();
+    const arrow = gNew.selectAll('path').datum(fp);
+    moveArrow(arrow, () => from, () => fp, 900, 300);
+    focusP = fp;
+    const all = cloud.flatMap(c => c.pts.map(p => ({ t: c.t, p })));
+    const dots = gDots.selectAll('circle').data(all).join('circle').attr('r', 3.2).attr('fill', d => d.t.color).attr('fill-opacity', 0.75)
+      .attr('cx', (d, i) => (i % 2 ? -20 : W + 20)).attr('cy', (d, i) => 30 + (i * 37) % 430);
+    dots.each(function (d, i) { anim(d3.select(this), 900, 600 + 2.2 * i).attr('cx', proj(d.p)[0]).attr('cy', proj(d.p)[1]); });
+    d3.select('#legend').html(topics.map(t => `<div><i style="background:${t.color}"></i>${t.name}</div>`).join('')).style('opacity', 1);
+    if (!REDUCED && !INSTANT) later(() => { spinning = true; spin(); }, 1900);
+  };
+
+  steps[7] = () => {
+    // front view; each topic's dots gather at their average, then the average is drawn as a unit arrow (as the class 1 notebook does)
+    turnTo(0, 0, 900, () => {
+      gDots.selectAll('circle').each(function (d) {
+        const c = centers.find(c => c.t === d.t);
+        anim(d3.select(this), 900).attr('cx', proj(c.p)[0]).attr('cy', proj(c.p)[1]).transition().duration(T(400)).attr('fill-opacity', 0).remove();
+      });
+      anim(gNew.selectAll('path'), 400).style('opacity', 0).remove();
+      anim(gAxes.selectAll('line'), 600, 900).style('opacity', 0).remove();
+      centers.forEach((c, k) => { c.p = onCircle(ang[k], R_AVG); });
+      const arrows = gAvg.selectAll('path').data(centers).join('path').attr('class', 'avg').attr('stroke', d => d.t.color).attr('d', arrowPath([CX, CY], [CX, CY], 9));
+      growArrow(arrows, d => d.p, 700, 800);
+      const names = gLab.selectAll('text.name').data(centers).join('text').attr('class', 'name').attr('text-anchor', d => labelAnchor(d.p))
+        .attr('x', d => labelPos(d.p)[0]).attr('y', d => labelPos(d.p)[1]).text(d => d.t.name).style('opacity', 0);
+      anim(names, 400, 1300).style('opacity', 1);
+      anim(d3.select('#legend'), 400, 1300).style('opacity', 0);
+    });
+  };
+  // the class 1 model's own arithmetic (c01_nta_model.js, as class 1 slide 30): tokens, count x idf, cosine with each average
+  const M = window.NTA_MODEL, mIndex = new Map();
+  if (M) M.words.split('\n').forEach((w, i) => mIndex.set(w, i));
+  const TOKEN = /[\p{L}\p{N}_ঀ-৿]+/gu;
+  function cosinesOf(text) {
+    const counts = new Map(); let total = 0, known = 0, norm = 0;
+    (text.toLowerCase().match(TOKEN) || []).forEach(w => { total++; const i = mIndex.get(w); if (i === undefined) return; known++; counts.set(i, (counts.get(i) || 0) + 1); });
+    counts.forEach((c, i) => { const v = c * M.idf[i] / 1000; counts.set(i, v); norm += v * v; });
+    norm = Math.sqrt(norm);
+    const sims = {};
+    M.labels.forEach((lab, k) => { let v = 0; if (norm > 0) { counts.forEach((x, i) => { v += x * M.C[k][i]; }); v = v / 1e6 / norm; } sims[lab] = v; });
+    return { sims, total, known };
+  }
+  function clearArticle() {
+    gLab.selectAll('path, text.cos').interrupt().remove(); gNew.selectAll('*').interrupt().remove();
+    gAvg.selectAll('path').interrupt().style('opacity', 1); gLab.selectAll('text.name').interrupt().style('font-weight', 400);
+  }
+  function showArticle(art) {             // art: { title, text, cosines, label (null for a pasted text), note }
+    const card = d3.select('#newcard').html(`<small>${art.title}</small><span class="${/[ঀ-৿]/.test(art.text) ? 'bn' : ''}">${art.text}</span><div class="verdict">nearest average: <b></b></div>`);
+    anim(card, 400).style('opacity', 1);
+    const byCos = centers.map((c, k) => ({ c, k, v: art.cosines[c.t.label] })).sort((a, b) => b.v - a.v);
+    const best = byCos[0], max = best.v;
+    // the article's arrow sits next to the winner, on the runner-up's side: 6 degrees away for a clear win,
+    // up to 24 degrees away (never past the midpoint) when the two cosines are close. A sketch: real angles are all near 90.
+    const run = byCos[1], margin = max > 0 ? Math.max(0, (max - run.v) / max) : 1;
+    const wa = ang[best.k], ra = ang[run.k];
+    let gap = ((ra - wa) % 360 + 360) % 360; if (gap > 180) gap -= 360;             // signed turn from the winner to the runner-up
+    const delta = Math.min(6 + 18 * (1 - margin), Math.abs(gap) / 2 - 3);
+    const qa = (wa + Math.sign(gap || 1) * delta + 360) % 360;
+    const np = onCircle(qa, R_MAX * 0.92), q = proj(np);
+    const arrow = gNew.append('path').datum(np).attr('stroke', '#0F62FE').attr('stroke-width', 3).attr('fill', 'none').attr('stroke-linecap', 'round').attr('d', arrowPath([CX, CY], [CX, CY], 9));
+    growArrow(arrow, d => d, 700, 400);
+    byCos.forEach((o, j) => {
+      const a0 = qa, a1 = ang[o.k], r = 48 + j * 9;
+      let d = ((a1 - a0) % 360 + 360) % 360; if (d > 180) d -= 360;
+      const arc = gLab.append('path').attr('fill', 'none').attr('stroke', j === 0 ? '#0F62FE' : '#C6C6C6').attr('stroke-width', j === 0 ? 2 : 1).attr('d', 'M0,0');
+      anim(arc, 500, 1200 + 500 * j).attrTween('d', () => t => 'M' + d3.range(25).map(i => proj(onCircle(a0 + d * t * i / 24, r)).join(',')).join('L'));
+      const lp = labelPos(o.c.p), mid = labelAnchor(o.c.p) === 'middle';   // above or below the circle the value follows the name on one line
+      const nameEl = gLab.selectAll('text.name').filter(d => d === o.c).node(), nw = nameEl ? nameEl.getBBox().width : 0;
+      const tx = gLab.append('text').attr('class', 'cos').attr('text-anchor', mid ? 'start' : labelAnchor(o.c.p)).attr('x', mid ? lp[0] + nw / 2 + 10 : lp[0]).attr('y', mid ? lp[1] : lp[1] + 22)
+        .attr('fill', j === 0 ? '#0F62FE' : '#525252').style('font-weight', j === 0 ? 600 : 400).text('0.000').style('opacity', 0);
+      anim(tx, 500, 1200 + 500 * j + 250).style('opacity', 1).tween('n', () => t => tx.text(d3.format('.3f')(o.v * t)));
+    });
+    const tEnd = 1200 + 500 * 6;
+    anim(gAvg.selectAll('path'), 400, tEnd).style('opacity', d => d === best.c ? 1 : 0.35);
+    anim(gLab.selectAll('text.name'), 400, tEnd).style('font-weight', d => d === best.c ? 600 : 400);
+    card.select('.verdict b').text(best.c.t.name + (art.label ? (art.label === best.c.t.label ? ' (right)' : ` (really ${byLabel[art.label].name})`) : ''));
+    anim(card.select('.verdict'), 400, tEnd).style('opacity', 1);
+    d3.select('#trynote').text(art.note || '');
+  }
+
+  steps[8] = () => {
+    turnTo(0, 0, 0, () => {
+      // only the direction matters: the six unit arrows on one circle
+      const old = centers.map(c => c.p.slice());
+      centers.forEach((c, k) => { c.p = onCircle(ang[k], R_MAX); });
+      moveArrow(gAvg.selectAll('path'), d => old[centers.indexOf(d)], d => d.p, 700, 0);
+      anim(gLab.selectAll('text.name'), 700).attr('text-anchor', d => labelAnchor(d.p)).attr('x', d => labelPos(d.p)[0]).attr('y', d => labelPos(d.p)[1]);
+      const ring = gAxes.append('circle').attr('cx', CX).attr('cy', CY).attr('r', R_MAX).attr('fill', 'none').attr('stroke', '#E0E0E0').style('opacity', 0);
+      anim(ring, 600, 300).style('opacity', 1);
+      later(() => showArticle({ title: 'a new article', text: D.new.text, cosines: D.new.cosines, label: D.new.label }), 900);
+    });
+  };
+
+  steps[9] = () => {
+    const box = document.getElementById('trytext');
+    anim(d3.select('#newcard'), 400).style('opacity', 0);
+    anim(gNew.selectAll('path'), 400).style('opacity', 0).remove();
+    anim(gLab.selectAll('path, text.cos'), 400).style('opacity', 0).remove();
+    anim(gAvg.selectAll('path'), 400).style('opacity', 1); anim(gLab.selectAll('text.name'), 400).style('font-weight', 400);
+    later(() => { d3.select('#newcard').classed('below', true); d3.select('#tryit').style('display', 'block'); box.value = ''; box.classList.remove('bn'); d3.select('#trynote').text(M ? '' : 'model file missing'); }, 500);
+  };
+  (function wireBox() {
+    const box = document.getElementById('trytext');
+    box.addEventListener('input', () => box.classList.toggle('bn', /[ঀ-৿]/.test(box.value)));
+    document.getElementById('trybtn').addEventListener('click', () => {
+      const text = box.value.trim(); if (!text || !M || step !== LAST) return;
+      const r = cosinesOf(text);
+      clearArticle();
+      const words = text.replace(/\s+/g, ' ').split(' ');
+      showArticle({ title: 'your article', text: words.slice(0, 12).join(' ') + (words.length > 12 ? ' …' : ''), cosines: r.sims, label: null, note: `${r.known} of ${r.total} words known` });
+      giveBackKeys();
+    });
+  })();
+  function giveBackKeys() {                             // after the box: the arrow keys step the deck again
+    document.activeElement && document.activeElement.blur();
+    if (EMBED && window.parent !== window) window.parent.postMessage({ scene: 'recap', done: true }, '*');
+  }
+
+  // ---------- navigation: rebuild the state before a step at once, then play the step ----------
+  let step = 0;
+  const LAST = 9;
+  function reset() {
+    stopSpin(); d3.selectAll('#stage *').interrupt();
+    timers.forEach(clearTimeout); timers = [];
+    d3.select('#tryit').style('display', 'none'); d3.select('#trynote').text(''); d3.select('#newcard').classed('below', false);
+    if (document.activeElement && document.activeElement.id === 'trytext') document.activeElement.blur();
+    gDots.selectAll('*').remove(); gAvg.selectAll('*').remove(); gNew.selectAll('*').remove(); gLab.selectAll('*').remove(); gAxes.selectAll('*').remove();
+    chips.selectAll('*').remove(); chips.style('display', null).style('opacity', 1); vec.selectAll('*').remove(); formula.style('opacity', 0);
+    focus.style('opacity', 0); d3.select('#legend').style('opacity', 0); d3.select('#newcard').style('opacity', 0).html('');
+    centers.forEach((c, k) => { c.p = rawCenter(k); });
+    yaw = 0.6; pitch = 0.35;
+  }
+  function goTo(n, instant) {                           // instant: draw step n at once too (the PDF)
+    n = Math.max(1, Math.min(LAST, n));
+    reset();
+    stage.classList.add('instant'); INSTANT = true;
+    for (let k = 1; k < n; k++) steps[k]();
+    INSTANT = false;
+    void stage.offsetWidth;                              // the rebuilt state is applied with transitions off
+    stage.classList.remove('instant');
+    step = n; sub.innerHTML = SUBS[n]; cap.textContent = CAPS[n]; stepno.textContent = `${n} / ${LAST}`;
+    if (instant) { stage.classList.add('instant'); INSTANT = true; }
+    steps[n]();
+    if (instant) { INSTANT = false; void stage.offsetWidth; stage.classList.remove('instant'); }
+  }
+  if (EMBED) {                                           // inside the deck: arrow keys outside the text box step the slides
+    document.addEventListener('keydown', e => {
+      if (e.target && e.target.id === 'trytext') { if (e.key === 'Escape') giveBackKeys(); return; }
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); window.parent.postMessage({ scene: 'recap', reveal: 'next' }, '*'); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); window.parent.postMessage({ scene: 'recap', reveal: 'prev' }, '*'); }
+    });
+  }
+  if (!EMBED) {
+    document.addEventListener('keydown', e => {
+      if (e.target && e.target.id === 'trytext') { if (e.key === 'Escape') giveBackKeys(); return; }
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); if (step < LAST) goTo(step + 1); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); if (step > 1) goTo(step - 1); }
+      else if (e.key === 'p' || e.key === 'P') playAll();
+    });
+    stage.addEventListener('click', e => { if (e.target.id !== 'play' && !e.target.closest('#tryit') && step < LAST) goTo(step + 1); });
+  }
+  const PAUSE = [0, 4500, 2600, 3400, 5600, 3800, 8000, 5200, 9500, 3000];
+  let playTimer = null;
+  function playAll() {
+    if (playTimer) clearTimeout(playTimer);
+    let n = 1; goTo(1);
+    const next = () => { n++; if (n > LAST) { playTimer = null; return; } goTo(n); playTimer = setTimeout(next, PAUSE[n]); };
+    playTimer = setTimeout(next, PAUSE[1]);
+  }
+  document.getElementById('play').addEventListener('click', playAll);
+  window.recapGoTo = goTo;
+  // the deck drives the scene by message (a direct call is blocked between file:// documents)
+  window.addEventListener('message', e => { const d = e.data; if (d && d.scene === 'recap' && typeof d.goTo === 'number') goTo(d.goTo, !!d.instant); });
+  if (EMBED && window.parent !== window) window.parent.postMessage({ scene: 'recap', ready: true }, '*');                                // for scripted screenshots
+  goTo(1);
+})();
+</script>
+</body>
+</html>
