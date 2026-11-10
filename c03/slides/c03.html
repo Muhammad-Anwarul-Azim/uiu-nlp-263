@@ -721,244 +721,222 @@ html.print-pdf .reveal section.s09 .s09-long { display: none; }
 <h2>Part 2: The bigram model</h2>
 <p class="lead">One table per topic: each word, given the word before it.</p>
 </section>
-<section id="from-a-row-to-a-table" class="slide level2 s11" data-section="The bigram model">
-<h2>From a row to a table</h2>
-<table class="s11-old caption-top">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th">Word counts</th>
-<th class="num" data-quarto-table-cell-role="th">match</th>
-<th class="num" data-quarto-table-cell-role="th">star</th>
-<th class="num" data-quarto-table-cell-role="th">film</th>
-<th class="num" data-quarto-table-cell-role="th">wins</th>
-<th class="num" data-quarto-table-cell-role="th">song</th>
-<th class="num" data-quarto-table-cell-role="th">Total</th>
-</tr>
-</thead>
-<tbody>
-<tr class="sp odd">
-<td><span class="sw t3"></span>sports</td>
-<td class="num">8</td>
-<td class="num">4</td>
-<td class="num">1</td>
-<td class="num">6</td>
-<td class="num">1</td>
-<td class="num s11-ot">20</td>
-</tr>
-<tr class="en even">
-<td><span class="sw t5"></span>entertainment</td>
-<td class="num">1</td>
-<td class="num">6</td>
-<td class="num">7</td>
-<td class="num">2</td>
-<td class="num">4</td>
-<td class="num s11-ot">20</td>
-</tr>
-</tbody>
-</table>
-
-<div class="s11-b s11-sp fragment up" data-fragment-index="1"><p class="s11-cap"><span class="sw t3"></span>sports</p>
-<table class="s11-pt sp caption-top">
-<thead>
-<tr class="header">
-<th class="s11-corner" data-quarto-table-cell-role="th"></th>
-<th class="s11-c" data-quarto-table-cell-role="th">match</th>
-<th class="s11-c" data-quarto-table-cell-role="th">star</th>
-<th class="s11-c" data-quarto-table-cell-role="th">film</th>
-<th class="s11-c" data-quarto-table-cell-role="th">wins</th>
-<th class="s11-c" data-quarto-table-cell-role="th">song</th>
-<th class="s11-c" data-quarto-table-cell-role="th">&lt;/s&gt;</th>
-<th class="s11-tot" data-quarto-table-cell-role="th">Total</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th class="s11-rh" data-quarto-table-cell-role="th">&lt;s&gt;</th>
-<td class="num" data-r="0" data-c="0">3</td>
-<td class="num" data-r="0" data-c="1">1</td>
-<td class="num z" data-r="0" data-c="2">0</td>
-<td class="num" data-r="0" data-c="3">1</td>
-<td class="num" data-r="0" data-c="4">1</td>
-<td class="num z" data-r="0" data-c="5">0</td>
-<td class="num s11-tot">6</td>
-</tr>
-<tr class="even">
-<th class="s11-rh" data-quarto-table-cell-role="th">match</th>
-<td class="num z" data-r="1" data-c="0">0</td>
-<td class="num" data-r="1" data-c="1">2</td>
-<td class="num z" data-r="1" data-c="2">0</td>
-<td class="num" data-r="1" data-c="3">1</td>
-<td class="num z" data-r="1" data-c="4">0</td>
-<td class="num" data-r="1" data-c="5">5</td>
-<td class="num s11-tot">8</td>
-</tr>
-<tr class="odd">
-<th class="s11-rh" data-quarto-table-cell-role="th">star</th>
-<td class="num z" data-r="2" data-c="0">0</td>
-<td class="num z" data-r="2" data-c="1">0</td>
-<td class="num" data-r="2" data-c="2">1</td>
-<td class="num" data-r="2" data-c="3">3</td>
-<td class="num z" data-r="2" data-c="4">0</td>
-<td class="num z" data-r="2" data-c="5">0</td>
-<td class="num s11-tot">4</td>
-</tr>
-<tr class="even">
-<th class="s11-rh" data-quarto-table-cell-role="th">film</th>
-<td class="num z" data-r="3" data-c="0">0</td>
-<td class="num z" data-r="3" data-c="1">0</td>
-<td class="num z" data-r="3" data-c="2">0</td>
-<td class="num" data-r="3" data-c="3">1</td>
-<td class="num z" data-r="3" data-c="4">0</td>
-<td class="num z" data-r="3" data-c="5">0</td>
-<td class="num s11-tot">1</td>
-</tr>
-<tr class="odd">
-<th class="s11-rh" data-quarto-table-cell-role="th">wins</th>
-<td class="num" data-r="4" data-c="0">5</td>
-<td class="num z" data-r="4" data-c="1">0</td>
-<td class="num z" data-r="4" data-c="2">0</td>
-<td class="num z" data-r="4" data-c="3">0</td>
-<td class="num z" data-r="4" data-c="4">0</td>
-<td class="num" data-r="4" data-c="5">1</td>
-<td class="num s11-tot">6</td>
-</tr>
-<tr class="even">
-<th class="s11-rh" data-quarto-table-cell-role="th">song</th>
-<td class="num z" data-r="5" data-c="0">0</td>
-<td class="num" data-r="5" data-c="1">1</td>
-<td class="num z" data-r="5" data-c="2">0</td>
-<td class="num z" data-r="5" data-c="3">0</td>
-<td class="num z" data-r="5" data-c="4">0</td>
-<td class="num z" data-r="5" data-c="5">0</td>
-<td class="num s11-tot">1</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="s11-b s11-en fragment up" data-fragment-index="4"><p class="s11-cap"><span class="sw t5"></span>entertainment</p>
-<table class="s11-pt en caption-top">
-<thead>
-<tr class="header">
-<th class="s11-corner" data-quarto-table-cell-role="th"></th>
-<th class="s11-c" data-quarto-table-cell-role="th">match</th>
-<th class="s11-c" data-quarto-table-cell-role="th">star</th>
-<th class="s11-c" data-quarto-table-cell-role="th">film</th>
-<th class="s11-c" data-quarto-table-cell-role="th">wins</th>
-<th class="s11-c" data-quarto-table-cell-role="th">song</th>
-<th class="s11-c" data-quarto-table-cell-role="th">&lt;/s&gt;</th>
-<th class="s11-tot" data-quarto-table-cell-role="th">Total</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th class="s11-rh" data-quarto-table-cell-role="th">&lt;s&gt;</th>
-<td class="num z" data-r="0" data-c="0">0</td>
-<td class="num" data-r="0" data-c="1">2</td>
-<td class="num" data-r="0" data-c="2">1</td>
-<td class="num z" data-r="0" data-c="3">0</td>
-<td class="num" data-r="0" data-c="4">1</td>
-<td class="num z" data-r="0" data-c="5">0</td>
-<td class="num s11-tot">4</td>
-</tr>
-<tr class="even">
-<th class="s11-rh" data-quarto-table-cell-role="th">match</th>
-<td class="num z" data-r="1" data-c="0">0</td>
-<td class="num z" data-r="1" data-c="1">0</td>
-<td class="num z" data-r="1" data-c="2">0</td>
-<td class="num z" data-r="1" data-c="3">0</td>
-<td class="num z" data-r="1" data-c="4">0</td>
-<td class="num" data-r="1" data-c="5">1</td>
-<td class="num s11-tot">1</td>
-</tr>
-<tr class="odd">
-<th class="s11-rh" data-quarto-table-cell-role="th">star</th>
-<td class="num z" data-r="2" data-c="0">0</td>
-<td class="num z" data-r="2" data-c="1">0</td>
-<td class="num" data-r="2" data-c="2">4</td>
-<td class="num z" data-r="2" data-c="3">0</td>
-<td class="num" data-r="2" data-c="4">2</td>
-<td class="num z" data-r="2" data-c="5">0</td>
-<td class="num s11-tot">6</td>
-</tr>
-<tr class="even">
-<th class="s11-rh" data-quarto-table-cell-role="th">film</th>
-<td class="num" data-r="3" data-c="0">1</td>
-<td class="num" data-r="3" data-c="1">2</td>
-<td class="num z" data-r="3" data-c="2">0</td>
-<td class="num" data-r="3" data-c="3">2</td>
-<td class="num" data-r="3" data-c="4">1</td>
-<td class="num" data-r="3" data-c="5">1</td>
-<td class="num s11-tot">7</td>
-</tr>
-<tr class="odd">
-<th class="s11-rh" data-quarto-table-cell-role="th">wins</th>
-<td class="num z" data-r="4" data-c="0">0</td>
-<td class="num z" data-r="4" data-c="1">0</td>
-<td class="num z" data-r="4" data-c="2">0</td>
-<td class="num z" data-r="4" data-c="3">0</td>
-<td class="num z" data-r="4" data-c="4">0</td>
-<td class="num" data-r="4" data-c="5">2</td>
-<td class="num s11-tot">2</td>
-</tr>
-<tr class="even">
-<th class="s11-rh" data-quarto-table-cell-role="th">song</th>
-<td class="num z" data-r="5" data-c="0">0</td>
-<td class="num" data-r="5" data-c="1">2</td>
-<td class="num" data-r="5" data-c="2">2</td>
-<td class="num z" data-r="5" data-c="3">0</td>
-<td class="num z" data-r="5" data-c="4">0</td>
-<td class="num z" data-r="5" data-c="5">0</td>
-<td class="num s11-tot">4</td>
-</tr>
-</tbody>
-</table>
-</div>
-<span class="s11-m2 fragment" data-fragment-index="2" aria-hidden="true"></span>
-<span class="s11-m3 fragment" data-fragment-index="3" aria-hidden="true"></span>
-<span class="s11-m4 fragment" data-fragment-index="4" aria-hidden="true"></span>
+<section id="counting-pairs" class="slide level2 s11" data-section="The bigram model">
+<h2>Counting pairs</h2>
+<svg class="s11-svg" width="1152" height="410" viewbox="0 0 1152 410" role="img" aria-label="The sports sentences as one text. A window of two words moves over the text; for each pair, the first word selects a row of the table, the second word a column, and the cell where they cross gains 1."></svg>
+<div class="s11-caps"><span class="cap fragment" data-fragment-index="1"></span><span class="cap fragment" data-fragment-index="2"></span><span class="cap fragment" data-fragment-index="3"></span><span class="cap fragment" data-fragment-index="4"></span><span class="cap fragment" data-fragment-index="5"></span><span class="cap fragment" data-fragment-index="6"></span><span class="cap fragment" data-fragment-index="7"></span><span class="cap fragment" data-fragment-index="8"></span><span class="cap fragment" data-fragment-index="9"></span><span class="cap fragment" data-fragment-index="10"></span></div>
 <div class="end steps s11-say">
-  <p class="fragment fade-out" data-fragment-index="1">In class 2, each topic had one row: how often each word occurs in its articles.</p>
-  <p class="fragment current-visible" data-fragment-index="1">In the bigram model, the sports row becomes a table: how often each word follows each word.</p>
-  <p class="fragment current-visible" data-fragment-index="2">&lt;s&gt; marks the start of an article, and &lt;/s&gt; its end.</p>
-  <p class="fragment current-visible" data-fragment-index="3">The row of match adds up to 8, its count in the old row. The same holds for every word.</p>
-  <p class="fragment keep" data-fragment-index="4">Entertainment gets its own table. There, star is followed by film 4 times; in sports, once.</p>
+  <p class="fragment fade-out" data-fragment-index="1">The three sports sentences as one text. &lt;s&gt; marks where a sentence starts and where it ends.</p>
+  <p class="fragment current-visible" data-fragment-index="1">We read the text two words at a time. The first word of the pair selects the row.</p>
+  <p class="fragment current-visible" data-fragment-index="2">The second word selects the column.</p>
+  <p class="fragment current-visible" data-fragment-index="3">The cell where the row and the column cross gains 1.</p>
+  <p class="fragment current-visible" data-fragment-index="4">The window moves one word to the right. The second word of the last pair is now the first word.</p>
+  <p class="fragment current-visible" data-fragment-index="5">Each pair adds 1 to one cell.</p>
+  <p class="fragment current-visible" data-fragment-index="6">The sentence ends here, so match is followed by &lt;s&gt;.</p>
+  <p class="fragment current-visible" data-fragment-index="7">The same &lt;s&gt; starts the next sentence.</p>
+  <p class="fragment current-visible" data-fragment-index="8">The pair wins match occurs twice in the text, so its cell holds 2.</p>
+  <p class="fragment current-visible" data-fragment-index="9">Each row adds up to the count of its word: wins occurs 3 times in the text.</p>
+  <p class="fragment keep" data-fragment-index="10">The entertainment sentences are counted into a second table.</p>
 </div>
 <style>
-/* Builds: 1 the sports row becomes the sports pair table (rows: the word before; columns: the next word);
-   2 <s> and </s> lit; 3 the row totals lit with the class 2 counts they equal; 4 the entertainment table.
-   Counts from the ten toy articles in c03_build.py, whose word counts are the class 2 table. */
-.reveal section.s11 .s11-old { position: absolute; left: 64px; top: 108px; width: 760px; margin: 0; font-size: 22px; }
-.reveal section.s11 .s11-old th, .reveal section.s11 .s11-old td { height: 40px; padding: 0 14px; box-sizing: border-box; vertical-align: middle; white-space: nowrap; transition: background-color var(--dur-moderate); }
-.reveal section.s11 .s11-old .sw { margin-right: 10px; }
-.reveal section.s11 .s11-b { position: absolute; top: 244px; }
-.reveal section.s11 .s11-sp { left: 64px; }
-.reveal section.s11 .s11-en { left: 672px; }
-.reveal section.s11 .s11-cap { margin: 0 0 6px; font-size: 22px; line-height: 30px; }
-.reveal section.s11 .s11-cap .sw { margin-right: 10px; }
-
-.reveal section.s11 .s11-pt { margin: 0; font-size: 21px; border-collapse: collapse; }
-.reveal section.s11 .s11-pt th, .reveal section.s11 .s11-pt td { height: 34px; padding: 0 8px; box-sizing: border-box; vertical-align: middle; white-space: nowrap; transition: background-color var(--dur-moderate), opacity var(--dur-moderate), color var(--dur-moderate); }
-.reveal section.s11 .s11-pt thead th { font-family: var(--mono); font-weight: var(--weight-regular); font-size: 19px; text-align: right; width: 60px; }
-.reveal section.s11 .s11-pt thead th.s11-corner { width: 86px; }
-.reveal section.s11 .s11-pt thead th.s11-tot { font-family: var(--sans); font-weight: var(--weight-semibold); width: 74px; }
-.reveal section.s11 .s11-pt th.s11-rh { background: none; font-family: var(--mono); font-weight: var(--weight-regular); font-size: 19px; text-align: left; color: var(--text-secondary); border-bottom: var(--rule) solid var(--border-subtle); }
-.reveal section.s11 .s11-pt td { text-align: right; }
-.reveal section.s11 .s11-pt td.z { color: var(--text-helper); }
-.reveal section.s11 .s11-pt td.s11-tot { font-weight: var(--weight-semibold); }
-.reveal section.s11 .s11-old tr.sp td { }
-.reveal .slides section.s11:has(.s11-sp.visible) .s11-old tr.sp td { background: var(--highlight-subtle); }
-.reveal .slides section.s11:has(.s11-m4.visible) .s11-old tr.sp td { background: none; }
-.reveal .slides section.s11:has(.s11-m2.visible):not(:has(.s11-m3.visible)) .s11-sp tbody tr:first-child th,
-.reveal .slides section.s11:has(.s11-m2.visible):not(:has(.s11-m3.visible)) .s11-sp thead th:nth-child(7) { background: var(--highlight); color: var(--text-primary); }
-.reveal .slides section.s11:has(.s11-m3.visible):not(:has(.s11-m4.visible)) .s11-sp td.s11-tot,
-.reveal .slides section.s11:has(.s11-m3.visible):not(:has(.s11-m4.visible)) .s11-old tr.sp td.num:not(.s11-ot) { background: var(--highlight); }
-html.print-pdf .reveal section.s11 .s11-old tr.sp td { background: none !important; }
+/* Slide s11, a D3 scene (as slide q03): theme/d3/d3.min.js, ten empty .cap fragments, one per press, a print-pdf branch
+   that draws the last step. The toy texts: three sentences per topic, six words, one symbol <s> between sentences.
+   Presses: 0 the sports text and a table of zeros; 1 the window on the first pair, its first word selects the row;
+   2 its second word selects the column; 3 the cell gains 1; 4 to 7 one pair per press; 8 the other eight pairs play
+   by themselves; 9 the row totals, wins marked; 10 the entertainment text is counted into its table, pair by pair.
+   Geometry, in slide pixels on the 1152 px content width: the text on the line y = 26; on the left the current pair
+   (44 px); the table from x = 452: row names 92 wide, seven columns of 76, the totals in an eighth; rows 40 high,
+   the column names from y = 84. */
+.reveal section.s11 .s11-svg { display: block; overflow: visible; }
+.reveal section.s11 .s11-caps { display: none; }
+.reveal section.s11 .s11-svg text { font-family: var(--sans); font-size: 22px; font-variant-numeric: tabular-nums; fill: var(--text-primary); }
+.reveal section.s11 .s11-svg text.s11-w { font-family: var(--mono); font-variant-numeric: normal; }
+.reveal section.s11 .s11-svg text.s11-t { font-size: 24px; }
+.reveal section.s11 .s11-svg text.s11-big { font-size: 44px; }
+.reveal section.s11 .s11-svg text.s11-lab { fill: var(--text-secondary); }
+.reveal section.s11 .s11-svg text.s11-sel { fill: var(--interactive); }
+.reveal section.s11 .s11-svg text.s11-th { font-weight: var(--weight-semibold); }
+.reveal section.s11 .s11-svg line { stroke: var(--border-subtle); stroke-width: 1; shape-rendering: crispEdges; }
+.reveal section.s11 .s11-svg .s11-win { fill: none; stroke: var(--interactive); stroke-width: 2; shape-rendering: crispEdges; }
 .reveal section.s11 .s11-say p { font-size: 28px; line-height: 36px; }
-.reveal section.s11 .s11-say p.s11-bad { color: var(--support-error); font-weight: var(--weight-semibold); }
-.reveal section.s11 .s11-say p.s11-good { color: var(--support-success); font-weight: var(--weight-semibold); }
-.reveal section.s11 .s11-say p.s11-q { font-weight: var(--weight-semibold); }
-.reveal section.s11 .katex .accent { color: inherit; }
 </style>
+<script src="../../theme/d3/d3.min.js"></script>
+<script>
+(function () {
+  var sec = document.querySelector('.reveal section.s11');
+  if (!sec || !window.d3) return;
+  var TEXT = {sports: ['<s>', 'team', 'wins', 'match', '<s>', 'star', 'wins', 'match', '<s>', 'team', 'star', 'wins', 'award', '<s>'], entertainment: ['<s>', 'film', 'wins', 'award', '<s>', 'film', 'star', 'wins', 'award', '<s>', 'star', 'wins', 'film', 'award', '<s>']};
+  var V = ['<s>', 'team', 'wins', 'match', 'star', 'award', 'film'], TOPICS = ['sports', 'entertainment'], COLOR = { sports: 'topic-3', entertainment: 'topic-5' };
+  var LAST = 10, n = V.length;
+  var print = location.search.indexOf('print-pdf') > -1;
+  var MOTION = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var TY = 26, X0 = 452, RHW = 92, CW = 76, RH = 40, HY = 84, BY = HY + RH, PX = 200;
+  var svg = d3.select(sec.querySelector('.s11-svg')), css = getComputedStyle(sec), C = {};
+  ['interactive', 'text-primary', 'text-secondary', 'text-helper', 'highlight', 'highlight-subtle', 'topic-3', 'topic-5'].forEach(function (v) { C[v] = css.getPropertyValue('--' + v).trim(); });
+  function ix(w) { return V.indexOf(w); }
+  function cx(c) { return X0 + RHW + c * CW + CW / 2; }
+  function ry(r) { return BY + r * RH; }
+
+  var X = {}, TW = {}, gTok = {}, tok = {}, win, rowBand, colBand, cellBox, totBox, colH, rowH, cells, gTot, totV, gP, w1, w2, sub1, sub2, counter, topSw, topTx;
+
+  function build() {
+    // the bands and the lit cell, under the text
+    rowBand = svg.append('rect').attr('x', X0).attr('y', ry(0)).attr('width', RHW + n * CW).attr('height', RH).style('fill', C['highlight-subtle']).style('opacity', 0);
+    colBand = svg.append('rect').attr('x', cx(0) - CW / 2).attr('y', HY).attr('width', CW).attr('height', RH * (n + 1)).style('fill', C['highlight-subtle']).style('opacity', 0);
+    cellBox = svg.append('rect').attr('width', CW).attr('height', RH).style('fill', C.highlight).style('opacity', 0);
+    totBox = svg.append('rect').attr('x', cx(n) - CW / 2).attr('width', CW).attr('height', RH).style('fill', C.highlight).style('opacity', 0);
+    for (var r = 0; r <= n; r++) svg.append('line').attr('x1', X0).attr('x2', X0 + RHW + n * CW).attr('y1', ry(r)).attr('y2', ry(r));
+    // the names of the columns and the rows, and what they are
+    svg.append('text').attr('class', 's11-lab').attr('x', X0 + RHW + n * CW / 2).attr('y', HY - 18).attr('text-anchor', 'middle').attr('dominant-baseline', 'central').text('next word');
+    svg.append('text').attr('class', 's11-lab').attr('transform', 'translate(' + (X0 - 18) + ',' + (BY + n * RH / 2) + ') rotate(-90)').attr('text-anchor', 'middle').attr('dominant-baseline', 'central').text('previous word');
+    colH = svg.append('g').selectAll('text').data(V).join('text').attr('class', 's11-w').attr('x', function (d, i) { return cx(i); }).attr('y', HY + RH / 2).attr('text-anchor', 'middle').attr('dominant-baseline', 'central').text(function (d) { return d; });
+    rowH = svg.append('g').selectAll('text').data(V).join('text').attr('class', 's11-w').attr('x', X0 + 8).attr('y', function (d, i) { return ry(i) + RH / 2; }).attr('dominant-baseline', 'central').text(function (d) { return d; });
+    var flat = []; for (var a = 0; a < n; a++) for (var b = 0; b < n; b++) flat.push({ r: a, c: b });
+    cells = svg.append('g').selectAll('text').data(flat).join('text').attr('x', function (d) { return cx(d.c); }).attr('y', function (d) { return ry(d.r) + RH / 2; }).attr('text-anchor', 'middle').attr('dominant-baseline', 'central').text('0');
+    gTot = svg.append('g').style('opacity', 0);
+    gTot.append('text').attr('class', 's11-th').attr('x', cx(n)).attr('y', HY + RH / 2).attr('text-anchor', 'middle').attr('dominant-baseline', 'central').text('Total');
+    for (var q = 0; q <= n; q++) gTot.append('line').attr('x1', X0 + RHW + n * CW).attr('x2', X0 + RHW + (n + 1) * CW).attr('y1', ry(q)).attr('y2', ry(q));
+    totV = gTot.append('g').selectAll('text').data(V).join('text').attr('class', 's11-th').attr('x', cx(n)).attr('y', function (d, i) { return ry(i) + RH / 2; }).attr('text-anchor', 'middle').attr('dominant-baseline', 'central');
+    // the text of each topic, on one line
+    TOPICS.forEach(function (t) {
+      gTok[t] = svg.append('g').style('opacity', 0);
+      tok[t] = gTok[t].selectAll('text').data(TEXT[t].map(function (s, j) { return { s: s, j: j }; })).join('text').attr('class', 's11-w s11-t').attr('y', TY).attr('dominant-baseline', 'central').text(function (d) { return d.s; });
+      var w = []; tok[t].each(function () { w.push(this.textContent.length * 14.4);   /* IBM Plex Mono 24 px: 0.6 em a character; a hidden slide measures 0 */ });
+      var gap = Math.min(20, (1152 - 16 - d3.sum(w)) / (w.length - 1)), x = 8;
+      TW[t] = w; X[t] = w.map(function (v) { var x0 = x; x += v + gap; return x0; });
+      tok[t].attr('x', function (d) { return X[t][d.j]; });
+    });
+    win = svg.append('rect').attr('class', 's11-win').attr('y', TY - 22).attr('height', 44).attr('x', 0).attr('width', 10).style('opacity', 0);
+    // on the left: the topic, and the pair in the window
+    topSw = svg.append('rect').attr('x', 0).attr('y', 90).attr('width', 12).attr('height', 12);
+    topTx = svg.append('text').attr('x', 22).attr('y', 96).attr('dominant-baseline', 'central');
+    gP = svg.append('g').style('opacity', 0);
+    gP.append('text').attr('class', 's11-lab').attr('x', 0).attr('y', 156).attr('dominant-baseline', 'central').text('previous word');
+    gP.append('text').attr('class', 's11-lab').attr('x', PX).attr('y', 156).attr('dominant-baseline', 'central').text('next word');
+    w1 = gP.append('text').attr('class', 's11-w s11-big').attr('x', 0).attr('y', 206).attr('dominant-baseline', 'central');
+    w2 = gP.append('text').attr('class', 's11-w s11-big').attr('x', PX).attr('y', 206).attr('dominant-baseline', 'central');
+    sub1 = gP.append('text').attr('class', 's11-sel').attr('x', 0).attr('y', 258).attr('dominant-baseline', 'central').style('opacity', 0).text('selects the row');
+    sub2 = gP.append('text').attr('class', 's11-sel').attr('x', PX).attr('y', 258).attr('dominant-baseline', 'central').style('opacity', 0).text('selects the column');
+    counter = gP.append('text').attr('class', 's11-lab').attr('x', 0).attr('y', 340).attr('dominant-baseline', 'central');
+  }
+
+  // ----- a state: the topic, how many pairs are counted, where the window is, what is lit -----
+  function pairState(t, j, phase) {   // phase 0 the window only, 1 the row, 2 the column, 3 counted
+    return { t: t, done: j + (phase === 3 ? 1 : 0), win: j, row: phase >= 1, col: phase >= 2, cell: phase === 3, tot: false };
+  }
+  function state(k) {
+    k = Math.max(0, Math.min(LAST, k));
+    if (k === 0) return { t: 'sports', done: 0, win: -1, tot: false };
+    if (k <= 3) return pairState('sports', 0, k);
+    if (k <= 7) return pairState('sports', k - 3, 3);
+    if (k === 8) return pairState('sports', TEXT.sports.length - 2, 3);
+    if (k === 9) return { t: 'sports', done: TEXT.sports.length - 1, win: -1, tot: true, mark: 'wins' };
+    return { t: 'entertainment', done: TEXT.entertainment.length - 1, win: -1, tot: true };
+  }
+  function T(sel, ms) { sel.interrupt(); return ms ? sel.transition().duration(ms).ease(d3.easeCubicOut) : sel; }
+
+  function apply(s, ms) {
+    var toks = TEXT[s.t], on = s.win >= 0, r0 = on ? ix(toks[s.win]) : -1, c0 = on ? ix(toks[s.win + 1]) : -1;
+    var M = V.map(function () { return V.map(function () { return 0; }); });
+    for (var i = 0; i < s.done; i++) M[ix(toks[i])][ix(toks[i + 1])]++;
+    topSw.style('fill', C[COLOR[s.t]]); topTx.text(s.t);
+    TOPICS.forEach(function (t) { T(gTok[t], ms).style('opacity', t === s.t ? 1 : 0); });
+    tok[s.t].style('fill', function (d) {
+      if (s.mark ? d.s === s.mark : (s.row && d.j === s.win) || (s.col && d.j === s.win + 1)) return C.interactive;
+      return d.s === '<s>' ? C['text-helper'] : C['text-primary'];
+    });
+    if (on) {
+      var x = X[s.t][s.win] - 8;
+      T(win, ms).attr('x', x).attr('width', X[s.t][s.win + 1] + TW[s.t][s.win + 1] + 8 - x).style('opacity', 1);
+      w1.text(toks[s.win]).style('fill', s.row ? C.interactive : C['text-primary']);
+      w2.text(toks[s.win + 1]).style('fill', s.col ? C.interactive : C['text-primary']);
+      counter.text('Pair ' + (s.win + 1) + ' of ' + (toks.length - 1));
+    } else T(win, ms).style('opacity', 0);
+    T(gP, ms).style('opacity', on ? 1 : 0);
+    T(sub1, ms).style('opacity', s.row ? 1 : 0);
+    T(sub2, ms).style('opacity', s.col ? 1 : 0);
+    cells.text(function (d) { return M[d.r][d.c]; })
+      .style('fill', function (d) { return s.cell && d.r === r0 && d.c === c0 ? C.interactive : M[d.r][d.c] ? C['text-primary'] : C['text-helper']; })
+      .style('font-weight', function (d) { return s.cell && d.r === r0 && d.c === c0 ? 600 : null; });
+    if (s.row) T(rowBand, ms).attr('y', ry(r0)).style('opacity', 1); else T(rowBand, ms).style('opacity', 0);
+    if (s.col) T(colBand, ms).attr('x', cx(c0) - CW / 2).style('opacity', 1); else T(colBand, ms).style('opacity', 0);
+    if (s.cell) { cellBox.interrupt(); cellBox.attr('x', cx(c0) - CW / 2).attr('y', ry(r0)); T(cellBox, ms).style('opacity', 1); } else T(cellBox, ms).style('opacity', 0);
+    rowH.style('fill', function (d, i) { return s.row && i === r0 || (s.mark && d === s.mark) ? C.interactive : C['text-primary']; });
+    colH.style('fill', function (d, i) { return s.col && i === c0 ? C.interactive : C['text-primary']; });
+    totV.text(function (d, i) { return d3.sum(M[i]); }).style('fill', function (d) { return s.mark && d === s.mark ? C.interactive : C['text-primary']; });
+    T(gTot, ms).style('opacity', s.tot ? 1 : 0);
+    if (s.mark) { totBox.attr('y', ry(ix(s.mark))); T(totBox, ms).style('opacity', 1); } else T(totBox, ms).style('opacity', 0);
+  }
+
+  // ----- motion that belongs to one press: a word that travels to its row or column, the cell that gains 1 -----
+  var timers = [];
+  function later(ms, fn) { timers.push(setTimeout(fn, ms)); }
+  function clearAll() {
+    timers.forEach(clearTimeout); timers = [];
+    svg.selectAll('.s11-ghost').interrupt().remove();
+    cells.interrupt().style('font-size', null);
+  }
+  function ghost(t, j, which) {
+    var i = which === 'row' ? j : j + 1, w = TEXT[t][i], k = ix(w), tw = TW[t][i] * 22 / 24;
+    var tx = which === 'row' ? X0 + 8 : cx(k) - tw / 2, ty = which === 'row' ? ry(k) + RH / 2 : HY + RH / 2;
+    svg.append('text').attr('class', 's11-w s11-ghost').style('font-size', '24px').style('fill', C.interactive).attr('dominant-baseline', 'central')
+      .attr('x', X[t][i]).attr('y', TY).text(w)
+      .transition().duration(520).ease(d3.easeCubicInOut).attr('x', tx).attr('y', ty).style('font-size', '22px')
+      .transition().duration(120).style('opacity', 0).remove();
+  }
+  function pulse(t, j) {
+    var r = ix(TEXT[t][j]), c = ix(TEXT[t][j + 1]);
+    cells.filter(function (d) { return d.r === r && d.c === c; }).style('font-size', '22px')
+      .transition().duration(140).ease(d3.easeCubicOut).style('font-size', '34px')
+      .transition().duration(260).ease(d3.easeCubicInOut).style('font-size', '22px');
+    svg.append('text').attr('class', 's11-ghost s11-th').style('fill', C.interactive).attr('x', cx(c) + 16).attr('y', ry(r) + 6).attr('dominant-baseline', 'central').text('+1')
+      .transition().duration(620).ease(d3.easeCubicOut).attr('y', ry(r) - 12).style('opacity', 0).remove();
+  }
+  function playPair(t, j, at, d, ms, fly) {
+    later(at, function () { apply(pairState(t, j, 0), ms); });
+    later(at + d[0], function () { apply(pairState(t, j, 1), ms); if (fly) ghost(t, j, 'row'); });
+    later(at + d[1], function () { apply(pairState(t, j, 2), ms); if (fly) ghost(t, j, 'col'); });
+    later(at + d[2], function () { apply(pairState(t, j, 3), ms); pulse(t, j); });
+  }
+
+  var last = null;
+  function render(k, animate) {
+    k = Math.max(0, Math.min(LAST, k));
+    clearAll();
+    var fwd = animate && last === k - 1; last = k;
+    if (!fwd) return apply(state(k), animate ? 240 : 0);
+    var j, N;
+    if (k === 1) { apply(pairState('sports', 0, 0), 300); later(450, function () { apply(state(1), 300); ghost('sports', 0, 'row'); }); }
+    else if (k === 2) { apply(state(2), 300); ghost('sports', 0, 'col'); }
+    else if (k === 3) { apply(state(3), 300); pulse('sports', 0); }
+    else if (k <= 7) playPair('sports', k - 3, 0, [450, 1000, 1550], 320, true);
+    else if (k === 8) { N = TEXT.sports.length - 1; for (j = 5; j < N; j++) playPair('sports', j, (j - 5) * 760, [200, 380, 560], 200, false); }
+    else if (k === 9) apply(state(9), 400);
+    else {
+      N = TEXT.entertainment.length - 1;
+      apply({ t: 'entertainment', done: 0, win: -1, tot: false }, 400);
+      for (j = 0; j < N; j++) playPair('entertainment', j, 800 + j * 600, [140, 280, 420], 180, false);
+      later(800 + N * 600 + 300, function () { apply(state(LAST), 400); });
+    }
+  }
+
+  // ----- start once the fonts are in and Reveal is ready; follow the presses forward and back -----
+  function steps() { return sec.querySelectorAll('.s11-caps .cap.visible').length; }
+  function start() {
+    build();
+    if (print || !window.Reveal) return apply(state(LAST), 0);
+    render(Reveal.getCurrentSlide() === sec ? steps() : 0, false);
+    function onStep() { if (Reveal.getCurrentSlide() === sec) render(steps(), MOTION); }
+    Reveal.on('fragmentshown', onStep);
+    Reveal.on('fragmenthidden', onStep);
+    Reveal.on('slidechanged', function (e) { if (e.currentSlide === sec) render(steps(), false); else clearAll(); });
+  }
+  function settle(p) { return p.then(function () {}, function () {}); }
+  var fontsIn = document.fonts ? Promise.all(['24px "IBM Plex Mono"', '44px "IBM Plex Mono"', '22px "IBM Plex Sans"', '600 22px "IBM Plex Sans"'].map(function (f) { return settle(document.fonts.load(f)); }).concat(settle(document.fonts.ready))) : Promise.resolve();
+  function whenReady(fn) { if (!window.Reveal) return fn(); if (Reveal.isReady()) fn(); else Reveal.on('ready', fn); }
+  fontsIn.then(function () { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { whenReady(start); }); else whenReady(start); });
+})();
+</script>
 </section>
 <section id="counts-to-probabilities" class="slide level2 s12">
 <h2>Counts to probabilities</h2>
@@ -966,76 +944,86 @@ html.print-pdf .reveal section.s11 .s11-old tr.sp td { background: none !importa
 <table class="s12-pt sp caption-top">
 <thead>
 <tr class="header">
-<th class="s12-corner" data-quarto-table-cell-role="th"></th>
-<th class="s12-c" data-quarto-table-cell-role="th">match</th>
-<th class="s12-c" data-quarto-table-cell-role="th">star</th>
-<th class="s12-c" data-quarto-table-cell-role="th">film</th>
-<th class="s12-c" data-quarto-table-cell-role="th">wins</th>
-<th class="s12-c" data-quarto-table-cell-role="th">song</th>
-<th class="s12-c" data-quarto-table-cell-role="th">&lt;/s&gt;</th>
-<th class="s12-tot" data-quarto-table-cell-role="th">Total</th>
+<th class="s12-rh" data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">&lt;s&gt;</th>
+<th data-quarto-table-cell-role="th">team</th>
+<th data-quarto-table-cell-role="th">wins</th>
+<th data-quarto-table-cell-role="th">match</th>
+<th data-quarto-table-cell-role="th">star</th>
+<th data-quarto-table-cell-role="th">award</th>
+<th data-quarto-table-cell-role="th">film</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr class="r-s odd">
 <th class="s12-rh" data-quarto-table-cell-role="th">&lt;s&gt;</th>
-<td class="num" data-r="0" data-c="0"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">3</span><span class="fragment" data-fragment-index="1">3/6</span></span></td>
-<td class="num" data-r="0" data-c="1"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/6</span></span></td>
-<td class="num z" data-r="0" data-c="2">0</td>
-<td class="num" data-r="0" data-c="3"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/6</span></span></td>
-<td class="num" data-r="0" data-c="4"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/6</span></span></td>
-<td class="num z" data-r="0" data-c="5">0</td>
-<td class="num s12-tot"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">6</span><span class="fragment" data-fragment-index="1">1</span></span></td>
+<td class="z">0</td>
+<td class="c" data-r="s" data-c="team"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/3</span></span></td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c on" data-r="s" data-c="star"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/3</span></span></td>
+<td class="z">0</td>
+<td class="z">0</td>
 </tr>
-<tr class="even">
-<th class="s12-rh" data-quarto-table-cell-role="th">match</th>
-<td class="num z" data-r="1" data-c="0">0</td>
-<td class="num" data-r="1" data-c="1"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/8</span></span></td>
-<td class="num z" data-r="1" data-c="2">0</td>
-<td class="num" data-r="1" data-c="3"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/8</span></span></td>
-<td class="num z" data-r="1" data-c="4">0</td>
-<td class="num" data-r="1" data-c="5"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">5</span><span class="fragment" data-fragment-index="1">5/8</span></span></td>
-<td class="num s12-tot"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">8</span><span class="fragment" data-fragment-index="1">1</span></span></td>
+<tr class="r-team even">
+<th class="s12-rh" data-quarto-table-cell-role="th">team</th>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c" data-r="team" data-c="wins"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/2</span></span></td>
+<td class="z">0</td>
+<td class="c" data-r="team" data-c="star"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/2</span></span></td>
+<td class="z">0</td>
+<td class="z">0</td>
 </tr>
-<tr class="odd">
-<th class="s12-rh" data-quarto-table-cell-role="th">star</th>
-<td class="num z" data-r="2" data-c="0">0</td>
-<td class="num z" data-r="2" data-c="1">0</td>
-<td class="num" data-r="2" data-c="2"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/4</span></span></td>
-<td class="num" data-r="2" data-c="3"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">3</span><span class="fragment" data-fragment-index="1">3/4</span></span></td>
-<td class="num z" data-r="2" data-c="4">0</td>
-<td class="num z" data-r="2" data-c="5">0</td>
-<td class="num s12-tot"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">4</span><span class="fragment" data-fragment-index="1">1</span></span></td>
-</tr>
-<tr class="even">
-<th class="s12-rh" data-quarto-table-cell-role="th">film</th>
-<td class="num z" data-r="3" data-c="0">0</td>
-<td class="num z" data-r="3" data-c="1">0</td>
-<td class="num z" data-r="3" data-c="2">0</td>
-<td class="num" data-r="3" data-c="3"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/1</span></span></td>
-<td class="num z" data-r="3" data-c="4">0</td>
-<td class="num z" data-r="3" data-c="5">0</td>
-<td class="num s12-tot"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1</span></span></td>
-</tr>
-<tr class="odd">
+<tr class="r-wins odd">
 <th class="s12-rh" data-quarto-table-cell-role="th">wins</th>
-<td class="num" data-r="4" data-c="0"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">5</span><span class="fragment" data-fragment-index="1">5/6</span></span></td>
-<td class="num z" data-r="4" data-c="1">0</td>
-<td class="num z" data-r="4" data-c="2">0</td>
-<td class="num z" data-r="4" data-c="3">0</td>
-<td class="num z" data-r="4" data-c="4">0</td>
-<td class="num" data-r="4" data-c="5"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/6</span></span></td>
-<td class="num s12-tot"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">6</span><span class="fragment" data-fragment-index="1">1</span></span></td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c" data-r="wins" data-c="match"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/3</span></span></td>
+<td class="z">0</td>
+<td class="c on" data-r="wins" data-c="award"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/3</span></span></td>
+<td class="z">0</td>
 </tr>
-<tr class="even">
-<th class="s12-rh" data-quarto-table-cell-role="th">song</th>
-<td class="num z" data-r="5" data-c="0">0</td>
-<td class="num" data-r="5" data-c="1"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/1</span></span></td>
-<td class="num z" data-r="5" data-c="2">0</td>
-<td class="num z" data-r="5" data-c="3">0</td>
-<td class="num z" data-r="5" data-c="4">0</td>
-<td class="num z" data-r="5" data-c="5">0</td>
-<td class="num s12-tot"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1</span></span></td>
+<tr class="r-match even">
+<th class="s12-rh" data-quarto-table-cell-role="th">match</th>
+<td class="c" data-r="match" data-c="s"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/2</span></span></td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+</tr>
+<tr class="r-star odd">
+<th class="s12-rh" data-quarto-table-cell-role="th">star</th>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c on" data-r="star" data-c="wins"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/2</span></span></td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+</tr>
+<tr class="r-award even">
+<th class="s12-rh" data-quarto-table-cell-role="th">award</th>
+<td class="c on" data-r="award" data-c="s"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/1</span></span></td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+</tr>
+<tr class="empty r-film odd">
+<th class="s12-rh" data-quarto-table-cell-role="th">film</th>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
 </tr>
 </tbody>
 </table>
@@ -1044,121 +1032,121 @@ html.print-pdf .reveal section.s11 .s11-old tr.sp td { background: none !importa
 <table class="s12-pt en caption-top">
 <thead>
 <tr class="header">
-<th class="s12-corner" data-quarto-table-cell-role="th"></th>
-<th class="s12-c" data-quarto-table-cell-role="th">match</th>
-<th class="s12-c" data-quarto-table-cell-role="th">star</th>
-<th class="s12-c" data-quarto-table-cell-role="th">film</th>
-<th class="s12-c" data-quarto-table-cell-role="th">wins</th>
-<th class="s12-c" data-quarto-table-cell-role="th">song</th>
-<th class="s12-c" data-quarto-table-cell-role="th">&lt;/s&gt;</th>
-<th class="s12-tot" data-quarto-table-cell-role="th">Total</th>
+<th class="s12-rh" data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">&lt;s&gt;</th>
+<th data-quarto-table-cell-role="th">team</th>
+<th data-quarto-table-cell-role="th">wins</th>
+<th data-quarto-table-cell-role="th">match</th>
+<th data-quarto-table-cell-role="th">star</th>
+<th data-quarto-table-cell-role="th">award</th>
+<th data-quarto-table-cell-role="th">film</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr class="r-s odd">
 <th class="s12-rh" data-quarto-table-cell-role="th">&lt;s&gt;</th>
-<td class="num z" data-r="0" data-c="0">0</td>
-<td class="num" data-r="0" data-c="1"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/4</span></span></td>
-<td class="num" data-r="0" data-c="2"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/4</span></span></td>
-<td class="num z" data-r="0" data-c="3">0</td>
-<td class="num" data-r="0" data-c="4"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/4</span></span></td>
-<td class="num z" data-r="0" data-c="5">0</td>
-<td class="num s12-tot"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">4</span><span class="fragment" data-fragment-index="1">1</span></span></td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c on" data-r="s" data-c="star"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/3</span></span></td>
+<td class="z">0</td>
+<td class="c" data-r="s" data-c="film"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/3</span></span></td>
 </tr>
-<tr class="even">
-<th class="s12-rh" data-quarto-table-cell-role="th">match</th>
-<td class="num z" data-r="1" data-c="0">0</td>
-<td class="num z" data-r="1" data-c="1">0</td>
-<td class="num z" data-r="1" data-c="2">0</td>
-<td class="num z" data-r="1" data-c="3">0</td>
-<td class="num z" data-r="1" data-c="4">0</td>
-<td class="num" data-r="1" data-c="5"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/1</span></span></td>
-<td class="num s12-tot"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1</span></span></td>
+<tr class="empty r-team even">
+<th class="s12-rh" data-quarto-table-cell-role="th">team</th>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
 </tr>
-<tr class="odd">
-<th class="s12-rh" data-quarto-table-cell-role="th">star</th>
-<td class="num z" data-r="2" data-c="0">0</td>
-<td class="num z" data-r="2" data-c="1">0</td>
-<td class="num on" data-r="2" data-c="2"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">4</span><span class="fragment" data-fragment-index="1">4/6</span></span></td>
-<td class="num z" data-r="2" data-c="3">0</td>
-<td class="num" data-r="2" data-c="4"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/6</span></span></td>
-<td class="num z" data-r="2" data-c="5">0</td>
-<td class="num s12-tot"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">6</span><span class="fragment" data-fragment-index="1">1</span></span></td>
-</tr>
-<tr class="even">
-<th class="s12-rh" data-quarto-table-cell-role="th">film</th>
-<td class="num" data-r="3" data-c="0"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/7</span></span></td>
-<td class="num on" data-r="3" data-c="1"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/7</span></span></td>
-<td class="num z" data-r="3" data-c="2">0</td>
-<td class="num" data-r="3" data-c="3"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/7</span></span></td>
-<td class="num" data-r="3" data-c="4"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/7</span></span></td>
-<td class="num" data-r="3" data-c="5"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/7</span></span></td>
-<td class="num s12-tot"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">7</span><span class="fragment" data-fragment-index="1">1</span></span></td>
-</tr>
-<tr class="odd">
+<tr class="r-wins odd">
 <th class="s12-rh" data-quarto-table-cell-role="th">wins</th>
-<td class="num z" data-r="4" data-c="0">0</td>
-<td class="num z" data-r="4" data-c="1">0</td>
-<td class="num z" data-r="4" data-c="2">0</td>
-<td class="num z" data-r="4" data-c="3">0</td>
-<td class="num z" data-r="4" data-c="4">0</td>
-<td class="num" data-r="4" data-c="5"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/2</span></span></td>
-<td class="num s12-tot"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">1</span></span></td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c on" data-r="wins" data-c="award"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/3</span></span></td>
+<td class="c" data-r="wins" data-c="film"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/3</span></span></td>
 </tr>
-<tr class="even">
-<th class="s12-rh" data-quarto-table-cell-role="th">song</th>
-<td class="num z" data-r="5" data-c="0">0</td>
-<td class="num" data-r="5" data-c="1"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/4</span></span></td>
-<td class="num" data-r="5" data-c="2"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/4</span></span></td>
-<td class="num z" data-r="5" data-c="3">0</td>
-<td class="num z" data-r="5" data-c="4">0</td>
-<td class="num z" data-r="5" data-c="5">0</td>
-<td class="num s12-tot"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">4</span><span class="fragment" data-fragment-index="1">1</span></span></td>
+<tr class="empty r-match even">
+<th class="s12-rh" data-quarto-table-cell-role="th">match</th>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+<td class="z"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">–</span></span></td>
+</tr>
+<tr class="r-star odd">
+<th class="s12-rh" data-quarto-table-cell-role="th">star</th>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c on" data-r="star" data-c="wins"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">2/2</span></span></td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+</tr>
+<tr class="r-award even">
+<th class="s12-rh" data-quarto-table-cell-role="th">award</th>
+<td class="c on" data-r="award" data-c="s"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">3</span><span class="fragment" data-fragment-index="1">3/3</span></span></td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+</tr>
+<tr class="r-film odd">
+<th class="s12-rh" data-quarto-table-cell-role="th">film</th>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c" data-r="film" data-c="wins"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/3</span></span></td>
+<td class="z">0</td>
+<td class="c" data-r="film" data-c="star"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/3</span></span></td>
+<td class="c" data-r="film" data-c="award"><span class="swap"><span class="fragment fade-out" data-fragment-index="1">1</span><span class="fragment" data-fragment-index="1">1/3</span></span></td>
+<td class="z">0</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="s12-f fragment up" data-fragment-index="1"><span class="math inline">p(w \mid v, k) = \dfrac{\text{count}(v\,w, k)}{\text{count}(v, k)}</span></div>
-<div class="s12-o fragment up" data-fragment-index="2">
-  <p><span class="sw t5"></span><span class="math inline">p(\text{film} \mid \text{star}) = 4/6</span></p>
-  <p><span class="sw t5"></span><span class="math inline">p(\text{star} \mid \text{film}) = 2/7</span></p>
-</div>
 <span class="s12-m2 fragment" data-fragment-index="2" aria-hidden="true"></span>
+<span class="s12-m3 fragment" data-fragment-index="3" aria-hidden="true"></span>
 <div class="end steps s12-say">
-  <p class="fragment fade-out" data-fragment-index="1">We divide each count by the total of its row.</p>
+  <p class="fragment fade-out" data-fragment-index="1">The two tables of counts. We divide each count by the total of its row.</p>
   <p class="fragment current-visible" data-fragment-index="1">This gives p(w | v, k), the probability of word w after word v in topic k. Each row adds up to 1.</p>
-  <p class="fragment keep" data-fragment-index="2">Order matters: in entertainment, p(film | star) = 4/6, but p(star | film) = 2/7.</p>
+  <p class="fragment current-visible" data-fragment-index="2">After wins, the sports model writes match with probability 2/3. The entertainment model writes award with probability 2/3.</p>
+  <p class="fragment keep" data-fragment-index="3">A word that a topic does not use has an empty row: film in sports, team and match in entertainment.</p>
 </div>
 <style>
-/* Builds: 1 every count becomes count / row total (swap in place), the formula; 2 two cells of the entertainment
-   table lit: star then film, and film then star. Counts from c03_build.py (the toy articles). */
-.reveal section.s12 .s12-b { position: absolute; top: 112px; }
+/* Slide s12. Builds: 1 every count becomes count / row total (swap in place), the formula; 2 the rows of wins lit, and
+   in each the cell with 2/3; 3 the rows of the words that a topic does not use. Tables from the toy sentences
+   (c03_build.py). Each table: row names 76 px, seven columns of 68 px. */
+.reveal section.s12 .s12-b { position: absolute; top: 118px; }
 .reveal section.s12 .s12-sp { left: 64px; }
-.reveal section.s12 .s12-en { left: 672px; }
-.reveal section.s12 .s12-cap { margin: 0 0 6px; font-size: 22px; line-height: 30px; }
+.reveal section.s12 .s12-en { left: 664px; }
+.reveal section.s12 .s12-cap { margin: 0 0 4px; font-size: 22px; line-height: 30px; }
 .reveal section.s12 .s12-cap .sw { margin-right: 10px; }
-
-.reveal section.s12 .s12-pt { margin: 0; font-size: 21px; border-collapse: collapse; }
-.reveal section.s12 .s12-pt th, .reveal section.s12 .s12-pt td { height: 40px; padding: 0 8px; box-sizing: border-box; vertical-align: middle; white-space: nowrap; transition: background-color var(--dur-moderate), opacity var(--dur-moderate), color var(--dur-moderate); }
-.reveal section.s12 .s12-pt thead th { font-family: var(--mono); font-weight: var(--weight-regular); font-size: 19px; text-align: right; width: 60px; }
-.reveal section.s12 .s12-pt thead th.s12-corner { width: 86px; }
-.reveal section.s12 .s12-pt thead th.s12-tot { font-family: var(--sans); font-weight: var(--weight-semibold); width: 74px; }
-.reveal section.s12 .s12-pt th.s12-rh { background: none; font-family: var(--mono); font-weight: var(--weight-regular); font-size: 19px; text-align: left; color: var(--text-secondary); border-bottom: var(--rule) solid var(--border-subtle); }
-.reveal section.s12 .s12-pt td { text-align: right; }
+.reveal section.s12 .s12-pt { margin: 0; font-size: 22px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.reveal section.s12 .s12-pt th, .reveal section.s12 .s12-pt td { width: 68px; height: 38px; padding: 0; box-sizing: border-box; text-align: center; vertical-align: middle; white-space: nowrap; border: 0; border-bottom: var(--rule) solid var(--border-subtle); background: none; transition: background-color var(--dur-moderate), color var(--dur-moderate); }
+.reveal section.s12 .s12-pt th { font-family: var(--mono); font-weight: var(--weight-regular); }
+.reveal section.s12 .s12-pt thead th { font-size: 20px; }
+.reveal section.s12 .s12-pt th.s12-rh { width: 76px; text-align: left; }
 .reveal section.s12 .s12-pt td.z { color: var(--text-helper); }
-.reveal section.s12 .s12-pt td.s12-tot { font-weight: var(--weight-semibold); }
-.reveal section.s12 .s12-f { position: absolute; left: 64px; top: 454px; }
-.reveal section.s12 .s12-f .katex { font-size: 30px; }
-.reveal section.s12 .s12-o { position: absolute; left: 672px; top: 450px; }
-.reveal section.s12 .s12-o p { margin: 0 0 6px; font-size: 24px; line-height: 40px; }
-.reveal section.s12 .s12-o .sw { margin-right: 12px; }
-.reveal section.s12 .s12-o .katex { font-size: 26px; }
-.reveal .slides section.s12:has(.s12-m2.visible) .s12-en td.on { background: var(--highlight); }
 .reveal section.s12 .s12-say p { font-size: 28px; line-height: 36px; }
-.reveal section.s12 .s12-say p.s12-bad { color: var(--support-error); font-weight: var(--weight-semibold); }
-.reveal section.s12 .s12-say p.s12-good { color: var(--support-success); font-weight: var(--weight-semibold); }
-.reveal section.s12 .s12-say p.s12-q { font-weight: var(--weight-semibold); }
 .reveal section.s12 .katex .accent { color: inherit; }
+.reveal section.s12 .s12-f { position: absolute; left: 64px; top: 474px; }
+.reveal section.s12 .s12-f .katex { font-size: 30px; }
+.reveal .slides section.s12:has(.s12-m2.visible):not(:has(.s12-m3.visible)) tr.r-wins td, .reveal .slides section.s12:has(.s12-m2.visible):not(:has(.s12-m3.visible)) tr.r-wins th { background: var(--highlight-subtle); }
+.reveal .slides section.s12:has(.s12-m2.visible):not(:has(.s12-m3.visible)) .sp td[data-r="wins"][data-c="match"], .reveal .slides section.s12:has(.s12-m2.visible):not(:has(.s12-m3.visible)) .en td[data-r="wins"][data-c="award"] { background: var(--highlight); }
+.reveal .slides section.s12:has(.s12-m3.visible) tr.empty td, .reveal .slides section.s12:has(.s12-m3.visible) tr.empty th { background: var(--highlight-subtle); }
 </style>
 </section>
 <section id="six-topics-six-tables" class="slide level2 s13">
@@ -1168,7 +1156,7 @@ html.print-pdf .reveal section.s11 .s11-old tr.sp td { background: none !importa
 <div class="s13-vals fragment up" data-fragment-index="3"><p class="s13-vl">Different pairs in the training articles of each topic</p><div class="s13-vr"><span>205,294</span><span>186,068</span><span>202,177</span><span>202,436</span><span>198,696</span><span>189,218</span></div></div>
 <div class="end steps s13-say">
   <p class="fragment current-visible" data-fragment-index="1">The C1 data has six topics, so the bigram model has six tables.</p>
-  <p class="fragment current-visible" data-fragment-index="2">Each has a row for &lt;s&gt; and each of the 110,608 words, and a column for each word and &lt;/s&gt;.</p>
+  <p class="fragment current-visible" data-fragment-index="2">Each has a row and a column for &lt;s&gt; and for each of the 110,608 words.</p>
   <p class="fragment keep" data-fragment-index="3">The training articles of a topic contain about 200,000 different pairs. Only those cells are not 0.</p>
 </div>
 <style>
@@ -1193,76 +1181,92 @@ html.print-pdf .reveal section.s11 .s11-old tr.sp td { background: none !importa
 </section>
 <section id="the-likelihood" class="slide level2 s14">
 <h2>The likelihood</h2>
-<p class="s14-h">Test headline <span class="ex">Star film wins</span></p>
-<div class="s14-pairs fragment up" data-fragment-index="1"><span class="chips"><span class="chip">&lt;s&gt; star</span><span class="chip">star film</span><span class="chip">film wins</span><span class="chip">wins &lt;/s&gt;</span></span></div>
-<div class="s14-na fragment up" data-fragment-index="2"><span class="math inline">p(\text{text} \mid k) = \prod_i p(w_i \mid w_{i-1}, k)</span></div>
+<p class="s14-h">Test headline <span class="ex">Star wins award</span></p>
+<div class="s14-pairs fragment up" data-fragment-index="1"><span class="chips"><span class="chip">&lt;s&gt; star</span><span class="chip">star wins</span><span class="chip">wins award</span><span class="chip">award &lt;s&gt;</span></span></div>
 <div class="s14-b s14-sp"><p class="s14-cap"><span class="sw t3"></span>sports</p>
 <table class="s14-pt sp caption-top">
 <thead>
 <tr class="header">
-<th class="s14-corner" data-quarto-table-cell-role="th"></th>
-<th class="s14-c" data-quarto-table-cell-role="th">match</th>
-<th class="s14-c" data-quarto-table-cell-role="th">star</th>
-<th class="s14-c" data-quarto-table-cell-role="th">film</th>
-<th class="s14-c" data-quarto-table-cell-role="th">wins</th>
-<th class="s14-c" data-quarto-table-cell-role="th">song</th>
-<th class="s14-c" data-quarto-table-cell-role="th">&lt;/s&gt;</th>
+<th class="s14-rh" data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">&lt;s&gt;</th>
+<th data-quarto-table-cell-role="th">team</th>
+<th data-quarto-table-cell-role="th">wins</th>
+<th data-quarto-table-cell-role="th">match</th>
+<th data-quarto-table-cell-role="th">star</th>
+<th data-quarto-table-cell-role="th">award</th>
+<th data-quarto-table-cell-role="th">film</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr class="r-s odd">
 <th class="s14-rh" data-quarto-table-cell-role="th">&lt;s&gt;</th>
-<td class="num" data-r="0" data-c="0">3/6</td>
-<td class="num on" data-r="0" data-c="1">1/6</td>
-<td class="num z" data-r="0" data-c="2">0</td>
-<td class="num" data-r="0" data-c="3">1/6</td>
-<td class="num" data-r="0" data-c="4">1/6</td>
-<td class="num z" data-r="0" data-c="5">0</td>
+<td class="z">0</td>
+<td class="c">2/3</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c on">1/3</td>
+<td class="z">0</td>
+<td class="z">0</td>
 </tr>
-<tr class="even">
-<th class="s14-rh" data-quarto-table-cell-role="th">match</th>
-<td class="num z" data-r="1" data-c="0">0</td>
-<td class="num" data-r="1" data-c="1">2/8</td>
-<td class="num z" data-r="1" data-c="2">0</td>
-<td class="num" data-r="1" data-c="3">1/8</td>
-<td class="num z" data-r="1" data-c="4">0</td>
-<td class="num" data-r="1" data-c="5">5/8</td>
+<tr class="r-team even">
+<th class="s14-rh" data-quarto-table-cell-role="th">team</th>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c">1/2</td>
+<td class="z">0</td>
+<td class="c">1/2</td>
+<td class="z">0</td>
+<td class="z">0</td>
 </tr>
-<tr class="odd">
-<th class="s14-rh" data-quarto-table-cell-role="th">star</th>
-<td class="num z" data-r="2" data-c="0">0</td>
-<td class="num z" data-r="2" data-c="1">0</td>
-<td class="num on" data-r="2" data-c="2">1/4</td>
-<td class="num" data-r="2" data-c="3">3/4</td>
-<td class="num z" data-r="2" data-c="4">0</td>
-<td class="num z" data-r="2" data-c="5">0</td>
-</tr>
-<tr class="even">
-<th class="s14-rh" data-quarto-table-cell-role="th">film</th>
-<td class="num z" data-r="3" data-c="0">0</td>
-<td class="num z" data-r="3" data-c="1">0</td>
-<td class="num z" data-r="3" data-c="2">0</td>
-<td class="num on" data-r="3" data-c="3">1/1</td>
-<td class="num z" data-r="3" data-c="4">0</td>
-<td class="num z" data-r="3" data-c="5">0</td>
-</tr>
-<tr class="odd">
+<tr class="r-wins odd">
 <th class="s14-rh" data-quarto-table-cell-role="th">wins</th>
-<td class="num" data-r="4" data-c="0">5/6</td>
-<td class="num z" data-r="4" data-c="1">0</td>
-<td class="num z" data-r="4" data-c="2">0</td>
-<td class="num z" data-r="4" data-c="3">0</td>
-<td class="num z" data-r="4" data-c="4">0</td>
-<td class="num on" data-r="4" data-c="5">1/6</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c">2/3</td>
+<td class="z">0</td>
+<td class="c on">1/3</td>
+<td class="z">0</td>
 </tr>
-<tr class="even">
-<th class="s14-rh" data-quarto-table-cell-role="th">song</th>
-<td class="num z" data-r="5" data-c="0">0</td>
-<td class="num" data-r="5" data-c="1">1/1</td>
-<td class="num z" data-r="5" data-c="2">0</td>
-<td class="num z" data-r="5" data-c="3">0</td>
-<td class="num z" data-r="5" data-c="4">0</td>
-<td class="num z" data-r="5" data-c="5">0</td>
+<tr class="r-match even">
+<th class="s14-rh" data-quarto-table-cell-role="th">match</th>
+<td class="c">2/2</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+</tr>
+<tr class="r-star odd">
+<th class="s14-rh" data-quarto-table-cell-role="th">star</th>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c on">2/2</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+</tr>
+<tr class="r-award even">
+<th class="s14-rh" data-quarto-table-cell-role="th">award</th>
+<td class="c on">1/1</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+</tr>
+<tr class="empty r-film odd">
+<th class="s14-rh" data-quarto-table-cell-role="th">film</th>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
 </tr>
 </tbody>
 </table>
@@ -1271,127 +1275,134 @@ html.print-pdf .reveal section.s11 .s11-old tr.sp td { background: none !importa
 <table class="s14-pt en caption-top">
 <thead>
 <tr class="header">
-<th class="s14-corner" data-quarto-table-cell-role="th"></th>
-<th class="s14-c" data-quarto-table-cell-role="th">match</th>
-<th class="s14-c" data-quarto-table-cell-role="th">star</th>
-<th class="s14-c" data-quarto-table-cell-role="th">film</th>
-<th class="s14-c" data-quarto-table-cell-role="th">wins</th>
-<th class="s14-c" data-quarto-table-cell-role="th">song</th>
-<th class="s14-c" data-quarto-table-cell-role="th">&lt;/s&gt;</th>
+<th class="s14-rh" data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">&lt;s&gt;</th>
+<th data-quarto-table-cell-role="th">team</th>
+<th data-quarto-table-cell-role="th">wins</th>
+<th data-quarto-table-cell-role="th">match</th>
+<th data-quarto-table-cell-role="th">star</th>
+<th data-quarto-table-cell-role="th">award</th>
+<th data-quarto-table-cell-role="th">film</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr class="r-s odd">
 <th class="s14-rh" data-quarto-table-cell-role="th">&lt;s&gt;</th>
-<td class="num z" data-r="0" data-c="0">0</td>
-<td class="num on" data-r="0" data-c="1">2/4</td>
-<td class="num" data-r="0" data-c="2">1/4</td>
-<td class="num z" data-r="0" data-c="3">0</td>
-<td class="num" data-r="0" data-c="4">1/4</td>
-<td class="num z" data-r="0" data-c="5">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c on">1/3</td>
+<td class="z">0</td>
+<td class="c">2/3</td>
 </tr>
-<tr class="even">
-<th class="s14-rh" data-quarto-table-cell-role="th">match</th>
-<td class="num z" data-r="1" data-c="0">0</td>
-<td class="num z" data-r="1" data-c="1">0</td>
-<td class="num z" data-r="1" data-c="2">0</td>
-<td class="num z" data-r="1" data-c="3">0</td>
-<td class="num z" data-r="1" data-c="4">0</td>
-<td class="num" data-r="1" data-c="5">1/1</td>
+<tr class="empty r-team even">
+<th class="s14-rh" data-quarto-table-cell-role="th">team</th>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
 </tr>
-<tr class="odd">
-<th class="s14-rh" data-quarto-table-cell-role="th">star</th>
-<td class="num z" data-r="2" data-c="0">0</td>
-<td class="num z" data-r="2" data-c="1">0</td>
-<td class="num on" data-r="2" data-c="2">4/6</td>
-<td class="num z" data-r="2" data-c="3">0</td>
-<td class="num" data-r="2" data-c="4">2/6</td>
-<td class="num z" data-r="2" data-c="5">0</td>
-</tr>
-<tr class="even">
-<th class="s14-rh" data-quarto-table-cell-role="th">film</th>
-<td class="num" data-r="3" data-c="0">1/7</td>
-<td class="num" data-r="3" data-c="1">2/7</td>
-<td class="num z" data-r="3" data-c="2">0</td>
-<td class="num on" data-r="3" data-c="3">2/7</td>
-<td class="num" data-r="3" data-c="4">1/7</td>
-<td class="num" data-r="3" data-c="5">1/7</td>
-</tr>
-<tr class="odd">
+<tr class="r-wins odd">
 <th class="s14-rh" data-quarto-table-cell-role="th">wins</th>
-<td class="num z" data-r="4" data-c="0">0</td>
-<td class="num z" data-r="4" data-c="1">0</td>
-<td class="num z" data-r="4" data-c="2">0</td>
-<td class="num z" data-r="4" data-c="3">0</td>
-<td class="num z" data-r="4" data-c="4">0</td>
-<td class="num on" data-r="4" data-c="5">2/2</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c on">2/3</td>
+<td class="c">1/3</td>
 </tr>
-<tr class="even">
-<th class="s14-rh" data-quarto-table-cell-role="th">song</th>
-<td class="num z" data-r="5" data-c="0">0</td>
-<td class="num" data-r="5" data-c="1">2/4</td>
-<td class="num" data-r="5" data-c="2">2/4</td>
-<td class="num z" data-r="5" data-c="3">0</td>
-<td class="num z" data-r="5" data-c="4">0</td>
-<td class="num z" data-r="5" data-c="5">0</td>
+<tr class="empty r-match even">
+<th class="s14-rh" data-quarto-table-cell-role="th">match</th>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+</tr>
+<tr class="r-star odd">
+<th class="s14-rh" data-quarto-table-cell-role="th">star</th>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c on">2/2</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+</tr>
+<tr class="r-award even">
+<th class="s14-rh" data-quarto-table-cell-role="th">award</th>
+<td class="c on">3/3</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+</tr>
+<tr class="r-film odd">
+<th class="s14-rh" data-quarto-table-cell-role="th">film</th>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c">1/3</td>
+<td class="z">0</td>
+<td class="c">1/3</td>
+<td class="c">1/3</td>
+<td class="z">0</td>
 </tr>
 </tbody>
 </table>
 </div>
+<div class="s14-na fragment up" data-fragment-index="2"><span class="math inline">p(\text{text} \mid k) = \prod_i p(w_i \mid w_{i-1}, k)</span></div>
 <div class="s14-pr">
-  <p class="fragment up" data-fragment-index="3"><span class="sw t3"></span><span class="math inline">p(\text{text} \mid \text{sports}) = 1/6 \times 1/4 \times 1/1 \times 1/6 = 1/144 \approx 0.0069</span></p>
-  <p class="fragment up" data-fragment-index="4"><span class="sw t5"></span><span class="math inline">p(\text{text} \mid \text{entertainment}) = 2/4 \times 4/6 \times 2/7 \times 2/2 = 2/21 \approx 0.095</span></p>
+  <p class="fragment up" data-fragment-index="3"><span class="sw t3"></span><span class="math inline">p(\text{text} \mid \text{sports}) = 1/3 \times 2/2 \times 1/3 \times 1/1 = 1/9 \approx 0.11</span></p>
+  <p class="fragment up" data-fragment-index="4"><span class="sw t5"></span><span class="math inline">p(\text{text} \mid \text{entertainment}) = 1/3 \times 2/2 \times 2/3 \times 3/3 = 2/9 \approx 0.22</span></p>
 </div>
 <span class="s14-m3 fragment" data-fragment-index="3" aria-hidden="true"></span>
 <span class="s14-m4 fragment" data-fragment-index="4" aria-hidden="true"></span>
 <div class="end steps s14-say">
-  <p class="fragment fade-out" data-fragment-index="1">We classify the test headline again. Its true topic is entertainment.</p>
-  <p class="fragment current-visible" data-fragment-index="1">With &lt;s&gt; at the start and &lt;/s&gt; at the end, the headline has four pairs.</p>
+  <p class="fragment fade-out" data-fragment-index="1">We classify a test headline. Its true topic is entertainment.</p>
+  <p class="fragment current-visible" data-fragment-index="1">With &lt;s&gt; at the start and at the end, the headline has four pairs.</p>
   <p class="fragment current-visible" data-fragment-index="2">The likelihood multiplies the probability of each word after the word before it.</p>
-  <p class="fragment current-visible" data-fragment-index="3">In sports, one article in six starts with star, and star is followed by film once in four.</p>
-  <p class="fragment keep" data-fragment-index="4">Entertainment is 13.7 times as likely as sports to write this headline. With single words, it was 3.5 times.</p>
+  <p class="fragment current-visible" data-fragment-index="3">In sports, one sentence in three starts with star, and wins is followed by award once in three.</p>
+  <p class="fragment keep" data-fragment-index="4">Entertainment is twice as likely as sports to write this headline.</p>
 </div>
 <style>
-/* Builds: 1 the four pairs; 2 the likelihood with pairs; 3 the four sports cells lit and their product;
-   4 the four entertainment cells lit and their product. 1/144 = 0.00694, 2/21 = 0.0952, ratio 288/21 = 13.7;
-   class 2: 0.0105 / 0.003 = 3.5. Tables from c03_build.py. */
-.reveal section.s14 .s14-h { position: absolute; left: 64px; top: 112px; margin: 0; font-size: 24px; line-height: 40px; color: var(--text-secondary); }
-.reveal section.s14 .s14-h .ex { margin-left: 12px; font-size: 26px; color: var(--text-primary); }
-.reveal section.s14 .s14-pairs { position: absolute; left: 64px; top: 162px; }
-.reveal section.s14 .s14-pairs .chip { height: 38px; font-size: 21px; margin-right: 12px; }
-.reveal section.s14 .s14-na { position: absolute; left: 672px; top: 118px; }
-.reveal section.s14 .s14-na .katex { font-size: 28px; }
-.reveal section.s14 .s14-b { position: absolute; top: 216px; }
+/* Slide s14. Builds: 1 the four pairs; 2 the likelihood with pairs; 3 the four sports cells lit and their product;
+   4 the four entertainment cells lit and their product. 1/9 and 2/9, from the toy sentences (c03_build.py). */
+.reveal section.s14 .s14-b { position: absolute; top: 164px; }
 .reveal section.s14 .s14-sp { left: 64px; }
-.reveal section.s14 .s14-en { left: 672px; }
-.reveal section.s14 .s14-cap { margin: 0 0 4px; font-size: 21px; line-height: 28px; }
+.reveal section.s14 .s14-en { left: 664px; }
+.reveal section.s14 .s14-cap { margin: 0 0 4px; font-size: 22px; line-height: 30px; }
 .reveal section.s14 .s14-cap .sw { margin-right: 10px; }
-
-.reveal section.s14 .s14-pt { margin: 0; font-size: 20px; border-collapse: collapse; }
-.reveal section.s14 .s14-pt th, .reveal section.s14 .s14-pt td { height: 29px; padding: 0 8px; box-sizing: border-box; vertical-align: middle; white-space: nowrap; transition: background-color var(--dur-moderate), opacity var(--dur-moderate), color var(--dur-moderate); }
-.reveal section.s14 .s14-pt thead th { font-family: var(--mono); font-weight: var(--weight-regular); font-size: 18px; text-align: right; width: 64px; }
-.reveal section.s14 .s14-pt thead th.s14-corner { width: 86px; }
-.reveal section.s14 .s14-pt thead th.s14-tot { font-family: var(--sans); font-weight: var(--weight-semibold); width: 74px; }
-.reveal section.s14 .s14-pt th.s14-rh { background: none; font-family: var(--mono); font-weight: var(--weight-regular); font-size: 18px; text-align: left; color: var(--text-secondary); border-bottom: var(--rule) solid var(--border-subtle); }
-.reveal section.s14 .s14-pt td { text-align: right; }
+.reveal section.s14 .s14-pt { margin: 0; font-size: 22px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.reveal section.s14 .s14-pt th, .reveal section.s14 .s14-pt td { width: 68px; height: 34px; padding: 0; box-sizing: border-box; text-align: center; vertical-align: middle; white-space: nowrap; border: 0; border-bottom: var(--rule) solid var(--border-subtle); background: none; transition: background-color var(--dur-moderate), color var(--dur-moderate); }
+.reveal section.s14 .s14-pt th { font-family: var(--mono); font-weight: var(--weight-regular); }
+.reveal section.s14 .s14-pt thead th { font-size: 20px; }
+.reveal section.s14 .s14-pt th.s14-rh { width: 76px; text-align: left; }
 .reveal section.s14 .s14-pt td.z { color: var(--text-helper); }
-.reveal section.s14 .s14-pt td.s14-tot { font-weight: var(--weight-semibold); }
-.reveal .slides section.s14:has(.s14-m3.visible) .s14-sp td.on { background: var(--highlight); }
-.reveal .slides section.s14:has(.s14-m4.visible) .s14-en td.on { background: var(--highlight); }
-.reveal section.s14 .s14-pr { position: absolute; left: 64px; top: 456px; }
-.reveal section.s14 .s14-pr p { margin: 0; font-size: 24px; line-height: 40px; }
-.reveal section.s14 .s14-pr .sw { margin-right: 12px; }
-.reveal section.s14 .s14-pr .katex { font-size: 25px; }
 .reveal section.s14 .s14-say p { font-size: 28px; line-height: 36px; }
-.reveal section.s14 .s14-say p.s14-bad { color: var(--support-error); font-weight: var(--weight-semibold); }
-.reveal section.s14 .s14-say p.s14-good { color: var(--support-success); font-weight: var(--weight-semibold); }
-.reveal section.s14 .s14-say p.s14-q { font-weight: var(--weight-semibold); }
 .reveal section.s14 .katex .accent { color: inherit; }
+.reveal section.s14 .s14-h { position: absolute; left: 64px; top: 112px; margin: 0; font-size: 24px; line-height: 40px; }
+.reveal section.s14 .s14-pairs { position: absolute; left: 480px; top: 112px; height: 40px; display: flex; align-items: center; }
+.reveal section.s14 .s14-na { position: absolute; left: 64px; top: 486px; }
+.reveal section.s14 .s14-na .katex { font-size: 26px; }
+.reveal section.s14 .s14-pr { position: absolute; left: 520px; top: 474px; }
+.reveal section.s14 .s14-pr p { margin: 0; font-size: 24px; line-height: 42px; white-space: nowrap; }
+.reveal section.s14 .s14-pr .sw { margin-right: 12px; }
+.reveal section.s14 .s14-pr .katex { font-size: 24px; }
+.reveal .slides section.s14:has(.s14-m3.visible) .sp td.on, .reveal .slides section.s14:has(.s14-m4.visible) .en td.on { background: var(--highlight); color: var(--text-primary); }
 </style>
 </section>
 <section id="the-posterior" class="slide level2 s15">
 <h2>The posterior</h2>
-<p class="s15-h">Test headline <span class="ex">Star film wins</span></p>
+<p class="s15-h">Test headline <span class="ex">Star wins award</span></p>
 
 <table class="s15-t caption-top">
 <thead>
@@ -1406,45 +1417,42 @@ html.print-pdf .reveal section.s11 .s11-old tr.sp td { background: none !importa
 <tbody>
 <tr class="odd">
 <td><span class="sw t3"></span>sports</td>
-<td class="num">1/144</td>
-<td class="num">0.6</td>
-<td class="num"><span class="fragment" data-fragment-index="1">0.0042</span></td>
-<td class="num"><span class="fragment" data-fragment-index="3">0.0042 / 0.0423 = <strong>0.10</strong></span></td>
+<td class="num">1/9</td>
+<td class="num">0.5</td>
+<td class="num"><span class="fragment" data-fragment-index="1">0.0556</span></td>
+<td class="num"><span class="fragment" data-fragment-index="3">0.0556 / 0.1667 = <strong>0.33</strong></span></td>
 </tr>
 <tr class="even">
 <td><span class="sw t5"></span>entertainment</td>
-<td class="num">2/21</td>
-<td class="num">0.4</td>
-<td class="num"><span class="fragment" data-fragment-index="1">0.0381</span></td>
-<td class="num"><span class="fragment" data-fragment-index="3">0.0381 / 0.0423 = <strong>0.90</strong></span></td>
+<td class="num">2/9</td>
+<td class="num">0.5</td>
+<td class="num"><span class="fragment" data-fragment-index="1">0.1111</span></td>
+<td class="num"><span class="fragment" data-fragment-index="3">0.1111 / 0.1667 = <strong>0.67</strong></span></td>
 </tr>
 <tr class="s15-sum odd">
 <td>Sum</td>
 <td></td>
 <td class="num">1</td>
-<td class="num"><span class="fragment" data-fragment-index="2"><span class="fragment hl-on" data-fragment-index="2">0.0423</span></span></td>
+<td class="num"><span class="fragment" data-fragment-index="2"><span class="fragment hl-on" data-fragment-index="2">0.1667</span></span></td>
 <td class="num"><span class="fragment" data-fragment-index="3">1</span></td>
 </tr>
 </tbody>
 </table>
 
-<!-- the posterior with single words (class 2: 0.3 / 0.7) and with pairs (0.10 / 0.90): 760 px bars -->
-<div class="s15-ba fragment" data-fragment-index="4">
-  <span class="s15-bl">Single words</span>
-  <div class="s15-bar"><span class="t3" style="width:228px">0.30</span><span class="t5" style="width:532px">0.70</span></div>
-  <span class="s15-bl">Pairs of words</span>
-  <div class="s15-bar s15-post"><span class="t3" style="width:76px">0.10</span><span class="t5" style="width:684px">0.90</span></div>
+<!-- the posterior as one bar of 760 px -->
+<div class="s15-ba fragment" data-fragment-index="3">
+  <span class="s15-bl">Posterior</span>
+  <div class="s15-bar"><span class="t3" style="width:253.3px">0.33</span><span class="t5" style="width:506.7px">0.67</span></div>
 </div>
 <div class="end steps s15-say">
   <p class="fragment fade-out" data-fragment-index="1">Bayes’ formula does not change. Only the likelihood is new.</p>
-  <p class="fragment current-visible" data-fragment-index="1">Multiply each likelihood by its prior.</p>
+  <p class="fragment current-visible" data-fragment-index="1">Each topic has three of the six sentences, so each prior is 0.5. Multiply each likelihood by its prior.</p>
   <p class="fragment current-visible" data-fragment-index="2">Add the products. The sum is the normalizer of Bayes’ formula.</p>
-  <p class="fragment current-visible" data-fragment-index="3">Divide each product by the sum. The bigram model predicts entertainment, the true topic.</p>
-  <p class="fragment keep" data-fragment-index="4">With pairs of words, the posterior of entertainment rises from 0.70 to 0.90.</p>
+  <p class="fragment keep" data-fragment-index="3">Divide each product by the sum. The bigram model predicts entertainment, the true topic.</p>
 </div>
 <style>
-/* Builds: 1 the products (1/144 x 0.6 = 0.0042, 2/21 x 0.4 = 0.0381); 2 their sum 0.0423; 3 the posteriors
-   0.10 and 0.90 (exact 0.0986 and 0.9014); 4 single words against pairs as two bars. From c03_build.py. */
+/* Builds: 1 the products (1/9 x 0.5 = 0.0556, 2/9 x 0.5 = 0.1111); 2 their sum 0.1667; 3 the posteriors
+   1/3 and 2/3, and the posterior as one bar. Priors: three of the six toy sentences in each topic. From c03_build.py. */
 .reveal section.s15 .s15-h { position: absolute; left: 64px; top: 112px; margin: 0; font-size: 24px; line-height: 40px; color: var(--text-secondary); }
 .reveal section.s15 .s15-h .ex { margin-left: 12px; font-size: 26px; color: var(--text-primary); }
 .reveal section.s15 .s15-t { position: absolute; left: 64px; top: 168px; width: 1000px; font-size: 24px; margin: 0; }
@@ -1457,10 +1465,6 @@ html.print-pdf .reveal section.s11 .s11-old tr.sp td { background: none !importa
 .reveal section.s15 .s15-bar { display: flex; height: 40px; }
 .reveal section.s15 .s15-bar > span { display: flex; align-items: center; justify-content: center; height: 40px; box-sizing: border-box; background: var(--c); color: var(--text-on-color); font-size: 22px; font-weight: var(--weight-semibold); border-right: 2px solid var(--background); transition: width 900ms var(--ease-expressive) 300ms; }
 .reveal section.s15 .s15-bar > span:last-child { border-right: none; }
-.reveal section.s15 .s15-ba:not(.visible) .s15-post > span.t3 { width: 228px !important; }
-.reveal section.s15 .s15-ba:not(.visible) .s15-post > span.t5 { width: 532px !important; }
-html.print-pdf .reveal section.s15 .s15-post > span.t3 { width: 76px !important; }
-html.print-pdf .reveal section.s15 .s15-post > span.t5 { width: 684px !important; }
 .reveal section.s15 .s15-say p { font-size: 28px; line-height: 36px; }
 .reveal section.s15 .s15-say p.s15-bad { color: var(--support-error); font-weight: var(--weight-semibold); }
 .reveal section.s15 .s15-say p.s15-good { color: var(--support-success); font-weight: var(--weight-semibold); }
@@ -1663,23 +1667,23 @@ html.print-pdf .reveal .slides section.s18 .hl-val { opacity: 1 !important; }
 </section>
 <section id="the-trigram-model" class="slide level2 s19" data-section="More context">
 <h2>The trigram model</h2>
-<div class="s19-toks"><span class="chip quiet">&lt;s&gt;</span><span class="chip quiet">&lt;s&gt;</span><span class="chip">star</span><span class="chip">film</span><span class="chip">wins</span><span class="chip quiet">&lt;/s&gt;</span></div>
+<div class="s19-toks"><span class="chip quiet">&lt;s&gt;</span><span class="chip quiet">&lt;s&gt;</span><span class="chip">star</span><span class="chip">wins</span><span class="chip">award</span><span class="chip quiet">&lt;s&gt;</span></div>
 <div class="s19-wg fragment" data-fragment-index="1">
   <div class="s19-w" style="--i:0; top:184px; left:64px"><span class="s19-h"></span><span class="s19-h"></span><span class="s19-t"></span></div>
   <div class="s19-w" style="--i:1; top:228px; left:184px"><span class="s19-h"></span><span class="s19-h"></span><span class="s19-t"></span></div>
   <div class="s19-w" style="--i:2; top:272px; left:304px"><span class="s19-h"></span><span class="s19-h"></span><span class="s19-t"></span></div>
   <div class="s19-w" style="--i:3; top:316px; left:424px"><span class="s19-h"></span><span class="s19-h"></span><span class="s19-t"></span></div>
   <div class="s19-p" style="--i:0; top:184px"><span class="math inline">p(\text{star} \mid \text{&lt;s&gt;}\;\text{&lt;s&gt;})</span></div>
-  <div class="s19-p" style="--i:1; top:228px"><span class="math inline">p(\text{film} \mid \text{&lt;s&gt;}\;\text{star})</span></div>
-  <div class="s19-p" style="--i:2; top:272px"><span class="math inline">p(\text{wins} \mid \text{star}\;\text{film})</span></div>
-  <div class="s19-p" style="--i:3; top:316px"><span class="math inline">p(\text{&lt;/s&gt;} \mid \text{film}\;\text{wins})</span></div>
+  <div class="s19-p" style="--i:1; top:228px"><span class="math inline">p(\text{wins} \mid \text{&lt;s&gt;}\;\text{star})</span></div>
+  <div class="s19-p" style="--i:2; top:272px"><span class="math inline">p(\text{award} \mid \text{star}\;\text{wins})</span></div>
+  <div class="s19-p" style="--i:3; top:316px"><span class="math inline">p(\text{&lt;s&gt;} \mid \text{wins}\;\text{award})</span></div>
 </div>
 <div class="s19-like fragment up" data-fragment-index="2"><span class="math inline">p(\text{text} \mid k) = \prod_i p(w_i \mid w_{i-2}\, w_{i-1}, k)</span></div>
 <div class="s19-cnt fragment up" data-fragment-index="3"><span class="math inline">p(w \mid u\,v, k) = \dfrac{\text{count}(u\,v\,w, k)}{\text{count}(u\,v, k)}</span></div>
 <div class="flow s19-flow fragment up" data-fragment-index="4"><div class="node">prior × likelihood</div><span class="arr"></span><div class="node">Bayes’ formula</div><span class="arr"></span><div class="node">prediction</div></div>
 <div class="end steps s19-say">
   <p class="fragment current-visible" data-fragment-index="1">A trigram model gives each word a probability from the two words before it. The text starts with two <span class="ex">&lt;s&gt;</span>.</p>
-  <p class="fragment current-visible" data-fragment-index="2">The likelihood multiplies these probabilities, one for each word and one for <span class="ex">&lt;/s&gt;</span>.</p>
+  <p class="fragment current-visible" data-fragment-index="2">The likelihood multiplies these probabilities, one for each word and one for the <span class="ex">&lt;s&gt;</span> at the end.</p>
   <p class="fragment current-visible" data-fragment-index="3">Each probability is the count of three words divided by the count of the first two.</p>
   <p class="fragment keep" data-fragment-index="4">The prior, Bayes’ formula and the prediction stay as before.</p>
 </div>
@@ -1712,138 +1716,154 @@ html.print-pdf .reveal section.s19 .s19-w, html.print-pdf .reveal section.s19 .s
 </section>
 <section id="from-a-table-to-a-cube" class="slide level2 s20">
 <h2>From a table to a cube</h2>
-<!-- The toy sports articles counted in pairs (a 6 x 6 table) and in triples (a 6 x 6 x 6 cube). Drawn 1:1 in slide
-     pixels: the SVG sits at (64, 106); cells 30 px on a 32 px pitch. Cube: slices by first word, <s> in front, each
-     slice 16 px right and 10 px up from the one before; a filled square marks a trigram of the sports articles, paler the deeper it lies.
-     Cells from c03_data.json (toy.sports.table, toy.sports.trigram_cells); C1 sizes from cells, bigram.distinct and
+<!-- The three sports sentences of the toy example counted in pairs (a 7 x 7 table) and in triples (a 7 x 7 x 7 cube; each
+     sentence starts with two <s> and ends with one). Drawn 1:1 in slide pixels by parts/t_merge.py: the SVG sits at
+     (64, 106); cells 27 px on a 29 px pitch. Cube: slices by first word, <s> in front, each slice 14 px right and 9 px up
+     from the one before; a filled square marks a trigram of the sentences, paler the deeper it lies. Cells as
+     toy.sports.table and toy.sports.trigram_cells of c03_data.json; C1 sizes from cells, bigram.distinct and
      trigram.distinct. -->
-<svg class="s20-svg" width="1152" height="330" viewbox="0 0 1152 330" aria-label="The sports pair table of the toy example, 13 of 36 cells not 0, and its cube of triples, 17 of 216 cells not 0">
+<svg class="s20-svg" width="1152" height="330" viewbox="0 0 1152 330" aria-label="The pair table of the three sports sentences, 9 of 49 cells not 0, and its cube of triples, 11 of 343 cells not 0">
 <g class="s20-tab fragment up" data-fragment-index="1">
-<text class="s20-ax" x="207" y="14" text-anchor="middle">next word</text>
-<text class="s20-ax" transform="translate(14 179) rotate(-90)" text-anchor="middle">previous word</text>
-<text class="s20-cl" transform="translate(131 76) rotate(-45)">match</text>
-<text class="s20-cl" transform="translate(163 76) rotate(-45)">star</text>
-<text class="s20-cl" transform="translate(195 76) rotate(-45)">film</text>
-<text class="s20-cl" transform="translate(227 76) rotate(-45)">wins</text>
-<text class="s20-cl" transform="translate(259 76) rotate(-45)">song</text>
-<text class="s20-cl" transform="translate(291 76) rotate(-45)">&lt;/s&gt;</text>
-<text class="s20-rl" x="102" y="99" text-anchor="end" dominant-baseline="central">&lt;s&gt;</text>
-<rect class="s20-on" x="112" y="84" width="30" height="30"></rect>
-<rect class="s20-on" x="144" y="84" width="30" height="30"></rect>
-<rect class="s20-off" x="176" y="84" width="30" height="30"></rect>
-<rect class="s20-on" x="208" y="84" width="30" height="30"></rect>
-<rect class="s20-on" x="240" y="84" width="30" height="30"></rect>
-<rect class="s20-off" x="272" y="84" width="30" height="30"></rect>
-<text class="s20-rl" x="102" y="131" text-anchor="end" dominant-baseline="central">match</text>
-<rect class="s20-off" x="112" y="116" width="30" height="30"></rect>
-<rect class="s20-on" x="144" y="116" width="30" height="30"></rect>
-<rect class="s20-off" x="176" y="116" width="30" height="30"></rect>
-<rect class="s20-on" x="208" y="116" width="30" height="30"></rect>
-<rect class="s20-off" x="240" y="116" width="30" height="30"></rect>
-<rect class="s20-on" x="272" y="116" width="30" height="30"></rect>
-<text class="s20-rl" x="102" y="163" text-anchor="end" dominant-baseline="central">star</text>
-<rect class="s20-off" x="112" y="148" width="30" height="30"></rect>
-<rect class="s20-off" x="144" y="148" width="30" height="30"></rect>
-<rect class="s20-on" x="176" y="148" width="30" height="30"></rect>
-<rect class="s20-on" x="208" y="148" width="30" height="30"></rect>
-<rect class="s20-off" x="240" y="148" width="30" height="30"></rect>
-<rect class="s20-off" x="272" y="148" width="30" height="30"></rect>
-<text class="s20-rl" x="102" y="195" text-anchor="end" dominant-baseline="central">film</text>
-<rect class="s20-off" x="112" y="180" width="30" height="30"></rect>
-<rect class="s20-off" x="144" y="180" width="30" height="30"></rect>
-<rect class="s20-off" x="176" y="180" width="30" height="30"></rect>
-<rect class="s20-on" x="208" y="180" width="30" height="30"></rect>
-<rect class="s20-off" x="240" y="180" width="30" height="30"></rect>
-<rect class="s20-off" x="272" y="180" width="30" height="30"></rect>
-<text class="s20-rl" x="102" y="227" text-anchor="end" dominant-baseline="central">wins</text>
-<rect class="s20-on" x="112" y="212" width="30" height="30"></rect>
-<rect class="s20-off" x="144" y="212" width="30" height="30"></rect>
-<rect class="s20-off" x="176" y="212" width="30" height="30"></rect>
-<rect class="s20-off" x="208" y="212" width="30" height="30"></rect>
-<rect class="s20-off" x="240" y="212" width="30" height="30"></rect>
-<rect class="s20-on" x="272" y="212" width="30" height="30"></rect>
-<text class="s20-rl" x="102" y="259" text-anchor="end" dominant-baseline="central">song</text>
-<rect class="s20-off" x="112" y="244" width="30" height="30"></rect>
-<rect class="s20-on" x="144" y="244" width="30" height="30"></rect>
-<rect class="s20-off" x="176" y="244" width="30" height="30"></rect>
-<rect class="s20-off" x="208" y="244" width="30" height="30"></rect>
-<rect class="s20-off" x="240" y="244" width="30" height="30"></rect>
-<rect class="s20-off" x="272" y="244" width="30" height="30"></rect>
-<text class="s20-cap" x="207" y="302" text-anchor="middle">6 × 6 = 36 cells, 13 not 0</text>
+<text class="s20-ax" x="213.5" y="14" text-anchor="middle">next word</text>
+<text class="s20-ax" transform="translate(14 185.5) rotate(-90)" text-anchor="middle">previous word</text>
+<text class="s20-cl" transform="translate(130 76) rotate(-52)">&lt;s&gt;</text>
+<text class="s20-cl" transform="translate(159 76) rotate(-52)">team</text>
+<text class="s20-cl" transform="translate(188 76) rotate(-52)">wins</text>
+<text class="s20-cl" transform="translate(217 76) rotate(-52)">match</text>
+<text class="s20-cl" transform="translate(246 76) rotate(-52)">star</text>
+<text class="s20-cl" transform="translate(275 76) rotate(-52)">award</text>
+<text class="s20-cl" transform="translate(304 76) rotate(-52)">film</text>
+<text class="s20-rl" x="102" y="97.5" text-anchor="end" dominant-baseline="central">&lt;s&gt;</text>
+<rect class="s20-off" x="112" y="84" width="27" height="27"></rect>
+<rect class="s20-on" x="141" y="84" width="27" height="27"></rect>
+<rect class="s20-off" x="170" y="84" width="27" height="27"></rect>
+<rect class="s20-off" x="199" y="84" width="27" height="27"></rect>
+<rect class="s20-on" x="228" y="84" width="27" height="27"></rect>
+<rect class="s20-off" x="257" y="84" width="27" height="27"></rect>
+<rect class="s20-off" x="286" y="84" width="27" height="27"></rect>
+<text class="s20-rl" x="102" y="126.5" text-anchor="end" dominant-baseline="central">team</text>
+<rect class="s20-off" x="112" y="113" width="27" height="27"></rect>
+<rect class="s20-off" x="141" y="113" width="27" height="27"></rect>
+<rect class="s20-on" x="170" y="113" width="27" height="27"></rect>
+<rect class="s20-off" x="199" y="113" width="27" height="27"></rect>
+<rect class="s20-on" x="228" y="113" width="27" height="27"></rect>
+<rect class="s20-off" x="257" y="113" width="27" height="27"></rect>
+<rect class="s20-off" x="286" y="113" width="27" height="27"></rect>
+<text class="s20-rl" x="102" y="155.5" text-anchor="end" dominant-baseline="central">wins</text>
+<rect class="s20-off" x="112" y="142" width="27" height="27"></rect>
+<rect class="s20-off" x="141" y="142" width="27" height="27"></rect>
+<rect class="s20-off" x="170" y="142" width="27" height="27"></rect>
+<rect class="s20-on" x="199" y="142" width="27" height="27"></rect>
+<rect class="s20-off" x="228" y="142" width="27" height="27"></rect>
+<rect class="s20-on" x="257" y="142" width="27" height="27"></rect>
+<rect class="s20-off" x="286" y="142" width="27" height="27"></rect>
+<text class="s20-rl" x="102" y="184.5" text-anchor="end" dominant-baseline="central">match</text>
+<rect class="s20-on" x="112" y="171" width="27" height="27"></rect>
+<rect class="s20-off" x="141" y="171" width="27" height="27"></rect>
+<rect class="s20-off" x="170" y="171" width="27" height="27"></rect>
+<rect class="s20-off" x="199" y="171" width="27" height="27"></rect>
+<rect class="s20-off" x="228" y="171" width="27" height="27"></rect>
+<rect class="s20-off" x="257" y="171" width="27" height="27"></rect>
+<rect class="s20-off" x="286" y="171" width="27" height="27"></rect>
+<text class="s20-rl" x="102" y="213.5" text-anchor="end" dominant-baseline="central">star</text>
+<rect class="s20-off" x="112" y="200" width="27" height="27"></rect>
+<rect class="s20-off" x="141" y="200" width="27" height="27"></rect>
+<rect class="s20-on" x="170" y="200" width="27" height="27"></rect>
+<rect class="s20-off" x="199" y="200" width="27" height="27"></rect>
+<rect class="s20-off" x="228" y="200" width="27" height="27"></rect>
+<rect class="s20-off" x="257" y="200" width="27" height="27"></rect>
+<rect class="s20-off" x="286" y="200" width="27" height="27"></rect>
+<text class="s20-rl" x="102" y="242.5" text-anchor="end" dominant-baseline="central">award</text>
+<rect class="s20-on" x="112" y="229" width="27" height="27"></rect>
+<rect class="s20-off" x="141" y="229" width="27" height="27"></rect>
+<rect class="s20-off" x="170" y="229" width="27" height="27"></rect>
+<rect class="s20-off" x="199" y="229" width="27" height="27"></rect>
+<rect class="s20-off" x="228" y="229" width="27" height="27"></rect>
+<rect class="s20-off" x="257" y="229" width="27" height="27"></rect>
+<rect class="s20-off" x="286" y="229" width="27" height="27"></rect>
+<text class="s20-rl" x="102" y="271.5" text-anchor="end" dominant-baseline="central">film</text>
+<rect class="s20-off" x="112" y="258" width="27" height="27"></rect>
+<rect class="s20-off" x="141" y="258" width="27" height="27"></rect>
+<rect class="s20-off" x="170" y="258" width="27" height="27"></rect>
+<rect class="s20-off" x="199" y="258" width="27" height="27"></rect>
+<rect class="s20-off" x="228" y="258" width="27" height="27"></rect>
+<rect class="s20-off" x="257" y="258" width="27" height="27"></rect>
+<rect class="s20-off" x="286" y="258" width="27" height="27"></rect>
+<text class="s20-cap" x="213.5" y="306" text-anchor="middle">7 × 7 = 49 cells, 9 not 0</text>
 </g>
 <g class="s20-cube fragment up" data-fragment-index="2">
-<line class="s20-g" x1="600" y1="84" x2="600" y2="276"></line>
-<line class="s20-g" x1="600" y1="84" x2="792" y2="84"></line>
-<line class="s20-g" x1="632" y1="84" x2="632" y2="276"></line>
-<line class="s20-g" x1="600" y1="116" x2="792" y2="116"></line>
-<line class="s20-g" x1="664" y1="84" x2="664" y2="276"></line>
-<line class="s20-g" x1="600" y1="148" x2="792" y2="148"></line>
-<line class="s20-g" x1="696" y1="84" x2="696" y2="276"></line>
-<line class="s20-g" x1="600" y1="180" x2="792" y2="180"></line>
-<line class="s20-g" x1="728" y1="84" x2="728" y2="276"></line>
-<line class="s20-g" x1="600" y1="212" x2="792" y2="212"></line>
-<line class="s20-g" x1="760" y1="84" x2="760" y2="276"></line>
-<line class="s20-g" x1="600" y1="244" x2="792" y2="244"></line>
-<line class="s20-g" x1="792" y1="84" x2="792" y2="276"></line>
-<line class="s20-g" x1="600" y1="276" x2="792" y2="276"></line>
-<line class="s20-g" x1="600" y1="84" x2="696" y2="24"></line>
-<line class="s20-g" x1="600" y1="84" x2="792" y2="84"></line>
-<line class="s20-g" x1="632" y1="84" x2="728" y2="24"></line>
-<line class="s20-g" x1="616" y1="74" x2="808" y2="74"></line>
-<line class="s20-g" x1="664" y1="84" x2="760" y2="24"></line>
-<line class="s20-g" x1="632" y1="64" x2="824" y2="64"></line>
-<line class="s20-g" x1="696" y1="84" x2="792" y2="24"></line>
-<line class="s20-g" x1="648" y1="54" x2="840" y2="54"></line>
-<line class="s20-g" x1="728" y1="84" x2="824" y2="24"></line>
-<line class="s20-g" x1="664" y1="44" x2="856" y2="44"></line>
-<line class="s20-g" x1="760" y1="84" x2="856" y2="24"></line>
-<line class="s20-g" x1="680" y1="34" x2="872" y2="34"></line>
-<line class="s20-g" x1="792" y1="84" x2="888" y2="24"></line>
-<line class="s20-g" x1="696" y1="24" x2="888" y2="24"></line>
-<line class="s20-g" x1="792" y1="84" x2="888" y2="24"></line>
-<line class="s20-g" x1="792" y1="84" x2="792" y2="276"></line>
-<line class="s20-g" x1="792" y1="116" x2="888" y2="56"></line>
-<line class="s20-g" x1="808" y1="74" x2="808" y2="266"></line>
-<line class="s20-g" x1="792" y1="148" x2="888" y2="88"></line>
-<line class="s20-g" x1="824" y1="64" x2="824" y2="256"></line>
-<line class="s20-g" x1="792" y1="180" x2="888" y2="120"></line>
-<line class="s20-g" x1="840" y1="54" x2="840" y2="246"></line>
-<line class="s20-g" x1="792" y1="212" x2="888" y2="152"></line>
-<line class="s20-g" x1="856" y1="44" x2="856" y2="236"></line>
-<line class="s20-g" x1="792" y1="244" x2="888" y2="184"></line>
-<line class="s20-g" x1="872" y1="34" x2="872" y2="226"></line>
-<line class="s20-g" x1="792" y1="276" x2="888" y2="216"></line>
-<line class="s20-g" x1="888" y1="24" x2="888" y2="216"></line>
-<rect class="s20-on s20-c" x="789.0" y="98.0" width="22" height="22" fill-opacity="0.40"></rect>
-<rect class="s20-on s20-c" x="837.0" y="76.0" width="22" height="22" fill-opacity="0.52"></rect>
-<rect class="s20-on s20-c" x="821.0" y="182.0" width="22" height="22" fill-opacity="0.64"></rect>
-<rect class="s20-on s20-c" x="741.0" y="160.0" width="22" height="22" fill-opacity="0.76"></rect>
-<rect class="s20-on s20-c" x="645.0" y="192.0" width="22" height="22" fill-opacity="0.76"></rect>
-<rect class="s20-on s20-c" x="693.0" y="138.0" width="22" height="22" fill-opacity="0.88"></rect>
-<rect class="s20-on s20-c" x="725.0" y="138.0" width="22" height="22" fill-opacity="0.88"></rect>
-<rect class="s20-on s20-c" x="629.0" y="202.0" width="22" height="22" fill-opacity="0.88"></rect>
-<rect class="s20-on s20-c" x="613.0" y="84.0" width="22" height="22" fill-opacity="1.00"></rect>
-<rect class="s20-on s20-c" x="741.0" y="84.0" width="22" height="22" fill-opacity="1.00"></rect>
-<rect class="s20-on s20-c" x="645.0" y="84.0" width="22" height="22" fill-opacity="1.00"></rect>
-<rect class="s20-on s20-c" x="709.0" y="84.0" width="22" height="22" fill-opacity="1.00"></rect>
-<rect class="s20-on s20-c" x="645.0" y="116.0" width="22" height="22" fill-opacity="1.00"></rect>
-<rect class="s20-on s20-c" x="709.0" y="116.0" width="22" height="22" fill-opacity="1.00"></rect>
-<rect class="s20-on s20-c" x="645.0" y="244.0" width="22" height="22" fill-opacity="1.00"></rect>
-<rect class="s20-on s20-c" x="709.0" y="148.0" width="22" height="22" fill-opacity="1.00"></rect>
-<rect class="s20-on s20-c" x="613.0" y="212.0" width="22" height="22" fill-opacity="1.00"></rect>
-<line class="s20-o" x1="600" y1="84" x2="792" y2="84"></line>
-<line class="s20-o" x1="792" y1="84" x2="792" y2="276"></line>
-<line class="s20-o" x1="600" y1="276" x2="792" y2="276"></line>
-<line class="s20-o" x1="600" y1="84" x2="600" y2="276"></line>
-<line class="s20-o" x1="696" y1="24" x2="888" y2="24"></line>
-<line class="s20-o" x1="888" y1="24" x2="888" y2="216"></line>
-<line class="s20-o" x1="600" y1="84" x2="696" y2="24"></line>
-<line class="s20-o" x1="792" y1="84" x2="888" y2="24"></line>
-<line class="s20-o" x1="792" y1="276" x2="888" y2="216"></line>
-<text class="s20-ax" x="792.0" y="14" text-anchor="middle">next word</text>
-<text class="s20-ax" transform="translate(586 180.0) rotate(-90)" text-anchor="middle">second word</text>
-<text class="s20-ax" transform="translate(638 44) rotate(-32.0)" text-anchor="middle">first word</text>
-<text class="s20-cap" x="744.0" y="302" text-anchor="middle">6 × 6 × 6 = 216 cells, 17 not 0</text>
+<line class="s20-g" x1="600" y1="84" x2="600" y2="287"></line>
+<line class="s20-g" x1="600" y1="84" x2="803" y2="84"></line>
+<line class="s20-g" x1="600" y1="84" x2="698" y2="21"></line>
+<line class="s20-g" x1="600" y1="84" x2="803" y2="84"></line>
+<line class="s20-g" x1="803" y1="84" x2="901" y2="21"></line>
+<line class="s20-g" x1="803" y1="84" x2="803" y2="287"></line>
+<line class="s20-g" x1="629" y1="84" x2="629" y2="287"></line>
+<line class="s20-g" x1="600" y1="113" x2="803" y2="113"></line>
+<line class="s20-g" x1="629" y1="84" x2="727" y2="21"></line>
+<line class="s20-g" x1="614" y1="75" x2="817" y2="75"></line>
+<line class="s20-g" x1="803" y1="113" x2="901" y2="50"></line>
+<line class="s20-g" x1="817" y1="75" x2="817" y2="278"></line>
+<line class="s20-g" x1="658" y1="84" x2="658" y2="287"></line>
+<line class="s20-g" x1="600" y1="142" x2="803" y2="142"></line>
+<line class="s20-g" x1="658" y1="84" x2="756" y2="21"></line>
+<line class="s20-g" x1="628" y1="66" x2="831" y2="66"></line>
+<line class="s20-g" x1="803" y1="142" x2="901" y2="79"></line>
+<line class="s20-g" x1="831" y1="66" x2="831" y2="269"></line>
+<line class="s20-g" x1="687" y1="84" x2="687" y2="287"></line>
+<line class="s20-g" x1="600" y1="171" x2="803" y2="171"></line>
+<line class="s20-g" x1="687" y1="84" x2="785" y2="21"></line>
+<line class="s20-g" x1="642" y1="57" x2="845" y2="57"></line>
+<line class="s20-g" x1="803" y1="171" x2="901" y2="108"></line>
+<line class="s20-g" x1="845" y1="57" x2="845" y2="260"></line>
+<line class="s20-g" x1="716" y1="84" x2="716" y2="287"></line>
+<line class="s20-g" x1="600" y1="200" x2="803" y2="200"></line>
+<line class="s20-g" x1="716" y1="84" x2="814" y2="21"></line>
+<line class="s20-g" x1="656" y1="48" x2="859" y2="48"></line>
+<line class="s20-g" x1="803" y1="200" x2="901" y2="137"></line>
+<line class="s20-g" x1="859" y1="48" x2="859" y2="251"></line>
+<line class="s20-g" x1="745" y1="84" x2="745" y2="287"></line>
+<line class="s20-g" x1="600" y1="229" x2="803" y2="229"></line>
+<line class="s20-g" x1="745" y1="84" x2="843" y2="21"></line>
+<line class="s20-g" x1="670" y1="39" x2="873" y2="39"></line>
+<line class="s20-g" x1="803" y1="229" x2="901" y2="166"></line>
+<line class="s20-g" x1="873" y1="39" x2="873" y2="242"></line>
+<line class="s20-g" x1="774" y1="84" x2="774" y2="287"></line>
+<line class="s20-g" x1="600" y1="258" x2="803" y2="258"></line>
+<line class="s20-g" x1="774" y1="84" x2="872" y2="21"></line>
+<line class="s20-g" x1="684" y1="30" x2="887" y2="30"></line>
+<line class="s20-g" x1="803" y1="258" x2="901" y2="195"></line>
+<line class="s20-g" x1="887" y1="30" x2="887" y2="233"></line>
+<line class="s20-g" x1="803" y1="84" x2="803" y2="287"></line>
+<line class="s20-g" x1="600" y1="287" x2="803" y2="287"></line>
+<line class="s20-g" x1="803" y1="84" x2="901" y2="21"></line>
+<line class="s20-g" x1="698" y1="21" x2="901" y2="21"></line>
+<line class="s20-g" x1="803" y1="287" x2="901" y2="224"></line>
+<line class="s20-g" x1="901" y1="21" x2="901" y2="224"></line>
+<rect class="s20-on s20-c" x="754" y="105.5" width="21" height="21" fill-opacity="0.60"></rect>
+<rect class="s20-on s20-c" x="812" y="105.5" width="21" height="21" fill-opacity="0.60"></rect>
+<rect class="s20-on s20-c" x="639" y="152.5" width="21" height="21" fill-opacity="0.80"></rect>
+<rect class="s20-on s20-c" x="639" y="210.5" width="21" height="21" fill-opacity="0.80"></rect>
+<rect class="s20-on s20-c" x="712" y="132.5" width="21" height="21" fill-opacity="0.90"></rect>
+<rect class="s20-on s20-c" x="683" y="190.5" width="21" height="21" fill-opacity="0.90"></rect>
+<rect class="s20-on s20-c" x="640" y="83.5" width="21" height="21" fill-opacity="1.00"></rect>
+<rect class="s20-on s20-c" x="669" y="112.5" width="21" height="21" fill-opacity="1.00"></rect>
+<rect class="s20-on s20-c" x="727" y="83.5" width="21" height="21" fill-opacity="1.00"></rect>
+<rect class="s20-on s20-c" x="669" y="199.5" width="21" height="21" fill-opacity="1.00"></rect>
+<rect class="s20-on s20-c" x="727" y="112.5" width="21" height="21" fill-opacity="1.00"></rect>
+<line class="s20-o" x1="600" y1="84" x2="600" y2="287"></line>
+<line class="s20-o" x1="698" y1="21" x2="901" y2="21"></line>
+<line class="s20-o" x1="901" y1="21" x2="901" y2="224"></line>
+<line class="s20-o" x1="600" y1="84" x2="698" y2="21"></line>
+<line class="s20-o" x1="803" y1="84" x2="901" y2="21"></line>
+<line class="s20-o" x1="803" y1="287" x2="901" y2="224"></line>
+<line class="s20-o" x1="600" y1="84" x2="803" y2="84"></line>
+<line class="s20-o" x1="803" y1="84" x2="803" y2="287"></line>
+<line class="s20-o" x1="600" y1="287" x2="803" y2="287"></line>
+<text class="s20-ax" x="799.5" y="12" text-anchor="middle">next word</text>
+<text class="s20-ax" transform="translate(586 185.5) rotate(-90)" text-anchor="middle">second word</text>
+<text class="s20-ax" transform="translate(640 41.5) rotate(-32.7)" text-anchor="middle">first word</text>
+<text class="s20-cap" x="750.5" y="306" text-anchor="middle">7 × 7 × 7 = 343 cells, 11 not 0</text>
 </g>
 </svg>
 
@@ -1879,13 +1899,13 @@ html.print-pdf .reveal section.s19 .s19-w, html.print-pdf .reveal section.s19 .s
 </table>
 
 <div class="end steps s20-say">
-  <p class="fragment current-visible" data-fragment-index="1">With one word of history, each topic has a table. The sports articles of the toy example fill 13 of its 36 cells.</p>
-  <p class="fragment current-visible" data-fragment-index="2">With two words of history, the table becomes a cube. The same articles fill 17 of its 216 cells.</p>
+  <p class="fragment current-visible" data-fragment-index="1">With one word of history, each topic has a table. The three sports sentences fill 9 of its 49 cells.</p>
+  <p class="fragment current-visible" data-fragment-index="2">With two words of history, the table becomes a cube. The same sentences fill 11 of its 343 cells.</p>
   <p class="fragment current-visible" data-fragment-index="3">In the C1 data, each topic's cube has <span class="math inline">1.4 \times 10^{15}</span> cells, but its training texts hold fewer than 300,000 different trigrams.</p>
   <p class="fragment keep s20-bad" data-fragment-index="4">Problem: almost every cell of the cube is 0. Of the dev trigrams, 84.4% never occur in the training texts of their topic.</p>
 </div>
 <style>
-/* Builds: 1 the pair table of the toy sports articles; 2 its cube of triples; 3 the sizes in the C1 data;
+/* Builds: 1 the pair table of the toy sports sentences; 2 its cube of triples; 3 the sizes in the C1 data;
    4 the problem, in red. Build 3 (instructor, 2026-11-08: a word row and a share column, "1 in N"): cells V = 110,608
    (no </s>), cells.bigram, cells.trigram; cells not 0 per topic, unigram/bigram/trigram.distinct (min to max); one
    cell in how many is not 0, one_in: words 3.0 to 3.3, pairs 59,594 to 65,752, trigrams 4.67 to 5.25 billion. */
@@ -1920,7 +1940,7 @@ html.print-pdf .reveal section.s19 .s19-w, html.print-pdf .reveal section.s19 .s
 <div class="s21-b s21-bi fragment up" data-fragment-index="2">
 <p class="s21-l">Bigram</p>
 <pre class="s21-pre"><code class="sourceCode python"><span><span class="cf">for</span> words, k <span class="kw">in</span> <span class="bu">zip</span>(train_words, y):</span>
-<span>    <span class="s21-d">words <span class="op">=</span> [<span class="st">"&lt;s&gt;"</span>] <span class="op">+</span> words <span class="op">+</span> [<span class="st">"&lt;/s&gt;"</span>]</span></span>
+<span>    <span class="s21-d">words <span class="op">=</span> [<span class="st">"&lt;s&gt;"</span>] <span class="op">+</span> words <span class="op">+</span> [<span class="st">"&lt;s&gt;"</span>]</span></span>
 <span>    <span class="cf">for</span> <span class="s21-d">v, </span>w <span class="kw">in</span> <span class="s21-d"><span class="bu">zip</span>(words, words[<span class="dv">1</span>:])</span>:</span>
 <span>        count[k][<span class="s21-d">v, </span>w] <span class="op">+=</span> <span class="dv">1</span></span>
 <span>        total[k]<span class="s21-d">[v]</span> <span class="op">+=</span> <span class="dv">1</span></span>
@@ -1929,7 +1949,7 @@ html.print-pdf .reveal section.s19 .s19-w, html.print-pdf .reveal section.s19 .s
 <div class="s21-b s21-tri fragment up" data-fragment-index="3">
 <p class="s21-l">Trigram</p>
 <pre class="s21-pre"><code class="sourceCode python"><span><span class="cf">for</span> words, k <span class="kw">in</span> <span class="bu">zip</span>(train_words, y):</span>
-<span>    words <span class="op">=</span> [<span class="st">"&lt;s&gt;"</span><span class="s21-d">, <span class="st">"&lt;s&gt;"</span></span>] <span class="op">+</span> words <span class="op">+</span> [<span class="st">"&lt;/s&gt;"</span>]</span>
+<span>    words <span class="op">=</span> [<span class="st">"&lt;s&gt;"</span><span class="s21-d">, <span class="st">"&lt;s&gt;"</span></span>] <span class="op">+</span> words <span class="op">+</span> [<span class="st">"&lt;s&gt;"</span>]</span>
 <span>    <span class="cf">for</span> <span class="s21-d">u, </span>v, w <span class="kw">in</span> <span class="bu">zip</span>(words, words[<span class="dv">1</span>:]<span class="s21-d">, words[<span class="dv">2</span>:]</span>):</span>
 <span>        count[k][<span class="s21-d">u, </span>v, w] <span class="op">+=</span> <span class="dv">1</span></span>
 <span>        total[k][<span class="s21-d">u, </span>v] <span class="op">+=</span> <span class="dv">1</span></span>
@@ -1938,7 +1958,7 @@ html.print-pdf .reveal section.s19 .s19-w, html.print-pdf .reveal section.s19 .s
 <span class="s21-m4 fragment" data-fragment-index="4" aria-hidden="true"></span>
 <div class="end steps s21-say">
   <p class="fragment current-visible" data-fragment-index="1">The unigram model counts each word in the training texts of its topic.</p>
-  <p class="fragment current-visible" data-fragment-index="2">The bigram model adds <span class="ex">&lt;s&gt;</span> and <span class="ex">&lt;/s&gt;</span>, and counts each word after the word before it.</p>
+  <p class="fragment current-visible" data-fragment-index="2">The bigram model adds <span class="ex">&lt;s&gt;</span> at the start and at the end, and counts each word after the word before it.</p>
   <p class="fragment current-visible" data-fragment-index="3">The trigram model adds a second <span class="ex">&lt;s&gt;</span>, and counts each word after the two words before it.</p>
   <p class="fragment keep" data-fragment-index="4">All three add 1 to every count and V to every total, so an n-gram never seen still gets a small probability.</p>
 </div>
@@ -2305,29 +2325,30 @@ html.print-pdf .reveal .slides section.s21 pre code > span { opacity: 1 !importa
 </div>
 <div class="s27-p s27-ge fragment up" data-fragment-index="2">
   <p class="s27-h">Generation</p>
-  <div class="s27-in s27-hist"><span class="s27-tp"><span class="sw t5"></span>entertainment</span><div class="chips"><span class="chip">star</span><span class="chip">film</span><span class="chip quiet">?</span></div></div>
+  <div class="s27-in s27-hist"><span class="s27-tp"><span class="sw t5"></span>entertainment</span><div class="chips"><span class="chip">film</span><span class="chip quiet">?</span></div></div>
   <div class="s27-bars">
-    <div class="s27-b"><span class="s27-bl ex">match</span><span class="s27-trk"><span class="fragment grow" data-fragment-index="2" style="width:100px"></span><span class="hl-val">1/4</span></span></div>
-    <div class="s27-b"><span class="s27-bl ex">star</span><span class="s27-trk"><span class="fragment grow" data-fragment-index="2" style="width:100px"></span><span class="hl-val">1/4</span></span></div>
+    <div class="s27-b"><span class="s27-bl ex">team</span><span class="s27-trk"><span class="fragment grow" data-fragment-index="2" style="width:2px"></span><span class="hl-val">0</span></span></div>
+    <div class="s27-b"><span class="s27-bl ex">wins</span><span class="s27-trk"><span class="fragment grow" data-fragment-index="2" style="width:133.3px"></span><span class="hl-val">1/3</span></span></div>
+    <div class="s27-b"><span class="s27-bl ex">match</span><span class="s27-trk"><span class="fragment grow" data-fragment-index="2" style="width:2px"></span><span class="hl-val">0</span></span></div>
+    <div class="s27-b"><span class="s27-bl ex">star</span><span class="s27-trk"><span class="fragment grow" data-fragment-index="2" style="width:133.3px"></span><span class="hl-val">1/3</span></span></div>
+    <div class="s27-b"><span class="s27-bl ex">award</span><span class="s27-trk"><span class="fragment grow" data-fragment-index="2" style="width:133.3px"></span><span class="hl-val">1/3</span></span></div>
     <div class="s27-b"><span class="s27-bl ex">film</span><span class="s27-trk"><span class="fragment grow" data-fragment-index="2" style="width:2px"></span><span class="hl-val">0</span></span></div>
-    <div class="s27-b"><span class="s27-bl ex">wins</span><span class="s27-trk"><span class="fragment grow" data-fragment-index="2" style="width:2px"></span><span class="hl-val">0</span></span></div>
-    <div class="s27-b"><span class="s27-bl ex">song</span><span class="s27-trk"><span class="fragment grow" data-fragment-index="2" style="width:100px"></span><span class="hl-val">1/4</span></span></div>
-    <div class="s27-b"><span class="s27-bl ex">&lt;/s&gt;</span><span class="s27-trk"><span class="fragment grow" data-fragment-index="2" style="width:100px"></span><span class="hl-val">1/4</span></span></div>
+    <div class="s27-b"><span class="s27-bl ex">&lt;s&gt;</span><span class="s27-trk"><span class="fragment grow" data-fragment-index="2" style="width:2px"></span><span class="hl-val">0</span></span></div>
   </div>
 </div>
 <p class="s27-st fragment up" data-fragment-index="3"><span class="s27-v">110,609</span><span class="s27-l">classes for the next word in C1</span></p>
 <div class="end steps s27-say">
   <p class="fragment current-visible" data-fragment-index="1">In classification, the model chooses one of six topics.</p>
   <p class="fragment current-visible" data-fragment-index="2">In generation, it chooses the next word.</p>
-  <p class="fragment current-visible" data-fragment-index="3">In C1, the next word has 110,609 classes: every word of the vocabulary and <span class="ex">&lt;/s&gt;</span>.</p>
+  <p class="fragment current-visible" data-fragment-index="3">In C1, the next word has 110,609 classes: every word of the vocabulary and <span class="ex">&lt;s&gt;</span>, which ends the text.</p>
   <p class="fragment keep" data-fragment-index="4">Generation is classification of the next word, with one class for each word.</p>
 </div>
 <style>
 /* Builds: 1 classification: the dev article of "A dev article" (dev row 2971, weah.text) and its six topic
    probabilities from the unigram model (weah.p.unigram: national politics 0.584, international 0.415, the other four
-   under 0.0002, drawn 2 px); 2 generation: the history star film in the entertainment toy articles and the probability
-   of each next word (toy.entertainment.trigram_counts: star film is followed by match, star, song and </s> once each,
-   so 1/4 each and 0 for film and wins); 3 the number of classes in C1 (classes_next = V + 1 = 110,608 + 1); 4 the
+   under 0.0002, drawn 2 px); 2 generation: the word film in the entertainment toy sentences and the probability
+   of each next word (toy.entertainment.table, the row of film: wins, star and award once each, so 1/3 each and 0 for
+   team, match, film and <s>); 3 the number of classes in C1 (classes_next = V + 1 = 110,608 + 1); 4 the
    closing line. Both panels use the same bars, 400 px per 1. Panels 560 px wide, 32 px apart; the number of classes sits
    beside the generation bars. */
 .reveal section.s27 .s27-p { position: absolute; top: 112px; width: 560px; }
@@ -2344,6 +2365,7 @@ html.print-pdf .reveal .slides section.s21 pre code > span { opacity: 1 !importa
 .reveal section.s27 .s27-hist .chip { height: 40px; font-size: 22px; }
 .reveal section.s27 .s27-bars { margin-top: 20px; }
 .reveal section.s27 .s27-b { display: grid; grid-template-columns: 248px 1fr; align-items: center; height: 38px; font-size: 20px; }
+.reveal section.s27 .s27-ge .s27-b { height: 33px; }
 .reveal section.s27 .s27-ge .s27-b { grid-template-columns: 120px 1fr; }
 .reveal section.s27 .s27-bl .sw { margin-right: 8px; }
 .reveal section.s27 .s27-bl.ex { font-size: 20px; }
@@ -3139,18 +3161,17 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 <section id="perplexity" class="slide level2 q06">
 <h2>Perplexity</h2>
 <div class="q06-toy">
-  <div class="chips q06-h"><span class="chip">star</span><span class="chip">film</span></div>
+  <div class="chips q06-h"><span class="chip">film</span></div>
   <span class="arr"></span>
   <div class="hbars q06-bars">
-    <span class="hl-lab ex">song</span><span class="hl-trk" style="--v:0.25"><span class="hl-bar"></span><span class="hl-val">1/4</span></span>
-    <span class="hl-lab ex">star</span><span class="hl-trk" style="--v:0.25"><span class="hl-bar"></span><span class="hl-val">1/4</span></span>
-    <span class="hl-lab ex">&lt;/s&gt;</span><span class="hl-trk" style="--v:0.25"><span class="hl-bar"></span><span class="hl-val">1/4</span></span>
-    <span class="hl-lab ex">match</span><span class="hl-trk" style="--v:0.25"><span class="hl-bar"></span><span class="hl-val">1/4</span></span>
+    <span class="hl-lab ex">wins</span><span class="hl-trk" style="--v:0.3333"><span class="hl-bar"></span><span class="hl-val">1/3</span></span>
+    <span class="hl-lab ex">star</span><span class="hl-trk" style="--v:0.3333"><span class="hl-bar"></span><span class="hl-val">1/3</span></span>
+    <span class="hl-lab ex">award</span><span class="hl-trk" style="--v:0.3333"><span class="hl-bar"></span><span class="hl-val">1/3</span></span>
   </div>
 </div>
 <div class="q06-eq">
-  <p class="fragment up" data-fragment-index="1"><span class="math inline">\text{loss} = -\log(1/4) = \log 4 = 1.39</span></p>
-  <p class="fragment up" data-fragment-index="2"><span class="math inline">\text{perplexity} = e^{\,\text{loss}} = e^{\,\log 4} = 4</span></p>
+  <p class="fragment up" data-fragment-index="1"><span class="math inline">\text{loss} = -\log(1/3) = \log 3 = 1.10</span></p>
+  <p class="fragment up" data-fragment-index="2"><span class="math inline">\text{perplexity} = e^{\,\text{loss}} = e^{\,\log 3} = 3</span></p>
 </div>
 <!-- the number line, 1:1 in slide pixels: perplexity 1 at x = 112, 110,609 at x = 800 (688 px for 110,608); beyond it a
      dashed line and an arrow to infinity. -->
@@ -3180,16 +3201,16 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
   </g>
 </svg>
 <div class="end steps q06-say">
-  <p class="fragment current-visible" data-fragment-index="1">If four words are equally likely, the loss is <span class="math inline">\log 4 = 1.39</span>.</p>
-  <p class="fragment current-visible" data-fragment-index="2">Perplexity is e to the power of the mean loss. Here it is 4, the&nbsp;number&nbsp;of&nbsp;equally&nbsp;likely&nbsp;words.</p>
+  <p class="fragment current-visible" data-fragment-index="1">If three words are equally likely, the loss is <span class="math inline">\log 3 = 1.10</span>.</p>
+  <p class="fragment current-visible" data-fragment-index="2">Perplexity is e to the power of the mean loss. Here it is 3, the&nbsp;number&nbsp;of&nbsp;equally&nbsp;likely&nbsp;words.</p>
   <p class="fragment current-visible" data-fragment-index="3">Perplexity is 1 if every next word gets probability 1, 110,609 if all words are equally likely, and infinite if a word gets probability&nbsp;0.</p>
   <p class="fragment current-visible" data-fragment-index="4">On the dev set, the three models have these perplexities. A small number is added to every count; Part 5 explains&nbsp;it.</p>
   <p class="fragment keep" data-fragment-index="5">Perplexity depends on the test text, so we compare models on the same&nbsp;text.</p>
 </div>
 <style>
-/* Slide q06. Step 0: the toy previous words star film and their four next words, 1/4 each (c03_data.json,
-   toy.entertainment.trigram_counts: star film is followed by song, star, </s> and match once each; the bars of slide
-   "Choosing the next word", 400 px per 1). Builds: 1 the loss, -log 1/4 = log 4 = 1.386; 2 perplexity, e^loss = 4;
+/* Slide q06. Step 0: the toy previous word film and its three next words in entertainment, 1/3 each (c03_data.json,
+   toy.next_after_film: film is followed by wins, star and award once each; the bars of slide
+   "Choosing the next word", 400 px per 1). Builds: 1 the loss, -log 1/3 = log 3 = 1.099; 2 perplexity, e^loss = 3;
    3 the number line: 1 (every next word gets probability 1), 110,609 (classes_next: every word gets 1/110,609, so the
    loss is log 110,609), infinity (a word with probability 0 has an infinite loss); 4 the three C1 models on the dev set,
    each with its best k of Part 5 (best: unigram k = 0.1, 5,404.5; bigram k = 0.001, 5,103.5; trigram k = 0.0001,
@@ -3221,10 +3242,10 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 <section id="the-lowest-possible-loss" class="slide level2 q07">
 <h2>The lowest possible loss</h2>
 <p class="q07-h q07-ha">Shares: <span class="sw t3"></span>sports 0.7, <span class="sw t5"></span>entertainment 0.3</p>
-<p class="q07-h q07-hb fragment up" data-fragment-index="2">Shares: <span class="ex">song</span>, <span class="ex">star</span>, <span class="ex">&lt;/s&gt;</span>, <span class="ex">match</span>, 1/4 each</p>
+<p class="q07-h q07-hb fragment up" data-fragment-index="2">Shares: <span class="ex">wins</span>, <span class="ex">star</span>, <span class="ex">award</span>, 1/3 each</p>
 <!-- Two charts, 1:1 in slide pixels: q from 0 to 1 over 432 px (left chart x = 120 to 552, right chart x = 744 to 1176);
      mean loss 0 at y = 392, 44 px per unit (4 at y = 216). Curves from c03_data.json gibbs, q = 0.01 to 0.99. -->
-<svg class="q07-svg" width="1152" height="320" viewbox="64 120 1152 320" role="img" aria-label="Left: the mean loss against q when the shares are 0.7 and 0.3; it is lowest at q = 0.7. Right: the mean loss against the probability q given to one of four next words that each follow in a quarter of the cases; it is lowest at q = 1/4, where it is log 4 = 1.39.">
+<svg class="q07-svg" width="1152" height="320" viewbox="64 120 1152 320" role="img" aria-label="Left: the mean loss against q when the shares are 0.7 and 0.3; it is lowest at q = 0.7. Right: the mean loss against the probability q given to one of three next words that each follow in a third of the cases; it is lowest at q = 1/3, where it is log 3 = 1.10.">
   <g>
     <line class="ch-grid" x1="120" x2="552" y1="348" y2="348"></line><line class="ch-grid" x1="120" x2="552" y1="304" y2="304"></line><line class="ch-grid" x1="120" x2="552" y1="260" y2="260"></line><line class="ch-grid" x1="120" x2="552" y1="216" y2="216"></line>
     <line class="ch-axis" x1="120" x2="120" y1="194" y2="392"></line><line class="ch-axis" x1="120" x2="552" y1="392" y2="392"></line>
@@ -3247,12 +3268,12 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
     <text class="q07-ax" x="1190" y="399">q</text>
     <text class="q07-tk" x="688" y="184">mean loss</text>
   </g>
-  <g class="fragment draw" data-fragment-index="2"><path class="q07-cb" pathlength="1" d="M748.3,304.8 L752.6,312.0 L757.0,316.2 L761.3,319.0 L765.6,321.1 L769.9,322.8 L774.2,324.1 L778.6,325.2 L782.9,326.1 L787.2,326.9 L791.5,327.6 L795.8,328.2 L800.2,328.7 L804.5,329.1 L808.8,329.5 L813.1,329.8 L817.4,330.1 L821.8,330.3 L826.1,330.5 L830.4,330.7 L834.7,330.8 L839.0,330.9 L843.4,331.0 L847.7,331.0 L852.0,331.0 L856.3,331.0 L860.6,331.0 L865.0,330.9 L869.3,330.8 L873.6,330.7 L877.9,330.6 L882.2,330.5 L886.6,330.3 L890.9,330.2 L895.2,330.0 L899.5,329.8 L903.8,329.6 L908.2,329.3 L912.5,329.1 L916.8,328.8 L921.1,328.5 L925.4,328.2 L929.8,327.9 L934.1,327.6 L938.4,327.2 L942.7,326.9 L947.0,326.5 L951.4,326.1 L955.7,325.7 L960.0,325.2 L964.3,324.8 L968.6,324.3 L973.0,323.8 L977.3,323.3 L981.6,322.8 L985.9,322.3 L990.2,321.7 L994.6,321.1 L998.9,320.5 L1003.2,319.9 L1007.5,319.2 L1011.8,318.6 L1016.2,317.9 L1020.5,317.1 L1024.8,316.4 L1029.1,315.6 L1033.4,314.8 L1037.8,313.9 L1042.1,313.0 L1046.4,312.1 L1050.7,311.1 L1055.0,310.1 L1059.4,309.1 L1063.7,308.0 L1068.0,306.8 L1072.3,305.6 L1076.6,304.4 L1081.0,303.0 L1085.3,301.7 L1089.6,300.2 L1093.9,298.6 L1098.2,297.0 L1102.6,295.2 L1106.9,293.4 L1111.2,291.4 L1115.5,289.2 L1119.8,286.9 L1124.2,284.4 L1128.5,281.6 L1132.8,278.6 L1137.1,275.2 L1141.4,271.5 L1145.8,267.2 L1150.1,262.2 L1154.4,256.3 L1158.7,249.1 L1163.0,239.7 L1167.4,226.4 L1171.7,203.7"></path></g>
+  <g class="fragment draw" data-fragment-index="2"><path class="q07-cb" pathlength="1" d="M748.3,303.8 L752.6,313.7 L757.0,319.3 L761.3,323.3 L765.6,326.2 L769.9,328.6 L774.2,330.5 L778.6,332.2 L782.9,333.6 L787.2,334.8 L791.5,335.9 L795.8,336.8 L800.2,337.7 L804.5,338.4 L808.8,339.1 L813.1,339.7 L817.4,340.2 L821.8,340.7 L826.1,341.1 L830.4,341.5 L834.7,341.9 L839.0,342.2 L843.4,342.4 L847.7,342.7 L852.0,342.9 L856.3,343.1 L860.6,343.2 L865.0,343.4 L869.3,343.5 L873.6,343.5 L877.9,343.6 L882.2,343.6 L886.6,343.7 L890.9,343.7 L895.2,343.6 L899.5,343.6 L903.8,343.5 L908.2,343.5 L912.5,343.4 L916.8,343.2 L921.1,343.1 L925.4,343.0 L929.8,342.8 L934.1,342.6 L938.4,342.4 L942.7,342.2 L947.0,342.0 L951.4,341.7 L955.7,341.5 L960.0,341.2 L964.3,340.9 L968.6,340.5 L973.0,340.2 L977.3,339.9 L981.6,339.5 L985.9,339.1 L990.2,338.7 L994.6,338.2 L998.9,337.8 L1003.2,337.3 L1007.5,336.8 L1011.8,336.3 L1016.2,335.7 L1020.5,335.2 L1024.8,334.6 L1029.1,333.9 L1033.4,333.3 L1037.8,332.6 L1042.1,331.9 L1046.4,331.1 L1050.7,330.3 L1055.0,329.5 L1059.4,328.6 L1063.7,327.7 L1068.0,326.8 L1072.3,325.8 L1076.6,324.7 L1081.0,323.6 L1085.3,322.4 L1089.6,321.2 L1093.9,319.9 L1098.2,318.5 L1102.6,317.0 L1106.9,315.4 L1111.2,313.6 L1115.5,311.8 L1119.8,309.8 L1124.2,307.6 L1128.5,305.2 L1132.8,302.6 L1137.1,299.7 L1141.4,296.4 L1145.8,292.6 L1150.1,288.2 L1154.4,283.0 L1158.7,276.6 L1163.0,268.4 L1167.4,256.6 L1171.7,236.4"></path></g>
   <g class="fragment q07-late" data-fragment-index="2">
-    <line class="q07-rb" x1="852.0" x2="852.0" y1="194" y2="392"></line>
-    <text class="q07-tk" x="860.0" y="184"><tspan font-style="italic">q</tspan> = 1/4</text>
-    <circle class="q07-db" cx="852.0" cy="331.0" r="7"></circle>
-    <text class="q07-v" x="864.0" y="363.0">log 4 = 1.39</text>
+    <line class="q07-rb" x1="888.0" x2="888.0" y1="194" y2="392"></line>
+    <text class="q07-tk" x="896.0" y="184"><tspan font-style="italic">q</tspan> = 1/3</text>
+    <circle class="q07-db" cx="888.0" cy="343.7" r="7"></circle>
+    <text class="q07-v" x="900.0" y="375.7">log 3 = 1.10</text>
   </g>
 </svg>
 <div class="q07-in fragment up" data-fragment-index="3">
@@ -3261,18 +3282,18 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 </div>
 <div class="end steps q07-say">
   <p class="fragment current-visible" data-fragment-index="1">In class 2, the loss was lowest when the model gave the true share,&nbsp;0.7.</p>
-  <p class="fragment current-visible" data-fragment-index="2">Here one word follows in 1/4 of the cases. The mean loss is lowest when&nbsp;the&nbsp;model&nbsp;gives&nbsp;it&nbsp;1/4.</p>
+  <p class="fragment current-visible" data-fragment-index="2">Here one word follows in 1/3 of the cases. The mean loss is lowest when&nbsp;the&nbsp;model&nbsp;gives&nbsp;it&nbsp;1/3.</p>
   <p class="fragment current-visible" data-fragment-index="3">The mean loss is lowest when the model’s probabilities equal the shares in&nbsp;the&nbsp;text. This&nbsp;is&nbsp;Gibbs’&nbsp;inequality.</p>
   <p class="fragment keep q07-q" data-fragment-index="4">Counting gives the shares in the training texts. Do they also fit new&nbsp;text?</p>
 </div>
 <style>
 /* Slide q07. Step 0: the left chart's frame. Builds: 1 the curve of class 2 (100 headlines, 70 sports: the mean loss
    -(0.7 log q + 0.3 log(1 - q)) against the probability q given to sports), lowest at q = 0.7 (gibbs.two: min_q 0.7,
-   min_loss 0.611); 2 the new case, four next words with shares 1/4 each (star film in the toy texts, slide q06): the model
-   gives q to one of them and (1 - q)/3 to each of the others; the mean loss -(1/4 log q + 3/4 log((1 - q)/3)) is lowest at
-   q = 1/4 (gibbs.four: min_q 0.25, min_loss = log 4 = 1.386), marked in Blue 60; 3 Gibbs' inequality, p the shares in the
+   min_loss 0.611); 2 the new case, three next words with shares 1/3 each (after film in the toy texts, slide q06): the model
+   gives q to one of them and (1 - q)/2 to each of the others; the mean loss -(1/3 log q + 2/3 log((1 - q)/2)) is lowest at
+   q = 1/3 (gibbs.three: min_q 1/3, min_loss = log 3 = 1.099), marked in Blue 60; 3 Gibbs' inequality, p the shares in the
    text, q the model's probabilities; 4 the question that slides q08 to q10 answer. Curves: gibbs.q, gibbs.two.loss,
-   gibbs.four.loss (99 points each), x = 120 + 432 q (left) or 744 + 432 q (right), y = 392 - 44 loss. */
+   gibbs.three.loss (99 points each), x = 120 + 432 q (left) or 744 + 432 q (right), y = 392 - 44 loss. */
 .reveal section.q07 .q07-h { position: absolute; top: 120px; margin: 0; font-size: 22px; line-height: 30px; white-space: nowrap; }
 .reveal section.q07 .q07-ha { left: 64px; }
 .reveal section.q07 .q07-hb { left: 688px; }
@@ -3526,75 +3547,92 @@ html.print-pdf .reveal .slides section.q09 .fragment.q09-drop ~ .q09-v { opacity
 </section>
 <section id="a-new-headline" class="slide level2 s30" data-section="Unseen n-grams">
 <h2>A new headline</h2>
-<p class="s30-h">Test headline <span class="ex">Film star wins</span></p>
-<div class="s30-pairs fragment up" data-fragment-index="1"><span class="chips"><span class="chip">&lt;s&gt; film</span><span class="chip">film star</span><span class="chip">star wins</span><span class="chip">wins &lt;/s&gt;</span></span></div>
+<p class="s30-h">Test headline <span class="ex">Star film wins award</span></p>
+<div class="s30-pairs fragment up" data-fragment-index="1"><span class="chips"><span class="chip">&lt;s&gt; star</span><span class="chip">star film</span><span class="chip">film wins</span><span class="chip">wins award</span><span class="chip">award &lt;s&gt;</span></span></div>
 <div class="s30-b s30-sp"><p class="s30-cap"><span class="sw t3"></span>sports</p>
 <table class="s30-pt sp caption-top">
 <thead>
 <tr class="header">
-<th class="s30-corner" data-quarto-table-cell-role="th"></th>
-<th class="s30-c" data-quarto-table-cell-role="th">match</th>
-<th class="s30-c" data-quarto-table-cell-role="th">star</th>
-<th class="s30-c" data-quarto-table-cell-role="th">film</th>
-<th class="s30-c" data-quarto-table-cell-role="th">wins</th>
-<th class="s30-c" data-quarto-table-cell-role="th">song</th>
-<th class="s30-c" data-quarto-table-cell-role="th">&lt;/s&gt;</th>
+<th class="s30-rh" data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">&lt;s&gt;</th>
+<th data-quarto-table-cell-role="th">team</th>
+<th data-quarto-table-cell-role="th">wins</th>
+<th data-quarto-table-cell-role="th">match</th>
+<th data-quarto-table-cell-role="th">star</th>
+<th data-quarto-table-cell-role="th">award</th>
+<th data-quarto-table-cell-role="th">film</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr class="r-s odd">
 <th class="s30-rh" data-quarto-table-cell-role="th">&lt;s&gt;</th>
-<td class="num">3/6</td>
-<td class="num">1/6</td>
-<td class="num z on">0</td>
-<td class="num">1/6</td>
-<td class="num">1/6</td>
-<td class="num z">0</td>
+<td class="z">0</td>
+<td class="c">2/3</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c on">1/3</td>
+<td class="z">0</td>
+<td class="z">0</td>
 </tr>
-<tr class="even">
-<th class="s30-rh" data-quarto-table-cell-role="th">match</th>
-<td class="num z">0</td>
-<td class="num">2/8</td>
-<td class="num z">0</td>
-<td class="num">1/8</td>
-<td class="num z">0</td>
-<td class="num">5/8</td>
+<tr class="r-team even">
+<th class="s30-rh" data-quarto-table-cell-role="th">team</th>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c">1/2</td>
+<td class="z">0</td>
+<td class="c">1/2</td>
+<td class="z">0</td>
+<td class="z">0</td>
 </tr>
-<tr class="odd">
-<th class="s30-rh" data-quarto-table-cell-role="th">star</th>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num">1/4</td>
-<td class="num on">3/4</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
-</tr>
-<tr class="even">
-<th class="s30-rh" data-quarto-table-cell-role="th">film</th>
-<td class="num z">0</td>
-<td class="num z on">0</td>
-<td class="num z">0</td>
-<td class="num">1/1</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
-</tr>
-<tr class="odd">
+<tr class="r-wins odd">
 <th class="s30-rh" data-quarto-table-cell-role="th">wins</th>
-<td class="num">5/6</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num on">1/6</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c">2/3</td>
+<td class="z">0</td>
+<td class="c on">1/3</td>
+<td class="z">0</td>
 </tr>
-<tr class="even">
-<th class="s30-rh" data-quarto-table-cell-role="th">song</th>
-<td class="num z">0</td>
-<td class="num">1/1</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
+<tr class="r-match even">
+<th class="s30-rh" data-quarto-table-cell-role="th">match</th>
+<td class="c">2/2</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+</tr>
+<tr class="r-star odd">
+<th class="s30-rh" data-quarto-table-cell-role="th">star</th>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c">2/2</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z on">0</td>
+</tr>
+<tr class="r-award even">
+<th class="s30-rh" data-quarto-table-cell-role="th">award</th>
+<td class="c on">1/1</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+</tr>
+<tr class="empty r-film odd">
+<th class="s30-rh" data-quarto-table-cell-role="th">film</th>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z on">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
 </tr>
 </tbody>
 </table>
@@ -3603,128 +3641,141 @@ html.print-pdf .reveal .slides section.q09 .fragment.q09-drop ~ .q09-v { opacity
 <table class="s30-pt en caption-top">
 <thead>
 <tr class="header">
-<th class="s30-corner" data-quarto-table-cell-role="th"></th>
-<th class="s30-c" data-quarto-table-cell-role="th">match</th>
-<th class="s30-c" data-quarto-table-cell-role="th">star</th>
-<th class="s30-c" data-quarto-table-cell-role="th">film</th>
-<th class="s30-c" data-quarto-table-cell-role="th">wins</th>
-<th class="s30-c" data-quarto-table-cell-role="th">song</th>
-<th class="s30-c" data-quarto-table-cell-role="th">&lt;/s&gt;</th>
+<th class="s30-rh" data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">&lt;s&gt;</th>
+<th data-quarto-table-cell-role="th">team</th>
+<th data-quarto-table-cell-role="th">wins</th>
+<th data-quarto-table-cell-role="th">match</th>
+<th data-quarto-table-cell-role="th">star</th>
+<th data-quarto-table-cell-role="th">award</th>
+<th data-quarto-table-cell-role="th">film</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr class="r-s odd">
 <th class="s30-rh" data-quarto-table-cell-role="th">&lt;s&gt;</th>
-<td class="num z">0</td>
-<td class="num">2/4</td>
-<td class="num on">1/4</td>
-<td class="num z">0</td>
-<td class="num">1/4</td>
-<td class="num z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c on">1/3</td>
+<td class="z">0</td>
+<td class="c">2/3</td>
 </tr>
-<tr class="even">
-<th class="s30-rh" data-quarto-table-cell-role="th">match</th>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num">1/1</td>
+<tr class="empty r-team even">
+<th class="s30-rh" data-quarto-table-cell-role="th">team</th>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
 </tr>
-<tr class="odd">
-<th class="s30-rh" data-quarto-table-cell-role="th">star</th>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num">4/6</td>
-<td class="num z on">0</td>
-<td class="num">2/6</td>
-<td class="num z">0</td>
-</tr>
-<tr class="even">
-<th class="s30-rh" data-quarto-table-cell-role="th">film</th>
-<td class="num">1/7</td>
-<td class="num on">2/7</td>
-<td class="num z">0</td>
-<td class="num">2/7</td>
-<td class="num">1/7</td>
-<td class="num">1/7</td>
-</tr>
-<tr class="odd">
+<tr class="r-wins odd">
 <th class="s30-rh" data-quarto-table-cell-role="th">wins</th>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num on">2/2</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c on">2/3</td>
+<td class="c">1/3</td>
 </tr>
-<tr class="even">
-<th class="s30-rh" data-quarto-table-cell-role="th">song</th>
-<td class="num z">0</td>
-<td class="num">2/4</td>
-<td class="num">2/4</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
-<td class="num z">0</td>
+<tr class="empty r-match even">
+<th class="s30-rh" data-quarto-table-cell-role="th">match</th>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+<td class="z">–</td>
+</tr>
+<tr class="r-star odd">
+<th class="s30-rh" data-quarto-table-cell-role="th">star</th>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c">2/2</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z on">0</td>
+</tr>
+<tr class="r-award even">
+<th class="s30-rh" data-quarto-table-cell-role="th">award</th>
+<td class="c on">3/3</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="z">0</td>
+</tr>
+<tr class="r-film odd">
+<th class="s30-rh" data-quarto-table-cell-role="th">film</th>
+<td class="z">0</td>
+<td class="z">0</td>
+<td class="c on">1/3</td>
+<td class="z">0</td>
+<td class="c">1/3</td>
+<td class="c">1/3</td>
+<td class="z">0</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="s30-pr">
-  <p class="s30-pe fragment up" data-fragment-index="2"><span class="sw t5"></span><span class="math inline">p(\text{text} \mid \text{entertainment}) = 1/4 \times 2/7 \times 0 \times 2/2 = 0</span></p>
+  <p class="s30-pe fragment up" data-fragment-index="2"><span class="sw t5"></span><span class="math inline">p(\text{text} \mid \text{entertainment}) = 1/3 \times 0 \times 1/3 \times 2/3 \times 3/3 = 0</span></p>
   <p class="s30-loss fragment up" data-fragment-index="3"><span class="s30-ll">Loss</span><span class="math inline">-\log 0 = \infty</span></p>
-  <p class="s30-ps fragment up" data-fragment-index="4"><span class="sw t3"></span><span class="math inline">p(\text{text} \mid \text{sports}) = 0 \times 0 \times 3/4 \times 1/6 = 0</span></p>
+  <p class="s30-ps fragment up" data-fragment-index="4"><span class="sw t3"></span><span class="math inline">p(\text{text} \mid \text{sports}) = 1/3 \times 0 \times \dots = 0</span></p>
 </div>
 <span class="s30-m2 fragment" data-fragment-index="2" aria-hidden="true"></span>
 <span class="s30-m4 fragment" data-fragment-index="4" aria-hidden="true"></span>
 <div class="end steps s30-say">
-  <p class="fragment fade-out" data-fragment-index="1">A new test headline has the three words of Star film wins in another order. Its true topic is entertainment.</p>
-  <p class="fragment current-visible" data-fragment-index="1">With &lt;s&gt; and &lt;/s&gt;, the headline has four pairs.</p>
-  <p class="fragment current-visible" data-fragment-index="2">In entertainment, star is never followed by wins, so the product is 0.</p>
+  <p class="fragment fade-out" data-fragment-index="1">A new test headline uses four words that the model knows. Its true topic is entertainment.</p>
+  <p class="fragment current-visible" data-fragment-index="1">With &lt;s&gt; at the start and at the end, the headline has five pairs.</p>
+  <p class="fragment current-visible" data-fragment-index="2">In entertainment, star is never followed by film, so the product is 0.</p>
   <p class="fragment current-visible" data-fragment-index="3">The loss of the headline, <span class="math inline">-\log 0</span>, is infinite.</p>
-  <p class="fragment current-visible" data-fragment-index="4">In sports, no article starts with film. Both likelihoods are 0, so Bayes’ formula gives 0/0.</p>
+  <p class="fragment current-visible" data-fragment-index="4">In sports, star is never followed by film either. Both likelihoods are 0, so Bayes’ formula gives 0/0.</p>
   <p class="fragment keep s30-bad" data-fragment-index="5">Problem: a single pair that never occurs in training makes the probability of the whole text 0.</p>
 </div>
 <style>
-/* Builds: 1 the four pairs of the new headline; 2 the four entertainment cells lit (the 0 of star wins in red) and
-   their product; 3 the loss -log 0; 4 the four sports cells lit (two zeros: <s> film and film star) and their product;
-   5 the problem, in red. Tables as on "The likelihood" (toy.<topic>.table / row_total from c03_build.py).
-   Entertainment: p(film | <s>) = 1/4, p(star | film) = 2/7, p(wins | star) = 0/6 (addone.film_star_wins = 1, 2, 0),
-   p(</s> | wins) = 2/2. Sports: p(film | <s>) = 0 (addone.sports_s_film), p(star | film) = 0/1, p(wins | star) = 3/4,
-   p(</s> | wins) = 1/6. Both likelihoods are 0, so the posterior is 0/0 for either prior. */
-.reveal section.s30 .s30-h { position: absolute; left: 64px; top: 112px; margin: 0; font-size: 24px; line-height: 40px; color: var(--text-secondary); }
-.reveal section.s30 .s30-h .ex { margin-left: 12px; font-size: 26px; color: var(--text-primary); }
-.reveal section.s30 .s30-pairs { position: absolute; left: 64px; top: 162px; }
-.reveal section.s30 .s30-pairs .chip { height: 38px; font-size: 21px; margin-right: 12px; }
-.reveal section.s30 .s30-b { position: absolute; top: 216px; }
+/* Slide s30. Builds: 1 the five pairs of the new headline; 2 the five entertainment cells lit (the 0 of star film in
+   red) and their product; 3 the loss -log 0; 4 the five sports cells lit (the 0 of star film, and the empty row of
+   film, which sports never uses) and the product, 0 from its second factor on; 5 the problem, in red. Tables as on
+   "The likelihood". Entertainment: p(star | <s>) = 1/3, p(film | star) = 0/2, p(wins | film) = 1/3,
+   p(award | wins) = 2/3, p(<s> | award) = 3/3. Sports: 1/3, 0/2, 0/0, 1/3, 1/1 (toy.unseen in c03_build.py).
+   Both likelihoods are 0, so the posterior is 0/0 for either prior. */
+.reveal section.s30 .s30-b { position: absolute; top: 164px; }
 .reveal section.s30 .s30-sp { left: 64px; }
-.reveal section.s30 .s30-en { left: 672px; }
-.reveal section.s30 .s30-cap { margin: 0 0 4px; font-size: 21px; line-height: 28px; }
+.reveal section.s30 .s30-en { left: 664px; }
+.reveal section.s30 .s30-cap { margin: 0 0 4px; font-size: 22px; line-height: 30px; }
 .reveal section.s30 .s30-cap .sw { margin-right: 10px; }
-.reveal section.s30 .s30-pt { margin: 0; font-size: 20px; border-collapse: collapse; }
-.reveal section.s30 .s30-pt th, .reveal section.s30 .s30-pt td { height: 29px; padding: 0 8px; box-sizing: border-box; vertical-align: middle; white-space: nowrap; transition: background-color var(--dur-moderate), opacity var(--dur-moderate), color var(--dur-moderate); }
-.reveal section.s30 .s30-pt thead th { font-family: var(--mono); font-weight: var(--weight-regular); font-size: 18px; text-align: right; width: 64px; }
-.reveal section.s30 .s30-pt thead th.s30-corner { width: 86px; }
-.reveal section.s30 .s30-pt th.s30-rh { background: none; font-family: var(--mono); font-weight: var(--weight-regular); font-size: 18px; text-align: left; color: var(--text-secondary); border-bottom: var(--rule) solid var(--border-subtle); }
-.reveal section.s30 .s30-pt td { text-align: right; }
+.reveal section.s30 .s30-pt { margin: 0; font-size: 22px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.reveal section.s30 .s30-pt th, .reveal section.s30 .s30-pt td { width: 68px; height: 34px; padding: 0; box-sizing: border-box; text-align: center; vertical-align: middle; white-space: nowrap; border: 0; border-bottom: var(--rule) solid var(--border-subtle); background: none; transition: background-color var(--dur-moderate), color var(--dur-moderate); }
+.reveal section.s30 .s30-pt th { font-family: var(--mono); font-weight: var(--weight-regular); }
+.reveal section.s30 .s30-pt thead th { font-size: 20px; }
+.reveal section.s30 .s30-pt th.s30-rh { width: 76px; text-align: left; }
 .reveal section.s30 .s30-pt td.z { color: var(--text-helper); }
-.reveal .slides section.s30:has(.s30-m2.visible) .s30-en td.on { background: var(--highlight); }
-.reveal .slides section.s30:has(.s30-m4.visible) .s30-sp td.on { background: var(--highlight); }
-.reveal .slides section.s30:has(.s30-m2.visible) .s30-en td.on.z,
-.reveal .slides section.s30:has(.s30-m4.visible) .s30-sp td.on.z { color: var(--support-error); font-weight: var(--weight-semibold); }
-.reveal section.s30 .s30-pr { position: absolute; left: 64px; top: 456px; display: grid; grid-template-columns: 608px auto; }
-.reveal section.s30 .s30-pr p { margin: 0; font-size: 24px; line-height: 40px; }
+.reveal section.s30 .s30-say p { font-size: 28px; line-height: 36px; }
+.reveal section.s30 .katex .accent { color: inherit; }
+.reveal section.s30 .s30-h { position: absolute; left: 64px; top: 112px; margin: 0; font-size: 24px; line-height: 40px; }
+.reveal section.s30 .s30-h .ex { font-size: 24px; }
+.reveal section.s30 .s30-pairs { position: absolute; left: 528px; top: 112px; height: 40px; display: flex; align-items: center; }
+.reveal section.s30 .s30-pairs .chips { flex-wrap: nowrap; gap: 6px; }
+.reveal section.s30 .s30-pairs .chip { font-size: 20px; padding: 0 10px; }
+.reveal .slides section.s30:has(.s30-m2.visible) .en td.on, .reveal .slides section.s30:has(.s30-m4.visible) .sp td.on { background: var(--highlight); color: var(--text-primary); }
+.reveal .slides section.s30:has(.s30-m2.visible) .en td.on.z, .reveal .slides section.s30:has(.s30-m4.visible) .sp td.on.z { color: var(--support-error); font-weight: var(--weight-semibold); }
+.reveal section.s30 .s30-pr { position: absolute; left: 64px; top: 474px; display: grid; grid-template-columns: 664px auto; }
+.reveal section.s30 .s30-pr p { margin: 0; font-size: 24px; line-height: 42px; white-space: nowrap; }
 .reveal section.s30 .s30-pe { grid-area: 1 / 1; }
 .reveal section.s30 .s30-loss { grid-area: 1 / 2; display: flex; align-items: center; gap: 16px; }
 .reveal section.s30 .s30-ps { grid-area: 2 / 1; }
 .reveal section.s30 .s30-ll { font-size: 22px; color: var(--text-secondary); }
 .reveal section.s30 .s30-pr .sw { margin-right: 12px; }
-.reveal section.s30 .s30-pr .katex { font-size: 25px; }
-.reveal section.s30 .s30-say p { font-size: 28px; line-height: 36px; }
+.reveal section.s30 .s30-pr .katex { font-size: 24px; }
 .reveal section.s30 .s30-say p.s30-bad { color: var(--support-error); font-weight: var(--weight-semibold); }
-.reveal section.s30 .s30-say p.s30-good { color: var(--support-success); font-weight: var(--weight-semibold); }
-.reveal section.s30 .s30-say p.s30-q { font-weight: var(--weight-semibold); }
-.reveal section.s30 .katex .accent { color: inherit; }
 </style>
 </section>
 <section id="add-one-smoothing" class="slide level2 s31">
@@ -3735,12 +3786,13 @@ html.print-pdf .reveal .slides section.q09 .fragment.q09-drop ~ .q09-v { opacity
 <thead>
 <tr class="header">
 <th class="s31-corner" data-quarto-table-cell-role="th"></th>
+<th class="num" data-quarto-table-cell-role="th">&lt;s&gt;</th>
+<th class="num" data-quarto-table-cell-role="th">team</th>
+<th class="num" data-quarto-table-cell-role="th">wins</th>
 <th class="num" data-quarto-table-cell-role="th">match</th>
 <th class="num" data-quarto-table-cell-role="th">star</th>
+<th class="num" data-quarto-table-cell-role="th">award</th>
 <th class="num" data-quarto-table-cell-role="th">film</th>
-<th class="num" data-quarto-table-cell-role="th">wins</th>
-<th class="num" data-quarto-table-cell-role="th">song</th>
-<th class="num" data-quarto-table-cell-role="th">&lt;/s&gt;</th>
 <th class="num s31-tot" data-quarto-table-cell-role="th">Total</th>
 </tr>
 </thead>
@@ -3753,52 +3805,55 @@ html.print-pdf .reveal .slides section.q09 .fragment.q09-drop ~ .q09-v { opacity
 <td class="num"><span class="fragment up" data-fragment-index="1" style="--i:3">+1</span></td>
 <td class="num"><span class="fragment up" data-fragment-index="1" style="--i:4">+1</span></td>
 <td class="num"><span class="fragment up" data-fragment-index="1" style="--i:5">+1</span></td>
-<td class="num s31-tot"><span class="fragment up" data-fragment-index="2" style="--i:0">+6</span></td>
+<td class="num"><span class="fragment up" data-fragment-index="1" style="--i:6">+1</span></td>
+<td class="num s31-tot"><span class="fragment up" data-fragment-index="2" style="--i:0">+7</span></td>
 </tr>
 <tr class="s31-cnt even">
 <th class="s31-rh" data-quarto-table-cell-role="th">star</th>
 <td class="num"><span class="swap" style="--i:0"><span class="fragment fade-out z" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">1</span></span></td>
 <td class="num"><span class="swap" style="--i:1"><span class="fragment fade-out z" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">1</span></span></td>
-<td class="num"><span class="swap" style="--i:2"><span class="fragment fade-out" data-fragment-index="1">4</span><span class="fragment" data-fragment-index="1">5</span></span></td>
-<td class="num w"><span class="swap" style="--i:3"><span class="fragment fade-out z" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">1</span></span></td>
-<td class="num"><span class="swap" style="--i:4"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">3</span></span></td>
+<td class="num"><span class="swap" style="--i:2"><span class="fragment fade-out" data-fragment-index="1">2</span><span class="fragment" data-fragment-index="1">3</span></span></td>
+<td class="num"><span class="swap" style="--i:3"><span class="fragment fade-out z" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">1</span></span></td>
+<td class="num"><span class="swap" style="--i:4"><span class="fragment fade-out z" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">1</span></span></td>
 <td class="num"><span class="swap" style="--i:5"><span class="fragment fade-out z" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">1</span></span></td>
-<td class="num s31-tot w"><span class="swap" style="--i:0"><span class="fragment fade-out" data-fragment-index="2">6</span><span class="fragment" data-fragment-index="2">12</span></span></td>
+<td class="num w"><span class="swap" style="--i:6"><span class="fragment fade-out z" data-fragment-index="1">0</span><span class="fragment" data-fragment-index="1">1</span></span></td>
+<td class="num s31-tot w"><span class="swap" style="--i:0"><span class="fragment fade-out" data-fragment-index="2">2</span><span class="fragment" data-fragment-index="2">9</span></span></td>
 </tr>
 <tr class="s31-p fragment odd" data-fragment-index="3">
 <th class="s31-rh" data-quarto-table-cell-role="th"><span class="math inline">p(w \mid \text{star})</span></th>
-<td class="num">1/12</td>
-<td class="num">1/12</td>
-<td class="num">5/12</td>
-<td class="num w">1/12</td>
-<td class="num">3/12</td>
-<td class="num">1/12</td>
+<td class="num">1/9</td>
+<td class="num">1/9</td>
+<td class="num">3/9</td>
+<td class="num">1/9</td>
+<td class="num">1/9</td>
+<td class="num">1/9</td>
+<td class="num w">1/9</td>
 <td class="num s31-tot">1</td>
 </tr>
 </tbody>
 </table>
 
 <div class="s31-f fragment up" data-fragment-index="3"><span class="math inline">p(w \mid v) = \dfrac{\text{count}(v\,w) + 1}{\text{count}(v) + V}</span></div>
-<div class="s31-o fragment up" data-fragment-index="4"><span class="math inline">p(\text{wins} \mid \text{star}) = \dfrac{0 + 1}{6 + 6} = \dfrac{1}{12}</span></div>
+<div class="s31-o fragment up" data-fragment-index="4"><span class="math inline">p(\text{film} \mid \text{star}) = \dfrac{0 + 1}{2 + 7} = \dfrac{1}{9}</span></div>
 <span class="s31-m4 fragment" data-fragment-index="4" aria-hidden="true"></span>
 <div class="end steps s31-say">
-  <p class="fragment fade-out" data-fragment-index="1">In entertainment, four of the six pairs that start with star never occur.</p>
+  <p class="fragment fade-out" data-fragment-index="1">In entertainment, six of the seven pairs that start with star never occur.</p>
   <p class="fragment current-visible" data-fragment-index="1">Add-one smoothing adds 1 to every count, so no count is 0.</p>
-  <p class="fragment current-visible" data-fragment-index="2">The row total grows by <span class="math inline">V = 6</span>, the number of columns: the five words and &lt;/s&gt;.</p>
+  <p class="fragment current-visible" data-fragment-index="2">The row total grows by <span class="math inline">V = 7</span>, the number of columns: the six words and &lt;s&gt;.</p>
   <p class="fragment current-visible" data-fragment-index="3">Each new count divided by the new total gives a probability. The row still adds up to 1.</p>
-  <p class="fragment keep s31-good" data-fragment-index="4">Solved: <span class="math inline">p(\text{wins} \mid \text{star}) = 1/12</span>, so the headline Film star wins gets a probability above 0.</p>
+  <p class="fragment keep s31-good" data-fragment-index="4">Solved: <span class="math inline">p(\text{film} \mid \text{star}) = 1/9</span>, so the headline Star film wins award gets a probability above 0.</p>
 </div>
 <style>
 /* Builds: 1 a +1 rises over each cell of the star row and each count becomes count + 1 (swap in place, 150 ms apart):
-   0 0 4 0 2 0 -> 1 1 5 1 3 1 (addone.row, addone.row1); 2 the row total grows by V = 6, the number of columns
-   (addone.V): 6 + 6 = 12 (addone.total); 3 the probabilities (count + 1) / 12, which add up to 12/12 = 1, and Laplace
-   smoothing for bigrams (SLP3 eq. 3.26, in the notation of "Counts to probabilities"); 4 the wins column lit and
-   p(wins | star) = (0 + 1) / (6 + 6) = 1/12; then solved, in green. */
+   0 0 2 0 0 0 0 -> 1 1 3 1 1 1 1 (addone.row, addone.row1); 2 the row total grows by V = 7, the number of columns
+   (addone.V): 2 + 7 = 9 (addone.total); 3 the probabilities (count + 1) / 9, which add up to 9/9 = 1, and Laplace
+   smoothing for bigrams (SLP3 eq. 3.26, in the notation of "Counts to probabilities"); 4 the film column lit and
+   p(film | star) = (0 + 1) / (2 + 7) = 1/9; then solved, in green. Written by parts/t_merge.py. */
 .reveal section.s31 .s31-cap { position: absolute; left: 64px; top: 116px; margin: 0; font-size: 22px; line-height: 30px; }
 .reveal section.s31 .s31-cap .sw { margin-right: 10px; }
 .reveal section.s31 .s31-t { position: absolute; left: 64px; top: 156px; margin: 0; font-size: 28px; border-collapse: collapse; }
 .reveal section.s31 .s31-t th, .reveal section.s31 .s31-t td { padding: 0 16px; box-sizing: border-box; vertical-align: middle; white-space: nowrap; transition: background-color var(--dur-moderate); }
-.reveal section.s31 .s31-t thead th { height: 48px; width: 112px; font-family: var(--mono); font-weight: var(--weight-regular); font-size: 22px; }
+.reveal section.s31 .s31-t thead th { height: 48px; width: 108px; font-family: var(--mono); font-weight: var(--weight-regular); font-size: 22px; }
 .reveal section.s31 .s31-t thead th.s31-corner { width: 216px; }
 .reveal section.s31 .s31-t thead th.s31-tot { font-family: var(--sans); font-weight: var(--weight-semibold); }
 .reveal section.s31 .s31-t th.s31-rh { background: none; font-family: var(--mono); font-weight: var(--weight-regular); font-size: 24px; text-align: left; color: var(--text-secondary); border-bottom: var(--rule) solid var(--border-subtle); }
@@ -3828,21 +3883,21 @@ html.print-pdf .reveal .slides section.q09 .fragment.q09-drop ~ .q09-v { opacity
 <div class="s32-l">
   <p class="s32-gh"><span class="math inline">p(w \mid \text{star})</span> in entertainment</p>
   <p class="s32-key"><span class="sw s32-k0"></span>without smoothing<span class="sw s32-k1 fragment" data-fragment-index="1"></span><span class="fragment" data-fragment-index="1">add-one</span></p>
-  <!-- Grouped columns, 1:1 in slide pixels: 330 px per unit of probability, baseline at y = 262; per word a column
-       without smoothing (x0, Gray 50) and one with add-one (x0 + 40, Blue 60), 32 px wide; x0 = 24 + 88 i. -->
+  <!-- Grouped columns, 1:1 in slide pixels: 220 px per unit of probability, baseline at y = 262; per word a column
+       without smoothing (x0, Gray 50) and one with add-one (x0 + 36, Blue 60), 30 px wide; x0 = 6 + 76 i. -->
   <svg class="s32-svg" width="544" height="300" viewbox="0 0 544 300" aria-hidden="true">
     <line class="ch-axis" x1="0" y1="262" x2="544" y2="262"></line>
-    <rect class="ch-context" x="200" y="42" width="32" height="220"></rect>
-    <rect class="ch-context" x="376" y="152" width="32" height="110"></rect>
-    <text class="s32-v" x="40" y="254">0</text><text class="s32-v" x="128" y="254">0</text><text class="s32-v" x="216" y="34">4/6</text><text class="s32-v" x="304" y="254">0</text><text class="s32-v" x="392" y="144">2/6</text><text class="s32-v" x="480" y="254">0</text>
-    <rect class="ch-accent fragment rise" data-fragment-index="1" x="64" y="234.5" width="32" height="27.5" style="--i:0"></rect>
-    <rect class="ch-accent fragment rise" data-fragment-index="1" x="152" y="234.5" width="32" height="27.5" style="--i:1"></rect>
-    <rect class="ch-accent fragment rise" data-fragment-index="1" x="240" y="124.5" width="32" height="137.5" style="--i:2"></rect>
-    <rect class="ch-accent fragment rise" data-fragment-index="1" x="328" y="234.5" width="32" height="27.5" style="--i:3"></rect>
-    <rect class="ch-accent fragment rise" data-fragment-index="1" x="416" y="179.5" width="32" height="82.5" style="--i:4"></rect>
-    <rect class="ch-accent fragment rise" data-fragment-index="1" x="504" y="234.5" width="32" height="27.5" style="--i:5"></rect>
-    <g class="fragment" data-fragment-index="1"><text class="s32-v" x="80" y="226.5">1/12</text><text class="s32-v" x="168" y="226.5">1/12</text><text class="s32-v" x="256" y="116.5">5/12</text><text class="s32-v" x="344" y="226.5">1/12</text><text class="s32-v" x="432" y="171.5">3/12</text><text class="s32-v" x="520" y="226.5">1/12</text></g>
-    <text class="s32-w" x="60" y="290">match</text><text class="s32-w" x="148" y="290">star</text><text class="s32-w" x="236" y="290">film</text><text class="s32-w" x="324" y="290">wins</text><text class="s32-w" x="412" y="290">song</text><text class="s32-w" x="500" y="290">&lt;/s&gt;</text>
+    <rect class="ch-context" x="158" y="42" width="30" height="220"></rect>
+    <text class="s32-v" x="21" y="254">0</text><text class="s32-v" x="97" y="254">0</text><text class="s32-v" x="173" y="34">2/2</text><text class="s32-v" x="249" y="254">0</text><text class="s32-v" x="325" y="254">0</text><text class="s32-v" x="401" y="254">0</text><text class="s32-v" x="477" y="254">0</text>
+    <rect class="ch-accent fragment rise" data-fragment-index="1" x="42" y="237.6" width="30" height="24.4" style="--i:0"></rect>
+    <rect class="ch-accent fragment rise" data-fragment-index="1" x="118" y="237.6" width="30" height="24.4" style="--i:1"></rect>
+    <rect class="ch-accent fragment rise" data-fragment-index="1" x="194" y="188.7" width="30" height="73.3" style="--i:2"></rect>
+    <rect class="ch-accent fragment rise" data-fragment-index="1" x="270" y="237.6" width="30" height="24.4" style="--i:3"></rect>
+    <rect class="ch-accent fragment rise" data-fragment-index="1" x="346" y="237.6" width="30" height="24.4" style="--i:4"></rect>
+    <rect class="ch-accent fragment rise" data-fragment-index="1" x="422" y="237.6" width="30" height="24.4" style="--i:5"></rect>
+    <rect class="ch-accent fragment rise" data-fragment-index="1" x="498" y="237.6" width="30" height="24.4" style="--i:6"></rect>
+    <g class="fragment" data-fragment-index="1"><text class="s32-v" x="57" y="229.6">1/9</text><text class="s32-v" x="133" y="229.6">1/9</text><text class="s32-v" x="209" y="180.7">3/9</text><text class="s32-v" x="285" y="229.6">1/9</text><text class="s32-v" x="361" y="229.6">1/9</text><text class="s32-v" x="437" y="229.6">1/9</text><text class="s32-v" x="513" y="229.6">1/9</text></g>
+    <text class="s32-w" x="39" y="290">&lt;s&gt;</text><text class="s32-w" x="115" y="290">team</text><text class="s32-w" x="191" y="290">wins</text><text class="s32-w" x="267" y="290">match</text><text class="s32-w" x="343" y="290">star</text><text class="s32-w" x="419" y="290">award</text><text class="s32-w" x="495" y="290">film</text>
   </svg>
 </div>
 <div class="s32-r fragment up" data-fragment-index="2">
@@ -3851,16 +3906,16 @@ html.print-pdf .reveal .slides section.q09 .fragment.q09-drop ~ .q09-v { opacity
   <div class="s32-b"><span>Bigram</span><span class="s32-trk"><span class="acc fragment grow" data-fragment-index="3" style="width:320.5px"></span><span class="hl-val">10.68</span></span></div>
 </div>
 <div class="end steps s32-say">
-  <p class="fragment fade-out" data-fragment-index="1">Without smoothing, star is followed by film with probability 4/6.</p>
-  <p class="fragment current-visible" data-fragment-index="1">The four pairs that never occur now get 4/12 of the probability, so <span class="math inline">p(\text{film} \mid \text{star})</span> falls from 4/6 to 5/12.</p>
+  <p class="fragment fade-out" data-fragment-index="1">Without smoothing, star is followed by wins with probability 2/2 = 1.</p>
+  <p class="fragment current-visible" data-fragment-index="1">The six pairs that never occur now get 6/9 of the probability, so <span class="math inline">p(\text{wins} \mid \text{star})</span> falls from 1 to 3/9.</p>
   <p class="fragment current-visible" data-fragment-index="2">Each article uses the model of its own&nbsp;topic.</p>
   <p class="fragment current-visible" data-fragment-index="3">With add-one, the bigram model predicts the dev text worse than the unigram model, although it uses more context.</p>
   <p class="fragment keep s32-bad" data-fragment-index="4">Problem: in C1, add-one adds <span class="math inline">V = 110{,}609</span> to every row total, so it gives too much probability to pairs that never occur.</p>
 </div>
 <style>
 /* Builds: 1 the star row of entertainment with add-one beside the row without it (the add-one columns rise, 120 ms
-   apart): film 4/6 -> 5/12, song 2/6 -> 3/12, each unseen pair 0 -> 1/12; the four unseen pairs take 4 x 1/12 = 4/12
-   (addone.row, addone.row1, addone.total + addone.V = 12). 2 and 3 the dev loss per word with add-one (dev_loss.unigram["1"]
+   apart): wins 2/2 -> 3/9, each unseen pair 0 -> 1/9; the six unseen pairs take 6 x 1/9 = 6/9
+   (addone.row, addone.row1, addone.total + addone.V = 9). 2 and 3 the dev loss per word with add-one (dev_loss.unigram["1"]
    = 8.728, dev_loss.bigram["1"] = 10.683; 30 px per unit of loss): -log p, natural log, averaged over the words of the
    4,000 dev articles (n_dev), without the prediction of </s>, each article scored by the model of its
    own topic; words outside the vocabulary are skipped. 4 the problem: the bigram V is the 110,608 words (V) and </s>,
