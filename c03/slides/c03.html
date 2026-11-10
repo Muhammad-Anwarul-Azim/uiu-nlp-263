@@ -2251,7 +2251,7 @@ html.print-pdf .reveal .slides section.s21 pre code > span { opacity: 1 !importa
 </section>
 <section id="part-4-generation" class="slide level2 divider dark d4" data-background-color="#161616" data-section="Generation">
 <h2>Part 4: Generation</h2>
-<p class="lead">Writing text from the same counts.</p>
+<p class="lead">Writing text, and measuring a model on new text.</p>
 </section>
 <section id="generation" class="slide level2 s26" data-section="Generation">
 <h2>Generation</h2>
@@ -2568,86 +2568,950 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 })();
 </script>
 </section>
-<section id="how-good-is-a-writer" class="slide level2 s28b">
-<h2>How good is a writer?</h2>
-<div class="s28b-rows">
-  <div class="s28b-r fragment up" data-fragment-index="1"><span class="s28b-l">Mean loss per word</span><span class="math inline">\displaystyle \text{loss} = -\frac{1}{n}\sum_{i=1}^{n} \log p(w_i \mid \text{history})</span></div>
-  <div class="s28b-r s28b-pp fragment up" data-fragment-index="2"><span class="s28b-l">Perplexity</span><span class="math inline">\text{perplexity} = e^{\,\text{loss}}</span></div>
-  <div class="s28b-r fragment up" data-fragment-index="3"><span class="s28b-l">Toy example</span><span class="s28b-toy"><span class="sw t5"></span><span class="chip">star</span><span class="chip">film</span><span class="s28b-ar">→</span><span class="chip">song</span><span class="math inline">p = 1/4, \quad \text{loss} = \log 4 = 1.39, \quad \text{perplexity} = 4</span></span></div>
+<section id="loss-in-classification" class="slide level2 q01">
+<h2>Loss in classification</h2>
+<div class="q01-in">
+  <div class="q01-hl">
+    <div class="chips"><span class="chip">the</span><span class="chip">middle</span></div>
+    <div class="chips"><span class="chip">east</span><span class="chip">it</span></div>
+    <div class="chips"><span class="chip">will</span><span class="chip">only</span></div>
+    <div class="chips"><span class="chip">get</span><span class="chip">worse</span></div>
+  </div>
+  <svg class="q01-ar" height="16" aria-hidden="true"><line x1="0" y1="8" x2="100%" y2="8"></line><svg x="100%" overflow="visible"><path d="M-6 2l6 6-6 6"></path></svg></svg>
 </div>
-<div class="end steps s28b-say">
-  <p class="fragment fade-out" data-fragment-index="1">To score a writer, we give it new text, the dev articles, and look at the probability it gives each next&nbsp;word.</p>
-  <p class="fragment current-visible" data-fragment-index="1">This is the loss of class 2, now on each next word, averaged over the 174,640 dev&nbsp;words.</p>
-  <p class="fragment current-visible" data-fragment-index="2">Perplexity is e to the power of the mean loss. Lower is&nbsp;better.</p>
-  <p class="fragment keep" data-fragment-index="3">After star film, the model chooses among four words with probability 1/4 each, so its perplexity is&nbsp;4.</p>
+<div class="node q01-m"><span>Naive Bayes</span></div>
+<span class="arr q01-a2 fragment up" data-fragment-index="1"></span>
+<div class="hbars q01-bars fragment up" data-fragment-index="1">
+  <span class="hl-lab q01-o"><span class="sw t1"></span>national politics</span><span class="hl-trk q01-o" style="--v:0.0434"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.043</span></span>
+  <span class="hl-lab q01-t"><span class="sw t2"></span>international</span><span class="hl-trk q01-t" style="--v:0.7195"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val q01-v">0.72</span></span>
+  <span class="hl-lab q01-o"><span class="sw t3"></span>sports</span><span class="hl-trk q01-o" style="--v:0.0182"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.018</span></span>
+  <span class="hl-lab q01-o"><span class="sw t4"></span>business and economy</span><span class="hl-trk q01-o" style="--v:0.2108"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.21</span></span>
+  <span class="hl-lab q01-o"><span class="sw t5"></span>entertainment</span><span class="hl-trk q01-o" style="--v:0.0033"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.0033</span></span>
+  <span class="hl-lab q01-o"><span class="sw t6"></span>science and technology</span><span class="hl-trk q01-o" style="--v:0.0049"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.0049</span></span>
+</div>
+<span class="q01-mk fragment" data-fragment-index="2" aria-hidden="true">.</span>
+<div class="q01-res">
+  <p class="q01-loss"><span class="q01-f fragment" data-fragment-index="3"><span class="math inline">\text{loss} = -\log\,</span></span><span class="q01-fly fragment" data-fragment-index="3"><span class="math inline">0.72</span></span><span class="q01-f fragment" data-fragment-index="3"><span class="math inline">\;= 0.33</span></span></p>
+</div>
+<div class="end steps q01-say">
+  <p class="fragment fade-out" data-fragment-index="1">To measure a language model, we start from the loss of class&nbsp;2.</p>
+  <p class="fragment current-visible" data-fragment-index="1">The model gives a probability to each of the six topics. They add up to&nbsp;1.</p>
+  <p class="fragment current-visible" data-fragment-index="2">We know the true topic: international. Its probability is&nbsp;0.72.</p>
+  <p class="fragment current-visible" data-fragment-index="3">The loss is <span class="math inline">-\log</span> of the probability of the true&nbsp;topic.</p>
+  <p class="fragment keep" data-fragment-index="4">On the dev set, the loss is the mean over the 4,000&nbsp;articles.</p>
 </div>
 <style>
-/* Perplexity (instructor, 2026-11-08; SLP3 section 3.3, eqs. 3.14 to 3.16): the class 2 loss -log p on each next word,
-   averaged over the dev words (natural log, as dev_loss; 174,640 words, dev_n_words), and perplexity = e to that mean.
-   Builds: 1 the mean loss; 2 perplexity; 3 the toy history star film of slide "Choosing the next word"
-   (toy.entertainment.trigram_counts: match, star, song and </s> once each, so 1/4 each); the true next word song:
-   -log(1/4) = log 4 = 1.386, e^(log 4) = 4. */
-.reveal section.s28b .s28b-rows { position: absolute; left: 64px; top: 120px; width: 1152px; }
-.reveal section.s28b .s28b-r { display: grid; grid-template-columns: 280px 1fr; align-items: center; min-height: 116px; border-bottom: var(--rule) solid var(--border-subtle); }
-.reveal section.s28b .s28b-r:first-child { border-top: var(--rule) solid var(--border-subtle); }
-.reveal section.s28b .s28b-l { font-size: 24px; line-height: 32px; font-weight: var(--weight-semibold); }
-.reveal section.s28b .s28b-r .katex { font-size: 28px; }
-.reveal section.s28b .s28b-pp .katex { font-size: 34px; }   /* its exponent "loss" at 0.7 x 34 = 24 px */
-.reveal section.s28b .s28b-toy { display: flex; align-items: center; gap: 10px; }
-.reveal section.s28b .s28b-toy .chip { height: 40px; font-size: 22px; }
-.reveal section.s28b .s28b-toy .sw { margin-right: 4px; }
-.reveal section.s28b .s28b-ar { font-size: 24px; color: var(--text-secondary); }
-.reveal section.s28b .s28b-toy .katex { font-size: 26px; margin-left: 20px; white-space: nowrap; }
-.reveal section.s28b .s28b-say p { font-size: 28px; line-height: 36px; }
-.reveal section.s28b .katex .accent { color: inherit; }
+/* Slide q01, the first of a pair with q02 ("Loss in generation"): the same geometry, in the same variables. Step 0: the
+   headline's tokens, an arrow into the model box, and a line that returns to the loss of class 2 (it fades at build 1).
+   Builds: 1 the second arrow and the six topic bars grow (one scale: a
+   probability of 1 is --q-one long); 2 the true topic's bar turns Blue 60, the other rows dim (a hidden marker drives both,
+   as on slide "Classifying a headline"); 3 the true topic's value leaves its bar and moves into the loss (the script
+   measures the way), then the rest of the formula appears; 4 the line on the dev set (no label beside the formula).
+   Numbers: c03_data.json, loss_example (dev row 2440, dv_02441, headline "The Middle East: It Will Only Get Worse", topic
+   international): words; nb_p in the order t1 to t6 (national politics 0.04337, international 0.71946, sports 0.01819,
+   business and economy 0.21081, entertainment 0.00331, science and technology 0.00486; the posterior of Naive Bayes, the
+   unigram model with add-1 of class 2, as in classification); nb_loss 0.3292 = -log 0.71946. n_dev 4,000.
+   Geometry: as q02 (--q-mid, --q-in-x, --q-box-x/-w/-h, --q-lab-x, --q-bar-x, --q-one, --q-bar-h, --q-row); the
+   longest topic name with its swatch is 254 px wide at 22 px (science and technology), so the bars of both slides start
+   at 880. The headline is four rows of two tokens (190 px), so it fits the input space of q02 (64 to 296) with an
+   arrow of 34 px. */
+.reveal section.q01 {
+  --q-mid: 352px;
+  --q-in-x: 64px;
+  --q-box-x: 312px;
+  --q-box-w: 216px;
+  --q-box-h: 88px;
+  --q-lab-x: 592px;
+  --q-bar-x: 880px;
+  --q-one: 300px;
+  --q-bar-h: 24px;
+  --q-row: 34px;
+}
+.reveal section.q01 .q01-in { position: absolute; left: var(--q-in-x); top: calc(var(--q-mid) - 100px); width: calc(var(--q-box-x) - var(--q-in-x) - 16px); height: 200px; display: flex; align-items: center; gap: var(--spacing-03); }
+.reveal section.q01 .q01-hl { flex: none; display: flex; flex-direction: column; gap: var(--spacing-03); }
+.reveal section.q01 .q01-hl .chips { flex-wrap: nowrap; }
+.reveal section.q01 .q01-hl .chip { height: 44px; font-size: 24px; }
+.reveal section.q01 .q01-ar { flex: 1 1 0; min-width: 32px; overflow: visible; }
+.reveal section.q01 .q01-ar :is(line, path) { fill: none; stroke: var(--mark-context); stroke-width: 1.5; }
+.reveal section.q01 .q01-m { position: absolute; left: var(--q-box-x); top: calc(var(--q-mid) - var(--q-box-h) / 2); width: var(--q-box-w); height: var(--q-box-h); gap: var(--spacing-02); padding: var(--spacing-04) var(--spacing-06); font-size: 24px; line-height: 32px; white-space: nowrap; }
+.reveal section.q01 .q01-a2 { position: absolute; left: calc(var(--q-box-x) + var(--q-box-w) + 16px); top: calc(var(--q-mid) - 8px); }
+.reveal section.q01 .q01-bars { position: absolute; left: var(--q-lab-x); top: calc(var(--q-mid) - 3 * var(--q-row)); box-sizing: content-box; width: calc(var(--q-bar-x) - var(--q-lab-x) + var(--q-one)); --max: 1; --lw: calc(var(--q-bar-x) - var(--q-lab-x) - 16px); --room: 48px; column-gap: 16px; row-gap: 0; grid-auto-rows: var(--q-row); }
+.reveal section.q01 .q01-bars .hl-lab { font-size: 22px; line-height: 24px; white-space: nowrap; }
+.reveal section.q01 .q01-bars .hl-lab .sw { margin: -2px 10px 0 0; }
+.reveal section.q01 .q01-bars .hl-trk { height: var(--q-bar-h); }
+.reveal section.q01 .q01-bars .hl-val { font-size: 22px; }
+/* build 2: the true topic in Blue 60, the rest dimmed */
+.reveal section.q01 .q01-mk { position: absolute; left: 0; top: 0; opacity: 0 !important; }
+.reveal section.q01 .q01-o { transition: opacity var(--dur-moderate) var(--ease-productive); }
+.reveal section.q01:has(.q01-mk.visible) .q01-o { opacity: 0.25; }
+.reveal .slides section.q01 .q01-t .hl-bar { transition: transform var(--dur-slower) var(--ease-expressive), background-color var(--dur-moderate) var(--ease-productive); }
+.reveal section.q01:has(.q01-mk.visible) .q01-t .hl-bar { --c: var(--mark-accent); }
+/* build 3: the value 0.72 leaves the bar (it fades there) and the same number in the formula comes from that place */
+.reveal section.q01 .q01-res { position: absolute; left: var(--q-bar-x); top: 480px; }
+.reveal section.q01 .q01-loss { margin: 0; white-space: nowrap; line-height: 44px; }
+.reveal section.q01 .q01-loss .katex { font-size: 30px; }
+.reveal .slides section.q01 .q01-loss .fragment { display: inline-block; }
+.reveal .slides section.q01 .q01-f.visible { transition-delay: 450ms; }
+.reveal .slides section.q01 .q01-fly { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(0.75); transition: transform var(--dur-slower) var(--ease-expressive), opacity var(--dur-fast) linear, visibility 0s; }
+.reveal .slides section.q01 .q01-fly.visible { transform: none; }
+.reveal .slides section.q01:has(.q01-fly.visible) .hl-val.q01-v { opacity: 0; transition: opacity var(--dur-fast) linear 0ms; }
+.reveal .slides section.q01:has(.q01-mk.visible) .hl-val.q01-v { transition-delay: 0ms; }   /* back from build 3: the value returns at once */
+.reveal section.q01 .q01-say p { font-size: 28px; line-height: 36px; }
+</style>
+<script>
+(function () {
+  // The number in the formula starts where the value of the true topic's bar stands. The offset between the two places
+  // is measured in slide pixels from the layout (offsets ignore the builds' transforms) whenever the slide is shown.
+  var sec = document.querySelector('section.q01'); if (!sec) return;
+  var from = sec.querySelector('.q01-v'), fly = sec.querySelector('.q01-fly');
+  function at(el) { var x = 0, y = 0; for (var e = el; e && e !== sec; e = e.offsetParent) { x += e.offsetLeft; y += e.offsetTop; } return [x, y]; }
+  function place() {
+    if (!from.offsetWidth || !fly.offsetWidth) return;
+    var a = at(from), b = at(fly);
+    // the value is centered on its track by translateY(-50%), so its center is at its offset top
+    fly.style.setProperty('--dx', (a[0] + from.offsetWidth / 2 - b[0] - fly.offsetWidth / 2).toFixed(1) + 'px');
+    fly.style.setProperty('--dy', (a[1] - b[1] - fly.offsetHeight / 2).toFixed(1) + 'px');
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!window.Reveal) return;
+    var near = function () { return Reveal.getCurrentSlide() === sec; };
+    Reveal.on('slidechanged', function () { if (near()) place(); });
+    Reveal.on('fragmenthidden', function () { if (near()) place(); });
+    if (Reveal.isReady()) { if (near()) place(); } else Reveal.on('ready', function () { if (near()) place(); });
+  });
+})();
+</script>
+</section>
+<section id="loss-in-generation" class="slide level2 q02">
+<h2>Loss in generation</h2>
+<script src="c03_loss_data.js"></script>
+<div class="q02-in"><div class="chips q02-hist fragment up" data-fragment-index="1"></div><svg class="q02-ar fragment up" data-fragment-index="1" height="16" aria-hidden="true"><line x1="0" y1="8" x2="100%" y2="8"></line><svg x="100%" overflow="visible"><path d="M-6 2l6 6-6 6"></path></svg></svg></div>
+<div class="node q02-m fragment up" data-fragment-index="1"><span>Bigram model</span><span class="q02-tp"><span class="sw"></span><span class="q02-tn"></span></span></div>
+<span class="arr q02-a2 fragment up" data-fragment-index="2"></span>
+<div class="hbars q02-bars fragment up" data-fragment-index="2"></div>
+<p class="q02-q fragment up" data-fragment-index="3" aria-label="The true class is not known yet">?</p>
+<div class="end steps q02-say">
+  <p class="fragment current-visible" data-fragment-index="1">A language model predicts the next word from the previous words.</p>
+  <p class="fragment current-visible" data-fragment-index="2">It gives a probability to each word of the vocabulary. They add up to&nbsp;1.</p>
+  <p class="fragment keep q02-ask" data-fragment-index="3">To compute a loss, we need the true class. What is it&nbsp;here?</p>
+</div>
+<style>
+/* Slide q02, the question that q03 answers. Builds: 1 the words before the first scored word (in a bigram model only
+   <s>), an arrow into the model, with the topic whose model it is; 2 the model's eight most probable next words and
+   the total of all other words; 3 a Blue 60 question mark beside the bars. Every value comes from c03_loss_data.js
+   (c03_build.py: the bigram model of the text's own topic, with k added to every count), loaded by the first line of
+   this block; the script below writes the history, the topic and the nine bars. One scale for the nine bars: a
+   probability of 1 is --q-one long, so the nine bars add up to --q-one.
+   Geometry, in slide pixels, the same as q01's (text, arrow, model, arrow, bars), so the pair matches: everything is
+   centered on the line --q-mid; the input starts at --q-in-x and its arrow runs to the model box; the box at --q-box-x,
+   --q-box-w wide, --q-box-h high; the second arrow 16 px after the box; the bar labels at --q-lab-x; the bars at
+   --q-bar-x (880, set by q01's longest topic name), --q-bar-h high, one row every --q-row; the question mark centered on
+   --q-ask-x, beside the middle rows: the bar of all other words, the longest, is in the last row. */
+.reveal section.q02 {
+  --q-mid: 352px;
+  --q-in-x: 64px;
+  --q-box-x: 312px;
+  --q-box-w: 216px;
+  --q-box-h: 88px;
+  --q-lab-x: 592px;
+  --q-bar-x: 880px;
+  --q-one: 300px;
+  --q-bar-h: 24px;
+  --q-row: 34px;
+  --q-ask-x: 1176px;
+}
+.reveal section.q02 .q02-in { position: absolute; left: var(--q-in-x); top: calc(var(--q-mid) - 22px); width: calc(var(--q-box-x) - var(--q-in-x) - 16px); height: 44px; display: flex; align-items: center; gap: var(--spacing-05); }
+.reveal section.q02 .q02-hist { flex: none; flex-wrap: nowrap; }
+.reveal section.q02 .q02-hist .chip { height: 44px; font-size: 24px; }
+/* the input's arrow: as long as the space before the box allows, drawn as the theme's arrow (.arr) is drawn */
+.reveal section.q02 .q02-ar { flex: 1 1 0; min-width: 32px; overflow: visible; }
+.reveal section.q02 .q02-ar :is(line, path) { fill: none; stroke: var(--mark-context); stroke-width: 1.5; }
+.reveal section.q02 .q02-m { position: absolute; left: var(--q-box-x); top: calc(var(--q-mid) - var(--q-box-h) / 2); width: var(--q-box-w); height: var(--q-box-h); gap: var(--spacing-02); padding: var(--spacing-04) var(--spacing-06); font-size: 24px; line-height: 32px; white-space: nowrap; }
+.reveal section.q02 .q02-tp { display: flex; align-items: center; gap: var(--spacing-03); font-size: 22px; line-height: 28px; color: var(--text-secondary); }
+.reveal section.q02 .q02-a2 { position: absolute; left: calc(var(--q-box-x) + var(--q-box-w) + 16px); top: calc(var(--q-mid) - 8px); }
+.reveal section.q02 .q02-bars { position: absolute; left: var(--q-lab-x); top: calc(var(--q-mid) - 4.5 * var(--q-row)); box-sizing: content-box; width: calc(var(--q-bar-x) - var(--q-lab-x) + var(--q-one)); --max: 1; --lw: calc(var(--q-bar-x) - var(--q-lab-x) - 16px); --room: 96px; column-gap: 16px; row-gap: 0; grid-auto-rows: var(--q-row); }
+.reveal section.q02 .q02-bars .hl-lab { font-size: 22px; line-height: 24px; white-space: nowrap; }
+.reveal section.q02 .q02-bars .hl-trk { height: var(--q-bar-h); }
+.reveal section.q02 .q02-bars .hl-val { font-size: 22px; }
+.reveal section.q02 .q02-oth { color: var(--text-secondary); }
+.reveal section.q02 .q02-q { position: absolute; left: calc(var(--q-ask-x) - 40px); top: calc(var(--q-mid) - 42px); width: 80px; margin: 0; font-size: var(--size-stat); line-height: 84px; font-weight: var(--weight-light); text-align: center; color: var(--interactive); }
+.reveal section.q02 .q02-miss { position: absolute; left: var(--q-lab-x); top: calc(var(--q-mid) - 14px); margin: 0; font-size: 22px; color: var(--text-helper); }
+.reveal section.q02 .q02-say p { font-size: 28px; line-height: 36px; }
+.reveal section.q02 .q02-say p.q02-ask { font-weight: var(--weight-semibold); }
+</style>
+<script>
+(function () {
+  // Writes the history, the topic and the bars of slide q02 from window.C03_LOSS while the page loads, so the bars'
+  // fragments exist before Reveal starts. The words come from the data: Bangla in its own face, the rest in Plex Mono.
+  var sec = document.querySelector('section.q02'); if (!sec) return;
+  var D = window.C03_LOSS, bars = sec.querySelector('.q02-bars');
+  if (!D || !D.steps || !D.steps.length) { bars.outerHTML = '<p class="q02-miss">Data file missing: run c03_build.py.</p>'; return; }
+  var COLOR = { 'national politics': 1, 'international': 2, 'sports': 3, 'business and economy': 4, 'entertainment': 5, 'science and technology': 6 };
+  var NAMES = { national_politics: 'national politics', business_economy: 'business and economy', science_technology: 'science and technology' };
+  var BN = /[ঀ-৿]/;
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function fmtP(p) {              // two significant digits, never in exponent form: 0.43, 0.087, 0.00087
+    if (!(p > 0)) return '0';
+    var q = Number(p.toPrecision(2)), e = Math.floor(Math.log10(q) + 1e-9);
+    return q.toFixed(Math.max(2, 1 - e));
+  }
+  var st = D.steps[0], toks = ['<s>'].concat(D.words || []), j = 1;
+  while (j < toks.length && !(toks[j] === st.word && toks[j - 1] === st.prev)) j++;
+  if (j >= toks.length) j = 1;
+  sec.querySelector('.q02-hist').innerHTML = toks.slice(0, j).map(function (t) {
+    return '<span class="chip' + (BN.test(t) ? ' bn' : '') + '">' + esc(t) + '</span>';
+  }).join('');
+  var topic = D.topic ? (NAMES[D.topic] || D.topic) : (D.topics || [])[D.topic_index] || '';
+  sec.querySelector('.q02-tp .sw').className = 'sw t' + (COLOR[topic] || 1);
+  sec.querySelector('.q02-tn').textContent = topic;
+  var rows = st.top.slice(0, 8).map(function (t) {
+    return ['<span class="ex' + (BN.test(t[0]) ? ' bn' : '') + '">' + esc(t[0]) + '</span>', t[1], ''];
+  });
+  rows.push(['<span class="q02-oth">all other words</span>', st.other, ' quiet']);
+  bars.innerHTML = rows.map(function (r) {
+    return '<span class="hl-lab">' + r[0] + '</span><span class="hl-trk" style="--v:' + r[1] + '"><span class="hl-bar' + r[2] +
+      ' fragment grow" data-fragment-index="2"></span><span class="hl-val">' + fmtP(r[1]) + '</span></span>';
+  }).join('');
+})();
+</script>
+</section>
+<section id="the-true-next-word" class="slide level2 q03">
+<h2>The true next word</h2>
+<div class="q03-scene">
+<svg class="q03-svg" width="1152" height="410" viewbox="0 0 1152 410" role="img" aria-label="The text word by word. Under it the bigram model's eight most probable next words and all other words as bars; the true next word and its bar in Blue 60. On the right a column with each true word, its probability p and its loss, minus log p, and at the end their sum."></svg>
+<div class="q03-head" aria-hidden="true"><span class="q03-hw">Word</span><span class="q03-hp"><span class="math inline">p</span></span><span class="q03-hl"><span class="math inline">-\log p</span></span></div>
+<div class="q03-caps"></div>
+</div>
+<div class="end steps q03-say">
+  <p class="fragment current-visible q03-l1" data-fragment-index="1">We score the model on a text it has not seen.<br>The word that actually follows is the true&nbsp;class.</p>
+  <p class="fragment current-visible q03-l2" data-fragment-index="2">The loss for this word is <span class="math inline">-\log</span> of its probability, as in classification.</p>
+  <p class="fragment fade-out q03-l3" data-fragment-index="4"><span class="fragment" data-fragment-index="3">We repeat this at every position.</span></p>
+  <p class="fragment fade-out q03-hi" data-fragment-index="5"><span class="fragment" data-fragment-index="4">A word with a high probability has a small loss.</span></p>
+  <p class="fragment fade-out q03-lo" data-fragment-index="6"><span class="fragment" data-fragment-index="5">A word with a low probability has a large loss.</span></p>
+  <p class="fragment keep q03-l4" data-fragment-index="10">Classification gives one loss per article. Generation gives one loss per&nbsp;word.</p>
+</div>
+<style>
+/* Slide q03, a D3 scene (as class 1 slide 18): theme/d3/d3.min.js, empty .cap fragments that the script writes, one
+   per step, a print-pdf branch that draws the last step. The data is window.C03_LOSS, loaded at the top of slide q02.
+   Step 0: the start of the text and the prediction of q02. Step 1: the previous word outlined, the true next word in
+   Blue 60. Step 2: its bar turns Blue 60 (when it is not among the eight, a Blue 60 bar is added under all other words,
+   after a gap of 10 px, with its rank, and all other words loses that word's probability, so the bars still add up to
+   1), and its row enters the column. Steps 3 to n + 1: one position each: the outline moves one word right, the bars
+   change to the new prediction, the next row fills in. Step n + 2: the sum. The closing lines follow the data, one for
+   each press (the script sets their steps; the indices in the HTML are those of the example's first presses): on step
+   3 the line on repeating; from step 4, a word with a probability above 0.3 gets the line on a high probability, a word
+   below 0.001 the line on a low one (the bounds of the example's choice in c03_build.py), any other word the line on
+   repeating again. For the example: middle repeat, east high, it low, will repeat, only, get and worse low. A high or
+   low line that falls on step 2 or 3 joins the line already there.
+   Drawn 1:1 in slide pixels on the 1152 px content width, from (64, 116): the text on a row 44 px high; the bars
+   from y = 72, rows of 32 px, bars of 24 px, on one scale for every step (a probability of 1 is at most 460 px, less if
+   a value would reach the column); the column against the right edge, rows of 32 px from y = 72, its headings in
+   KaTeX. The scene ends 40 px above the closing line. Text from the data in Plex Mono (Bangla in its own face); numbers
+   in tabular figures. Colors are the theme's tokens, read from :root when the scene starts. */
+.reveal section.q03 .q03-scene { position: absolute; left: 64px; top: 116px; width: 1152px; height: 410px; }
+.reveal section.q03 .q03-svg { display: block; overflow: visible; }
+.reveal section.q03 .q03-caps { display: none; }
+.reveal section.q03 .q03-head { position: absolute; left: 0; top: 72px; width: 1152px; height: 32px; font-size: 22px; line-height: 32px; color: var(--text-secondary); visibility: hidden; }
+.reveal section.q03 .q03-head.on { visibility: visible; }
+.reveal section.q03 .q03-head > span { position: absolute; top: 0; white-space: nowrap; }
+.reveal section.q03 .q03-head .katex { font-size: 24px; }
+.reveal section.q03 .q03-svg text { font-family: var(--sans); font-size: 22px; font-variant-numeric: tabular-nums; }
+.reveal section.q03 .q03-svg text.q03-w { font-family: var(--mono); font-variant-numeric: normal; }
+.reveal section.q03 .q03-svg text.q03-t { font-size: 24px; }
+.reveal section.q03 .q03-svg text.bn { font-family: var(--bangla); }
+.reveal section.q03 .q03-svg text.q03-sv { font-weight: var(--weight-semibold); }
+.reveal section.q03 .q03-svg .q03-out { fill: none; stroke-width: 2; shape-rendering: crispEdges; }
+.reveal section.q03 .q03-svg line { stroke-width: 1; shape-rendering: crispEdges; }
+.reveal section.q03 .q03-miss { position: absolute; left: 0; top: 0; margin: 0; font-size: 22px; color: var(--text-helper); }
+.reveal section.q03 .q03-say p { font-size: 28px; line-height: 36px; }
+</style>
+<script src="../../theme/d3/d3.min.js"></script>
+<script>
+(function () {
+  var sec = document.querySelector('section.q03'); if (!sec) return;
+  var D = window.C03_LOSS, scene = sec.querySelector('.q03-scene'), node = sec.querySelector('.q03-svg');
+  if (!D || !D.steps || !D.steps.length || !window.d3) { scene.insertAdjacentHTML('beforeend', '<p class="q03-miss">Data file missing: run c03_build.py.</p>'); return; }
+  var S = D.steps, n = S.length, LAST = n + 2;
+  var BN = /[ঀ-৿]/;
+  function fmtP(p) {              // two significant digits, never in exponent form: 0.43, 0.087, 0.00087
+    if (!(p > 0)) return '0';
+    var q = Number(p.toPrecision(2)), e = Math.floor(Math.log10(q) + 1e-9);
+    return q.toFixed(Math.max(2, 1 - e));
+  }
+  function fmtL(x) { return x.toFixed(2); }
+  function rankText(r) { return 'rank ' + d3.format(',')(r); }
+  function inTop(s) { for (var r = 0; r < Math.min(8, s.top.length); r++) if (s.top[r][0] === s.word) return r; return -1; }
+
+  // ----- the steps: one empty fragment per step, written while the page loads, before Reveal starts -----
+  var caps = sec.querySelector('.q03-caps');
+  for (var k = 1; k <= LAST; k++) { var c = document.createElement('span'); c.className = 'cap fragment'; c.setAttribute('data-fragment-index', k); caps.appendChild(c); }
+  // the closing lines, one for each press: on step 2 the line on the loss of one word; from step 3 on, the line for the
+  // word of that step: high above 0.3, low below 0.001 (the bounds of the example's choice in c03_build.py), and for any
+  // other word the line on repeating, which step 3 always shows. A high or low line that falls on step 2 or 3 joins the
+  // line already there. Steps in a row with the same line share one element, so the line stays while the presses go on.
+  var say = sec.querySelector('.q03-say'), l2 = say.querySelector('.q03-l2'), l4 = say.querySelector('.q03-l4');
+  var T = { rep: say.querySelector('.q03-l3'), lo: say.querySelector('.q03-lo'), hi: say.querySelector('.q03-hi') };
+  function kind(s) { return s.p > 0.3 ? 'hi' : s.p < 0.001 ? 'lo' : 'rep'; }
+  function line(key) { return T[key].textContent.trim(); }
+  if (kind(S[0]) !== 'rep') l2.appendChild(document.createTextNode(' ' + line(kind(S[0]))));
+  var runs = [];
+  for (var k = 3; k <= n + 1; k++) {
+    var key = kind(S[k - 2]);
+    if (k === 3 && key !== 'rep') key = 'rep+' + key;
+    if (runs.length && runs[runs.length - 1].key === key) runs[runs.length - 1].to = k;
+    else runs.push({ key: key, from: k, to: k });
+  }
+  runs.forEach(function (r) {                  // shown from its first step until the step after its last
+    var two = r.key.split('+'), p = T[two[0]].cloneNode(true), sp = p.firstElementChild;
+    if (two[1]) sp.appendChild(document.createTextNode(' ' + line(two[1])));
+    sp.setAttribute('data-fragment-index', r.from);
+    p.setAttribute('data-fragment-index', r.to + 1);
+    say.insertBefore(p, l4);
+  });
+  [T.rep, T.lo, T.hi].forEach(function (p) { p.remove(); });
+  l4.setAttribute('data-fragment-index', LAST);
+
+  // ----- the text as tokens, and the token each step predicts (the word after its previous word, in order) -----
+  var toks = ['<s>'].concat(D.words || []);
+  if (S[n - 1].word === '</s>' && toks[toks.length - 1] !== '</s>') toks.push('</s>');
+  var J = [], j = 1;
+  S.forEach(function (s) {
+    var m = j; while (m < toks.length && !(toks[m] === s.word && toks[m - 1] === s.prev)) m++;
+    if (m >= toks.length) m = Math.min(j, toks.length - 1);
+    J.push(m); j = m + 1;
+  });
+
+  // ----- geometry in slide pixels; the scene's origin is the slide's (64, 116) -----
+  var W = 1152, HS = 24, PADX = 8, GAP = 20, HY = 22, HH = 44;     // the text: size, outline padding, space, center, outline height
+  var BY = 72, RH = 32, BH = 24, XG = 10;                            // bars: top, row pitch, bar height, gap before the extra bar
+  var CY = 72;                                                       // the column: headings from CY, rows from CY + RH
+  var X = [], TW = [], LW = 0, BX = 0, SC = 460, XW = [], COL = {};
+  var C = {}, svg = d3.select(node), gTok, outline, gBars, gRows, gSum;
+  var print = location.search.indexOf('print-pdf') > -1;
+  var MOTION = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  function rowY(r) { return BY + r * RH + (r >= 9 ? XG : 0); }
+  function bw(p) { return Math.max(p * SC, 3); }
+
+  function layout() {             // measure the text in its faces, then place the text, the bars and the column
+    var css = getComputedStyle(document.documentElement);
+    ['interactive', 'text-primary', 'text-secondary', 'text-helper', 'mark-context', 'mark-quiet', 'mark-accent', 'border-subtle'].forEach(function (v) { C[v] = css.getPropertyValue('--' + v).trim(); });
+    var probe = d3.select('body').append('svg').attr('width', 10).attr('height', 10).style('position', 'absolute').style('left', '-9999px').style('top', '0');
+    var t = probe.append('text');
+    function tw(s, size, kind) {   // kind: 'w' a word of the data, 'n' a number, 's' a semibold number
+      var face = BN.test(s) ? 'var(--bangla)' : kind === 'w' ? 'var(--mono)' : 'var(--sans)';
+      t.attr('style', 'font-family:' + face + ';font-size:' + size + 'px;font-variant-numeric:' + (kind === 'w' ? 'normal' : 'tabular-nums') + ';font-weight:' + (kind === 's' ? 600 : 400)).text(s);
+      return t.node().getComputedTextLength();
+    }
+    // the text: one row, smaller type only if it would not fit
+    var total;
+    do { TW = toks.map(function (s) { return tw(s, HS, 'w'); }); total = d3.sum(TW) + GAP * (toks.length - 1) + 2 * PADX; } while (total > W && --HS > 18);
+    var x = PADX; X = TW.map(function (w) { var x0 = x; x += w + GAP; return x0; });
+    // the column against the right edge: word, p, -log p
+    var wordW = tw('sum', 22, 'n'), pW = 20, lW = 80;
+    S.forEach(function (s) { wordW = Math.max(wordW, tw(s.word, 22, 'w')); pW = Math.max(pW, tw(fmtP(s.p), 22, 'n')); lW = Math.max(lW, tw(fmtL(s.loss), 22, 'n')); });
+    lW = Math.max(lW, tw(fmtL(D.sum), 22, 's'));
+    COL = { lr: W, pr: W - lW - 32 }; COL.wx = COL.pr - pW - 32 - wordW;
+    // the bars: labels, then one scale for every step, so that no value reaches the column
+    LW = tw('all other words', 22, 'n');
+    S.forEach(function (s, i) {
+      s.top.slice(0, 8).forEach(function (q) { LW = Math.max(LW, tw(q[0], 22, 'w')); });
+      if (inTop(s) < 0) LW = Math.max(LW, tw(s.word, 22, 'w'));
+      XW[i] = tw(fmtP(s.p), 22, 'n');
+    });
+    BX = LW + 16;
+    var room = COL.wx - 48 - BX;
+    S.forEach(function (s, i) {
+      s.top.slice(0, 8).forEach(function (q) { SC = Math.min(SC, (room - 12 - tw(fmtP(q[1]), 22, 'n')) / q[1]); });
+      SC = Math.min(SC, (room - 12 - tw(fmtP(s.other), 22, 'n')) / s.other);
+      if (inTop(s) < 0) SC = Math.min(SC, (room - 12 - XW[i] - 14 - tw(rankText(s.rank), 22, 'n')) / s.p);
+    });
+    probe.remove();
+
+    // static parts: the text's tokens, the outline, the column's headings and rules, the sum row
+    svg.selectAll('*').remove();
+    gTok = svg.append('g').selectAll('text').data(toks.map(function (s, j) { return { j: j, s: s, mark: s === '<s>' || s === '</s>' }; })).join('text')
+      .attr('class', function (d) { return 'q03-w q03-t' + (BN.test(d.s) ? ' bn' : ''); }).style('font-size', HS + 'px')
+      .attr('x', function (d) { return X[d.j]; }).attr('y', HY).attr('dominant-baseline', 'central').style('opacity', 0).text(function (d) { return d.s; });
+    outline = svg.append('rect').attr('class', 'q03-out').attr('y', HY - HH / 2).attr('height', HH).style('stroke', C['text-primary']).style('opacity', 0);
+    gBars = svg.append('g');
+    svg.append('line').attr('x1', COL.wx).attr('x2', W).attr('y1', CY + RH - 0.5).attr('y2', CY + RH - 0.5).style('stroke', C['border-subtle']);
+    gRows = svg.append('g');
+    var ys = CY + RH + n * RH + 6;
+    gSum = svg.append('g').style('opacity', 0);
+    gSum.append('line').attr('x1', COL.wx).attr('x2', W).attr('y1', ys - 0.5).attr('y2', ys - 0.5).style('stroke', C['text-primary']);
+    gSum.append('text').attr('x', COL.wx).attr('y', ys + RH / 2).attr('dominant-baseline', 'central').style('fill', C['text-secondary']).text('sum');
+    gSum.append('text').attr('class', 'q03-sv').attr('x', COL.lr).attr('y', ys + RH / 2).attr('dominant-baseline', 'central').attr('text-anchor', 'end').style('fill', C['text-primary']).text(fmtL(D.sum));
+    var head = sec.querySelector('.q03-head');
+    head.querySelector('.q03-hw').style.left = COL.wx + 'px';
+    head.querySelector('.q03-hp').style.right = (W - COL.pr) + 'px';
+    head.querySelector('.q03-hl').style.right = '0px';
+    head.classList.add('on');
+  }
+
+  // ----- one step: what is shown, and where -----
+  function state(k) {
+    k = Math.max(0, Math.min(LAST, k));
+    var pos = k <= 2 ? 0 : Math.min(k - 2, n - 1);
+    return { pos: pos, shown: k >= 1 ? J[pos] : J[0] - 1, out: k >= 1 ? J[pos] - 1 : -1, now: k >= 1 ? J[pos] : -1, scored: k >= 2, rows: k >= 2 ? pos + 1 : 0, sum: k >= LAST };
+  }
+  function tr(sel, ms, delay) {   // a transition, or the selection itself when there is no motion (print, reduced motion, arrival)
+    sel.interrupt();
+    return ms ? sel.transition().duration(ms).delay(delay || 0).ease(d3.easeCubicOut) : sel;
+  }
+  var cur = null;
+  function render(k, animate) {
+    var s = state(k), moved = animate && cur && cur.pos !== s.pos, was = cur; cur = s;
+    // a press that moves on: the text and the outline (0 to 350 ms); the old bars leave (0 to 200), the bars that stay
+    // move (100 to 450), the new ones appear (300 to 700); the new row enters the column (450 to 750)
+    var A = animate ? 1 : 0, dRows = moved ? 450 : 150;
+
+    // the text: tokens up to the true word; the true word in Blue 60; the outline on the previous word
+    tr(gTok, 350 * A).style('opacity', function (d) { return d.j <= s.shown ? 1 : 0; })
+      .style('fill', function (d) { return d.j === s.now ? C.interactive : d.mark ? C['text-helper'] : C['text-primary']; });
+    var o = s.out;
+    if (o >= 0) {
+      var ox = X[o] - PADX, ow = TW[o] + 2 * PADX;
+      if (!was || was.out < 0 || !animate) tr(outline, 0).attr('x', ox).attr('width', ow);
+      tr(outline, 350 * A).attr('x', ox).attr('width', ow).style('opacity', 1);
+    } else tr(outline, 200 * A).style('opacity', 0);
+
+    // the bars of the prediction at this position; the true word's bar in Blue 60 once it is scored
+    var st = S[s.pos], ti = inTop(st);
+    var items = st.top.slice(0, 8).map(function (q, r) { return { key: 'w' + q[0], label: q[0], p: q[1], row: r, kind: s.scored && r === ti ? 'true' : 'word' }; });
+    var extra = s.scored && ti < 0;              // the true word gets its own bar, so all other words loses its share
+    items.push({ key: 'other', label: 'all other words', p: extra ? st.other - st.p : st.other, row: 8, kind: 'other' });
+    if (extra) items.push({ key: 'x' + st.word, label: st.word, p: st.p, row: 9, kind: 'extra', rank: st.rank, vw: XW[s.pos] });
+    function fill(d) { return d.kind === 'true' || d.kind === 'extra' ? C['mark-accent'] : d.kind === 'other' ? C['mark-quiet'] : C['mark-context']; }
+    var bars = gBars.selectAll('g.q03-b').data(items, function (d) { return d.key; });
+    tr(bars.exit(), 200 * A).style('opacity', 0).remove();
+    var be = bars.enter().append('g').attr('class', 'q03-b').style('opacity', 0).attr('transform', function (d) { return 'translate(0,' + rowY(d.row) + ')'; });
+    function ink(d) { return d.kind === 'true' || d.kind === 'extra' ? C.interactive : d.kind === 'other' ? C['text-secondary'] : C['text-primary']; }
+    be.append('text').attr('class', function (d) { return d.kind === 'other' ? 'q03-bl' : 'q03-bl q03-w' + (BN.test(d.label) ? ' bn' : ''); })
+      .attr('y', RH / 2).attr('dominant-baseline', 'central').style('fill', ink).text(function (d) { return d.label; });
+    be.append('rect').attr('x', BX).attr('y', (RH - BH) / 2).attr('height', BH).attr('width', 0).style('fill', fill);
+    be.append('text').attr('class', 'q03-bv').attr('y', RH / 2).attr('dominant-baseline', 'central').attr('x', BX + 10).style('fill', C['text-primary']);
+    be.append('text').attr('class', 'q03-br').attr('y', RH / 2).attr('dominant-baseline', 'central').style('fill', C['text-secondary']);
+    function place(sel, delay, ms) {   // a bar to its row, length and color
+      tr(sel, ms * A, delay).style('opacity', 1).attr('transform', function (d) { return 'translate(0,' + rowY(d.row) + ')'; });
+      tr(sel.select('rect'), ms * A, delay).attr('width', function (d) { return bw(d.p); }).style('fill', fill);
+      tr(sel.select('.q03-bl'), ms * A, delay).style('fill', ink);
+      tr(sel.select('.q03-bv'), ms * A, delay).attr('x', function (d) { return BX + bw(d.p) + 12; }).text(function (d) { return fmtP(d.p); });
+      sel.select('.q03-br').text(function (d) { return d.kind === 'extra' ? rankText(d.rank) : ''; })
+        .attr('x', function (d) { return d.kind === 'extra' ? BX + bw(d.p) + 12 + d.vw + 14 : 0; });
+    }
+    place(bars, moved ? 100 : 0, 350);           // the bars that stay move first,
+    place(be, moved ? 300 : 0, 400);             // then the new ones appear in their rows
+
+    // the column: one row per scored word, the newest word in Blue 60; the sum on the last step
+    var rows = gRows.selectAll('g.q03-r').data(S.slice(0, s.rows).map(function (q, i) { return { i: i, q: q }; }), function (d) { return d.i; });
+    tr(rows.exit(), 200 * A).style('opacity', 0).remove();
+    var re = rows.enter().append('g').attr('class', 'q03-r').style('opacity', 0).attr('transform', function (d) { return 'translate(0,' + (CY + RH + d.i * RH + 8) + ')'; });
+    function wordFill(d) { return d.i === s.rows - 1 ? C.interactive : C['text-primary']; }
+    re.append('text').attr('class', function (d) { return 'q03-w' + (BN.test(d.q.word) ? ' bn' : ''); }).attr('x', COL.wx).attr('y', RH / 2).attr('dominant-baseline', 'central').style('fill', wordFill).text(function (d) { return d.q.word; });
+    re.append('text').attr('x', COL.pr).attr('y', RH / 2).attr('dominant-baseline', 'central').attr('text-anchor', 'end').style('fill', C['text-primary']).text(function (d) { return fmtP(d.q.p); });
+    re.append('text').attr('x', COL.lr).attr('y', RH / 2).attr('dominant-baseline', 'central').attr('text-anchor', 'end').style('fill', C['text-primary']).text(function (d) { return fmtL(d.q.loss); });
+    re.append('line').attr('x1', COL.wx).attr('x2', W).attr('y1', RH - 0.5).attr('y2', RH - 0.5).style('stroke', C['border-subtle']);
+    function rowAt(d) { return 'translate(0,' + (CY + RH + d.i * RH) + ')'; }
+    tr(re, 300 * A, dRows).style('opacity', 1).attr('transform', rowAt);
+    tr(rows, 300 * A).style('opacity', 1).attr('transform', rowAt);
+    tr(rows.select('text'), 350 * A).style('fill', wordFill);
+    tr(gSum, 350 * A, s.sum ? 150 : 0).style('opacity', s.sum ? 1 : 0);
+  }
+
+  // ----- start once the fonts are in and Reveal is ready; follow the steps forward and back -----
+  function steps() { return sec.querySelectorAll('.q03-caps .cap.visible').length; }
+  function start() {
+    layout();
+    render(print ? LAST : steps(), false);
+    if (!window.Reveal || print) return;
+    function onStep() { if (Reveal.getCurrentSlide() === sec) render(steps(), MOTION); }
+    Reveal.on('fragmentshown', onStep);
+    Reveal.on('fragmenthidden', onStep);
+    // a jump onto this slide (arrow from the next slide, overview, G) sets its builds without fragment events
+    Reveal.on('slidechanged', function (e) { if (e.currentSlide === sec) render(steps(), false); });
+  }
+  function settle(p) { return p.catch(function () {}); }        // a face that fails to load must not stop the scene
+  var fontsIn = document.fonts ? Promise.all(['24px "IBM Plex Mono"', '22px "IBM Plex Sans"', '600 22px "IBM Plex Sans"'].map(function (f) { return settle(document.fonts.load(f)); }).concat(settle(document.fonts.ready))) : Promise.resolve();
+  function whenReady(fn) { if (!window.Reveal) return fn(); if (Reveal.isReady()) fn(); else Reveal.on('ready', fn); }
+  fontsIn.then(function () { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { whenReady(start); }); else whenReady(start); });
+})();
+</script>
+</section>
+<section id="the-loss-of-a-text" class="slide level2 q04">
+<h2>The loss of a text</h2>
+<p class="q04-hl"><span class="q04-b">&lt;s&gt;</span><span>the</span><span>middle</span><span>east</span><span>it</span><span>will</span><span>only</span><span>get</span><span>worse</span></p>
+<div class="q04-eq">
+  <span class="q04-l fragment up" data-fragment-index="1"><span class="math inline">p(\text{headline})</span></span>
+  <span class="q04-r fragment up" data-fragment-index="1"><span class="math inline">= p(\text{the} \mid \text{&lt;s&gt;}) \times p(\text{middle} \mid \text{the}) \times \cdots \times p(\text{worse} \mid \text{get})</span></span>
+  <span class="q04-l fragment up" data-fragment-index="2"><span class="math inline">-\log p(\text{headline})</span></span>
+  <span class="q04-r fragment up" data-fragment-index="2"><span class="math inline">= -\log p(\text{the} \mid \text{&lt;s&gt;}) - \log p(\text{middle} \mid \text{the}) - \cdots - \log p(\text{worse} \mid \text{get})</span></span>
+  <span class="q04-l"></span>
+  <span class="q04-r fragment up" data-fragment-index="3"><span class="math inline">= 3.75 + 4.76 + 1.11 + 12.20 + 3.21 + 13.00 + 12.12 + 12.01 = \mathbf{62.16}</span></span>
+</div>
+<div class="end steps q04-say">
+  <p class="fragment current-visible" data-fragment-index="1">By the chain rule and the Markov assumption, the probability of the headline is the product of its word&nbsp;probabilities.</p>
+  <p class="fragment current-visible" data-fragment-index="2">The log of a product is the sum of the&nbsp;logs.</p>
+  <p class="fragment keep" data-fragment-index="3">So the loss of the headline is the sum of the losses of its&nbsp;words.</p>
+</div>
+<style>
+/* Slide q04. Step 0: the headline with <s>, where slide q03 shows it (from (64, 120): 8 px in, tokens in Plex Mono 24 px,
+   20 px apart, on a row 44 px high). Builds: 1 the probability of the headline as the product of its eight word
+   probabilities (the bigram model of slides q02 and q03); 2 the log turns it into a sum; 3 the eight losses and their sum.
+   The lines are aligned on their equals signs. Numbers: c03_data.json, loss_example.steps[i].loss (-log p of each word
+   given the previous word, natural log, the bigram model of international with k = 0.001): 3.7545, 4.7609, 1.1075,
+   12.2041, 3.2053, 13.0027, 12.1151, 12.0113; loss_example.sum 62.1615 (the rounded losses also add up to 62.16). As in
+   dev_loss and on slide q03, </s> is not predicted, so the headline has eight factors. */
+.reveal section.q04 .q04-hl { position: absolute; left: 72px; top: 120px; height: 44px; margin: 0; display: flex; align-items: center; gap: 20px; font-family: var(--mono); font-size: 24px; line-height: 44px; white-space: nowrap; }
+.reveal section.q04 .q04-b { color: var(--text-helper); }
+.reveal section.q04 .q04-eq { position: absolute; left: 64px; top: 264px; display: grid; grid-template-columns: auto auto; justify-content: start; column-gap: 12px; row-gap: 40px; align-items: baseline; white-space: nowrap; }
+.reveal section.q04 .q04-l { justify-self: end; }
+.reveal section.q04 .q04-eq .katex { font-size: 30px; }
+.reveal section.q04 .q04-say p { font-size: 28px; line-height: 36px; }
 </style>
 </section>
-<section id="what-does-perplexity-mean" class="slide level2 s28c">
-<h2>What does perplexity mean?</h2>
-<div class="s28c-rows">
-  <div class="s28c-r"><span class="s28c-l">Toy example</span><span class="s28c-t">4 next words, 1/4 each</span><span class="s28c-v">4</span></div>
-  <div class="s28c-r fragment up" data-fragment-index="1"><span class="s28c-l">Knows nothing</span><span class="s28c-t">110,609 next words, 1/110,609 each</span><span class="s28c-v">110,609</span></div>
+<section id="mean-loss-per-word" class="slide level2 q05">
+<h2>Mean loss per word</h2>
+<p class="q05-hl"><span class="q05-b">&lt;s&gt;</span><span>the</span><span>middle</span><span>east</span><span>it</span><span>will</span><span>only</span><span>get</span><span>worse</span></p>
+<div class="q05-f">
+  <span class="q05-a fragment up" data-fragment-index="1"><span class="math inline">\dfrac{62.16}{8} = 7.77</span></span>
+  <span class="q05-g fragment up" data-fragment-index="2"><span class="math inline">\displaystyle \text{loss} = -\frac{1}{n}\sum_{i=1}^{n} \log p(w_i \mid \text{previous words})</span></span>
 </div>
-<div class="s28c-c fragment up" data-fragment-index="2">
-  <p class="s28c-h">Perplexity on the dev articles, C1 models with 1 added to every count</p>
-  <div class="s28c-b"><span class="s28c-bl">Unigram</span><span class="s28c-trk"><span class="fragment grow" data-fragment-index="2" style="width:40.2px"></span><span class="hl-val">6,176</span></span></div>
-  <div class="s28c-b"><span class="s28c-bl">Bigram</span><span class="s28c-trk"><span class="fragment grow" data-fragment-index="2" style="width:283.9px"></span><span class="hl-val">43,613</span></span></div>
-  <div class="s28c-b"><span class="s28c-bl">Trigram</span><span class="s28c-trk"><span class="acc fragment grow" data-fragment-index="2" style="width:566.8px"></span><span class="hl-val">87,069</span></span></div>
-  <div class="s28c-ref" aria-hidden="true"></div><p class="s28c-rl">knows nothing: 110,609</p>
-</div>
-<div class="end steps s28c-say">
-  <p class="fragment fade-out" data-fragment-index="1">Perplexity is the number of equally likely words the model is choosing&nbsp;among.</p>
-  <p class="fragment current-visible" data-fragment-index="1">A model that knows nothing gives each of the 110,609 next words the same probability. Its perplexity is&nbsp;110,609.</p>
-  <p class="fragment current-visible" data-fragment-index="2">The C1 models, which add 1 to every count, have perplexities of 6,176, 43,613 and 87,069 on the dev&nbsp;articles.</p>
-  <p class="fragment keep s28c-q" data-fragment-index="3">The trigram model writes the best text. Why does it give new text the highest&nbsp;perplexity?</p>
+
+<table class="q05-t caption-top">
+<thead class="fragment up" data-fragment-index="3">
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Classification</th>
+<th data-quarto-table-cell-role="th">Generation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="fragment up odd" data-fragment-index="3">
+<td>What is predicted</td>
+<td>the topic</td>
+<td>the next word</td>
+</tr>
+<tr class="fragment up even" data-fragment-index="4">
+<td>Classes</td>
+<td>6 topics</td>
+<td>110,609 words</td>
+</tr>
+<tr class="fragment up odd" data-fragment-index="5">
+<td>Losses per article</td>
+<td>1</td>
+<td>one per word</td>
+</tr>
+<tr class="fragment up even" data-fragment-index="6">
+<td>The mean is over</td>
+<td>4,000 dev articles</td>
+<td>174,640 dev words</td>
+</tr>
+</tbody>
+</table>
+
+<div class="end steps q05-say">
+  <p class="fragment current-visible" data-fragment-index="1">Texts have different lengths, so we divide by the number of&nbsp;words.</p>
+  <p class="fragment current-visible" data-fragment-index="2">On the dev set, the mean is over 174,640&nbsp;words.</p>
+  <p class="fragment keep" data-fragment-index="3">The loss is the same in both; only the classes and the number of losses&nbsp;change.</p>
 </div>
 <style>
-/* Step 0 the toy history star film, 4 next words with 1/4 each: perplexity 4; builds: 1 a model that gives each of the
-   classes_next = 110,609 next words the same probability: loss log 110,609, perplexity 110,609; 2 the C1 models with
-   add-1 (k = 1, as on slide "Three models in code"): perplexity = exp(dev_loss), perplexity.unigram["1"] = 6,176,
-   bigram 43,613, trigram 87,069; bars at 720 px for 110,609 (6,176 = 40.2 px, 43,613 = 283.9 px, 87,069 = 566.8 px),
-   the dashed line at 720 px is the model that knows nothing; 3 the question that slide "Why can it write but not
-   classify?" answers. */
-.reveal section.s28c .s28c-rows { position: absolute; left: 64px; top: 120px; width: 1152px; }
-.reveal section.s28c .s28c-r { display: grid; grid-template-columns: 280px 1fr 200px; align-items: center; min-height: 80px; border-bottom: var(--rule) solid var(--border-subtle); }
-.reveal section.s28c .s28c-r:first-child { border-top: var(--rule) solid var(--border-subtle); }
-.reveal section.s28c .s28c-l { font-size: 24px; line-height: 32px; font-weight: var(--weight-semibold); }
-.reveal section.s28c .s28c-t { font-size: 24px; line-height: 32px; }
-.reveal section.s28c .s28c-t .katex { font-size: 26px; }
-.reveal section.s28c .s28c-v { justify-self: end; font-size: 36px; line-height: 44px; font-weight: var(--weight-light); font-variant-numeric: tabular-nums; }
-.reveal section.s28c .s28c-c { position: absolute; left: 64px; top: 312px; width: 1152px; }
-.reveal section.s28c .s28c-h { margin: 0 0 12px; font-size: 22px; line-height: 30px; color: var(--text-secondary); }
-.reveal section.s28c .s28c-b { display: flex; align-items: center; height: 44px; }
-.reveal section.s28c .s28c-bl { width: 160px; font-size: 24px; }
-.reveal section.s28c .s28c-trk { display: flex; align-items: center; }
-.reveal section.s28c .s28c-trk > span.fragment { display: block; height: 28px; background: var(--mark-context); }
-.reveal section.s28c .s28c-trk > span.acc { background: var(--mark-accent); }
-.reveal section.s28c .s28c-trk .hl-val { margin-left: 12px; font-size: 24px; font-variant-numeric: tabular-nums; }
-.reveal section.s28c .s28c-ref { position: absolute; left: 880px; top: 38px; height: 140px; border-left: 2px dashed var(--mark-context); }
-.reveal section.s28c .s28c-rl { position: absolute; left: 892px; top: 140px; margin: 0; font-size: 22px; line-height: 30px; color: var(--text-secondary); }
-.reveal section.s28c .s28c-say p { font-size: 28px; line-height: 36px; }
-.reveal section.s28c .s28c-say p.s28c-q { font-weight: var(--weight-semibold); }
-.reveal section.s28c .katex .accent { color: inherit; }
+/* Slide q05. Step 0: the headline, as on q04. Builds: 1 the loss of the headline divided by its 8 words; 2 the mean loss
+   per word of any text of n words (on the dev set n = 174,640); 3 to 6 the table, one row per build, classification
+   beside generation; the closing line from the first row on. Numbers: c03_data.json, loss_example.sum 62.1615, loss_example.n
+   8, loss_example.mean 7.7702; dev_n_words 174,640 (the words scored by each model: words outside the vocabulary are
+   skipped and </s> is not predicted); classes_next 110,609 (every word of the vocabulary and </s>); n_dev 4,000. */
+.reveal section.q05 .q05-hl { position: absolute; left: 72px; top: 120px; height: 44px; margin: 0; display: flex; align-items: center; gap: 20px; font-family: var(--mono); font-size: 24px; line-height: 44px; white-space: nowrap; }
+.reveal section.q05 .q05-b { color: var(--text-helper); }
+.reveal section.q05 .q05-f { position: absolute; left: 64px; top: 188px; height: 104px; display: flex; align-items: center; gap: 112px; white-space: nowrap; }
+.reveal section.q05 .q05-f .katex { font-size: 32px; }   /* the limits of the sum at 0.7 x 32 = 22 px */
+.reveal section.q05 .q05-t { position: absolute; left: 64px; top: 324px; margin: 0; font-size: 24px; }
+.reveal section.q05 .q05-t th, .reveal section.q05 .q05-t td { height: 46px; padding: 0 16px; box-sizing: border-box; vertical-align: middle; white-space: nowrap; }
+.reveal section.q05 .q05-t th:first-child, .reveal section.q05 .q05-t td:first-child { width: 280px; }
+.reveal section.q05 .q05-t th:not(:first-child), .reveal section.q05 .q05-t td:not(:first-child) { width: 320px; }
+.reveal section.q05 .q05-t td:first-child { color: var(--text-secondary); }
+.reveal section.q05 .q05-say p { font-size: 28px; line-height: 36px; }
+</style>
+</section>
+<section id="perplexity" class="slide level2 q06">
+<h2>Perplexity</h2>
+<div class="q06-toy">
+  <div class="chips q06-h"><span class="chip">star</span><span class="chip">film</span></div>
+  <span class="arr"></span>
+  <div class="hbars q06-bars">
+    <span class="hl-lab ex">song</span><span class="hl-trk" style="--v:0.25"><span class="hl-bar"></span><span class="hl-val">1/4</span></span>
+    <span class="hl-lab ex">star</span><span class="hl-trk" style="--v:0.25"><span class="hl-bar"></span><span class="hl-val">1/4</span></span>
+    <span class="hl-lab ex">&lt;/s&gt;</span><span class="hl-trk" style="--v:0.25"><span class="hl-bar"></span><span class="hl-val">1/4</span></span>
+    <span class="hl-lab ex">match</span><span class="hl-trk" style="--v:0.25"><span class="hl-bar"></span><span class="hl-val">1/4</span></span>
+  </div>
+</div>
+<div class="q06-eq">
+  <p class="fragment up" data-fragment-index="1"><span class="math inline">\text{loss} = -\log(1/4) = \log 4 = 1.39</span></p>
+  <p class="fragment up" data-fragment-index="2"><span class="math inline">\text{perplexity} = e^{\,\text{loss}} = e^{\,\log 4} = 4</span></p>
+</div>
+<!-- the number line, 1:1 in slide pixels: perplexity 1 at x = 112, 110,609 at x = 800 (688 px for 110,608); beyond it a
+     dashed line and an arrow to infinity. -->
+<svg class="q06-nl" width="1152" height="180" viewbox="64 330 1152 180" role="img" aria-label="A number line of perplexity: 1 for a perfect model, 110,609 when all words are equally likely, and infinity when a word gets probability 0. The bigram model is at 5,103, the unigram model at 5,404 and the trigram model at 33,752.">
+  <g class="fragment up" data-fragment-index="3">
+    <line class="q06-ax" x1="112" y1="430" x2="800" y2="430"></line>
+    <line class="q06-ax" x1="112" y1="420" x2="112" y2="440"></line>
+    <line class="q06-ax" x1="800" y1="420" x2="800" y2="440"></line>
+    <line class="q06-dash" x1="800" y1="430" x2="1144" y2="430"></line>
+    <path class="q06-ah" d="M1138 423l8 7-8 7"></path>
+    <text class="q06-n" x="112" y="468" text-anchor="middle">1</text>
+    <text class="q06-n" x="800" y="468" text-anchor="middle">110,609</text>
+    <text class="q06-inf" x="1176" y="440" text-anchor="middle">∞</text>
+    <text class="q06-t" x="104" y="498">a perfect model</text>
+    <text class="q06-t" x="800" y="498" text-anchor="middle">all words equally likely</text>
+    <text class="q06-t" x="1216" y="498" text-anchor="end">a word gets probability 0</text>
+  </g>
+  <g class="fragment up" data-fragment-index="4">
+    <line class="q06-ld" x1="144.6" y1="422" x2="144.6" y2="396"></line>
+    <line class="q06-ld" x1="321.9" y1="422" x2="321.9" y2="396"></line>
+    <circle class="q06-d" cx="143.7" cy="430" r="6"></circle>
+    <circle class="q06-d" cx="145.6" cy="430" r="6"></circle>
+    <circle class="q06-d" cx="321.9" cy="430" r="6"></circle>
+    <text class="q06-m" x="144.6" y="356" text-anchor="middle">unigram 5,404</text>
+    <text class="q06-m" x="144.6" y="386" text-anchor="middle">bigram 5,103</text>
+    <text class="q06-m" x="321.9" y="386" text-anchor="middle">trigram 33,752</text>
+  </g>
+</svg>
+<div class="end steps q06-say">
+  <p class="fragment current-visible" data-fragment-index="1">If four words are equally likely, the loss is <span class="math inline">\log 4 = 1.39</span>.</p>
+  <p class="fragment current-visible" data-fragment-index="2">Perplexity is e to the power of the mean loss. Here it is 4, the&nbsp;number&nbsp;of&nbsp;equally&nbsp;likely&nbsp;words.</p>
+  <p class="fragment current-visible" data-fragment-index="3">Perplexity is 1 if every next word gets probability 1, 110,609 if all words are equally likely, and infinite if a word gets probability&nbsp;0.</p>
+  <p class="fragment current-visible" data-fragment-index="4">On the dev set, the three models have these perplexities. A small number is added to every count; Part 5 explains&nbsp;it.</p>
+  <p class="fragment keep" data-fragment-index="5">Perplexity depends on the test text, so we compare models on the same&nbsp;text.</p>
+</div>
+<style>
+/* Slide q06. Step 0: the toy previous words star film and their four next words, 1/4 each (c03_data.json,
+   toy.entertainment.trigram_counts: star film is followed by song, star, </s> and match once each; the bars of slide
+   "Choosing the next word", 400 px per 1). Builds: 1 the loss, -log 1/4 = log 4 = 1.386; 2 perplexity, e^loss = 4;
+   3 the number line: 1 (every next word gets probability 1), 110,609 (classes_next: every word gets 1/110,609, so the
+   loss is log 110,609), infinity (a word with probability 0 has an infinite loss); 4 the three C1 models on the dev set,
+   each with its best k of Part 5 (best: unigram k = 0.1, 5,404.5; bigram k = 0.001, 5,103.5; trigram k = 0.0001,
+   33,752.2; at x = 145.6, 143.7 and 321.9; the unigram and bigram dots almost coincide, so their labels are stacked);
+   5 the closing line. */
+.reveal section.q06 .q06-toy { position: absolute; left: 64px; top: 136px; height: 136px; display: flex; align-items: center; gap: var(--spacing-05); }
+.reveal section.q06 .q06-h { flex-wrap: nowrap; }
+.reveal section.q06 .q06-h .chip { height: 44px; font-size: 24px; }
+.reveal section.q06 .q06-bars { width: 496px; --max: 1; --lw: 80px; --room: 64px; column-gap: 16px; row-gap: 0; grid-auto-rows: 34px; grid-template-columns: 80px 400px; }
+.reveal section.q06 .q06-bars .hl-lab { font-size: 22px; line-height: 24px; white-space: nowrap; }
+.reveal section.q06 .q06-bars .hl-trk { height: 24px; }
+.reveal section.q06 .q06-bars .hl-val { font-size: 22px; }
+.reveal section.q06 .q06-eq { position: absolute; left: 688px; top: 140px; }
+.reveal section.q06 .q06-eq p { margin: 0 0 var(--spacing-05); line-height: 56px; white-space: nowrap; }
+.reveal section.q06 .q06-eq .katex { font-size: 32px; }   /* the exponents at 0.7 x 32 = 22 px */
+.reveal section.q06 .q06-nl { position: absolute; left: 64px; top: 330px; overflow: visible; }
+.reveal section.q06 .q06-ax { stroke: var(--mark-ink); stroke-width: 2; }
+.reveal section.q06 .q06-dash { stroke: var(--mark-ink); stroke-width: 2; stroke-dasharray: 6 6; }
+.reveal section.q06 .q06-ah { fill: none; stroke: var(--mark-ink); stroke-width: 2; }
+.reveal section.q06 .q06-n { font-size: 22px; fill: var(--text-primary); font-variant-numeric: tabular-nums; }
+.reveal section.q06 .q06-inf { font-size: 32px; fill: var(--text-primary); }
+.reveal section.q06 .q06-t { font-size: 22px; fill: var(--text-secondary); }
+.reveal section.q06 .q06-ld { stroke: var(--mark-context); stroke-width: 1; }
+.reveal section.q06 .q06-d { fill: var(--mark-ink); stroke: var(--background); stroke-width: 2; }
+.reveal section.q06 .q06-m { font-size: 22px; fill: var(--text-primary); font-variant-numeric: tabular-nums; }
+.reveal section.q06 .q06-say p { font-size: 28px; line-height: 36px; }
+</style>
+</section>
+<section id="the-lowest-possible-loss" class="slide level2 q07">
+<h2>The lowest possible loss</h2>
+<p class="q07-h q07-ha">Shares: <span class="sw t3"></span>sports 0.7, <span class="sw t5"></span>entertainment 0.3</p>
+<p class="q07-h q07-hb fragment up" data-fragment-index="2">Shares: <span class="ex">song</span>, <span class="ex">star</span>, <span class="ex">&lt;/s&gt;</span>, <span class="ex">match</span>, 1/4 each</p>
+<!-- Two charts, 1:1 in slide pixels: q from 0 to 1 over 432 px (left chart x = 120 to 552, right chart x = 744 to 1176);
+     mean loss 0 at y = 392, 44 px per unit (4 at y = 216). Curves from c03_data.json gibbs, q = 0.01 to 0.99. -->
+<svg class="q07-svg" width="1152" height="320" viewbox="64 120 1152 320" role="img" aria-label="Left: the mean loss against q when the shares are 0.7 and 0.3; it is lowest at q = 0.7. Right: the mean loss against the probability q given to one of four next words that each follow in a quarter of the cases; it is lowest at q = 1/4, where it is log 4 = 1.39.">
+  <g>
+    <line class="ch-grid" x1="120" x2="552" y1="348" y2="348"></line><line class="ch-grid" x1="120" x2="552" y1="304" y2="304"></line><line class="ch-grid" x1="120" x2="552" y1="260" y2="260"></line><line class="ch-grid" x1="120" x2="552" y1="216" y2="216"></line>
+    <line class="ch-axis" x1="120" x2="120" y1="194" y2="392"></line><line class="ch-axis" x1="120" x2="552" y1="392" y2="392"></line>
+    <text class="q07-tk" x="108" y="400" text-anchor="end">0</text><text class="q07-tk" x="108" y="356" text-anchor="end">1</text><text class="q07-tk" x="108" y="312" text-anchor="end">2</text><text class="q07-tk" x="108" y="268" text-anchor="end">3</text><text class="q07-tk" x="108" y="224" text-anchor="end">4</text>
+    <text class="q07-tk" x="120" y="420" text-anchor="middle">0</text><text class="q07-tk" x="228" y="420" text-anchor="middle">0.25</text><text class="q07-tk" x="336" y="420" text-anchor="middle">0.5</text><text class="q07-tk" x="444" y="420" text-anchor="middle">0.75</text><text class="q07-tk" x="552" y="420" text-anchor="middle">1</text>
+    <text class="q07-ax" x="566" y="399">q</text>
+    <text class="q07-tk" x="64" y="184">mean loss</text>
+  </g>
+  <g class="fragment draw" data-fragment-index="1"><path class="q07-ca" pathlength="1" d="M124.3,250.0 L128.6,271.2 L133.0,283.6 L137.3,292.3 L141.6,299.1 L145.9,304.5 L150.2,309.1 L154.6,313.1 L158.9,316.6 L163.2,319.7 L167.5,322.5 L171.8,325.0 L176.2,327.3 L180.5,329.5 L184.8,331.4 L189.1,333.3 L193.4,335.0 L197.8,336.6 L202.1,338.1 L206.4,339.5 L210.7,340.8 L215.0,342.1 L219.4,343.3 L223.7,344.4 L228.0,345.5 L232.3,346.5 L236.6,347.5 L241.0,348.5 L245.3,349.4 L249.6,350.2 L253.9,351.0 L258.2,351.8 L262.6,352.6 L266.9,353.3 L271.2,354.0 L275.5,354.6 L279.8,355.3 L284.2,355.9 L288.5,356.5 L292.8,357.0 L297.1,357.6 L301.4,358.1 L305.8,358.6 L310.1,359.1 L314.4,359.5 L318.7,359.9 L323.0,360.4 L327.4,360.8 L331.7,361.1 L336.0,361.5 L340.3,361.8 L344.6,362.2 L349.0,362.5 L353.3,362.8 L357.6,363.0 L361.9,363.3 L366.2,363.5 L370.6,363.8 L374.9,364.0 L379.2,364.2 L383.5,364.3 L387.8,364.5 L392.2,364.6 L396.5,364.8 L400.8,364.9 L405.1,365.0 L409.4,365.0 L413.8,365.1 L418.1,365.1 L422.4,365.1 L426.7,365.1 L431.0,365.1 L435.4,365.0 L439.7,364.9 L444.0,364.8 L448.3,364.7 L452.6,364.6 L457.0,364.4 L461.3,364.1 L465.6,363.9 L469.9,363.6 L474.2,363.3 L478.6,362.9 L482.9,362.4 L487.2,362.0 L491.5,361.4 L495.8,360.8 L500.2,360.1 L504.5,359.3 L508.8,358.4 L513.1,357.3 L517.4,356.1 L521.8,354.7 L526.1,353.0 L530.4,350.9 L534.7,348.3 L539.0,344.8 L543.4,339.7 L547.7,330.9"></path></g>
+  <g class="fragment q07-late" data-fragment-index="1">
+    <line class="q07-ra" x1="422.4" x2="422.4" y1="194" y2="392"></line>
+    <text class="q07-tk" x="430.4" y="184"><tspan font-style="italic">q</tspan> = 0.7</text>
+    <circle class="q07-da" cx="422.4" cy="365.1" r="6"></circle>
+  </g>
+  <g class="fragment" data-fragment-index="2">
+    <line class="ch-grid" x1="744" x2="1176" y1="348" y2="348"></line><line class="ch-grid" x1="744" x2="1176" y1="304" y2="304"></line><line class="ch-grid" x1="744" x2="1176" y1="260" y2="260"></line><line class="ch-grid" x1="744" x2="1176" y1="216" y2="216"></line>
+    <line class="ch-axis" x1="744" x2="744" y1="194" y2="392"></line><line class="ch-axis" x1="744" x2="1176" y1="392" y2="392"></line>
+    <text class="q07-tk" x="732" y="400" text-anchor="end">0</text><text class="q07-tk" x="732" y="356" text-anchor="end">1</text><text class="q07-tk" x="732" y="312" text-anchor="end">2</text><text class="q07-tk" x="732" y="268" text-anchor="end">3</text><text class="q07-tk" x="732" y="224" text-anchor="end">4</text>
+    <text class="q07-tk" x="744" y="420" text-anchor="middle">0</text><text class="q07-tk" x="852" y="420" text-anchor="middle">0.25</text><text class="q07-tk" x="960" y="420" text-anchor="middle">0.5</text><text class="q07-tk" x="1068" y="420" text-anchor="middle">0.75</text><text class="q07-tk" x="1176" y="420" text-anchor="middle">1</text>
+    <text class="q07-ax" x="1190" y="399">q</text>
+    <text class="q07-tk" x="688" y="184">mean loss</text>
+  </g>
+  <g class="fragment draw" data-fragment-index="2"><path class="q07-cb" pathlength="1" d="M748.3,304.8 L752.6,312.0 L757.0,316.2 L761.3,319.0 L765.6,321.1 L769.9,322.8 L774.2,324.1 L778.6,325.2 L782.9,326.1 L787.2,326.9 L791.5,327.6 L795.8,328.2 L800.2,328.7 L804.5,329.1 L808.8,329.5 L813.1,329.8 L817.4,330.1 L821.8,330.3 L826.1,330.5 L830.4,330.7 L834.7,330.8 L839.0,330.9 L843.4,331.0 L847.7,331.0 L852.0,331.0 L856.3,331.0 L860.6,331.0 L865.0,330.9 L869.3,330.8 L873.6,330.7 L877.9,330.6 L882.2,330.5 L886.6,330.3 L890.9,330.2 L895.2,330.0 L899.5,329.8 L903.8,329.6 L908.2,329.3 L912.5,329.1 L916.8,328.8 L921.1,328.5 L925.4,328.2 L929.8,327.9 L934.1,327.6 L938.4,327.2 L942.7,326.9 L947.0,326.5 L951.4,326.1 L955.7,325.7 L960.0,325.2 L964.3,324.8 L968.6,324.3 L973.0,323.8 L977.3,323.3 L981.6,322.8 L985.9,322.3 L990.2,321.7 L994.6,321.1 L998.9,320.5 L1003.2,319.9 L1007.5,319.2 L1011.8,318.6 L1016.2,317.9 L1020.5,317.1 L1024.8,316.4 L1029.1,315.6 L1033.4,314.8 L1037.8,313.9 L1042.1,313.0 L1046.4,312.1 L1050.7,311.1 L1055.0,310.1 L1059.4,309.1 L1063.7,308.0 L1068.0,306.8 L1072.3,305.6 L1076.6,304.4 L1081.0,303.0 L1085.3,301.7 L1089.6,300.2 L1093.9,298.6 L1098.2,297.0 L1102.6,295.2 L1106.9,293.4 L1111.2,291.4 L1115.5,289.2 L1119.8,286.9 L1124.2,284.4 L1128.5,281.6 L1132.8,278.6 L1137.1,275.2 L1141.4,271.5 L1145.8,267.2 L1150.1,262.2 L1154.4,256.3 L1158.7,249.1 L1163.0,239.7 L1167.4,226.4 L1171.7,203.7"></path></g>
+  <g class="fragment q07-late" data-fragment-index="2">
+    <line class="q07-rb" x1="852.0" x2="852.0" y1="194" y2="392"></line>
+    <text class="q07-tk" x="860.0" y="184"><tspan font-style="italic">q</tspan> = 1/4</text>
+    <circle class="q07-db" cx="852.0" cy="331.0" r="7"></circle>
+    <text class="q07-v" x="864.0" y="363.0">log 4 = 1.39</text>
+  </g>
+</svg>
+<div class="q07-in fragment up" data-fragment-index="3">
+  <span class="q07-ie"><span class="math inline">\displaystyle -\sum_w p(w) \log q(w) \;\ge\; -\sum_w p(w) \log p(w)</span></span>
+  <span class="q07-def"><span><span class="math inline">p(w)</span>: the share of <span class="math inline">w</span> in the text</span><span><span class="math inline">q(w)</span>: the probability the model gives to <span class="math inline">w</span></span></span>
+</div>
+<div class="end steps q07-say">
+  <p class="fragment current-visible" data-fragment-index="1">In class 2, the loss was lowest when the model gave the true share,&nbsp;0.7.</p>
+  <p class="fragment current-visible" data-fragment-index="2">Here one word follows in 1/4 of the cases. The mean loss is lowest when&nbsp;the&nbsp;model&nbsp;gives&nbsp;it&nbsp;1/4.</p>
+  <p class="fragment current-visible" data-fragment-index="3">The mean loss is lowest when the model’s probabilities equal the shares in&nbsp;the&nbsp;text. This&nbsp;is&nbsp;Gibbs’&nbsp;inequality.</p>
+  <p class="fragment keep q07-q" data-fragment-index="4">Counting gives the shares in the training texts. Do they also fit new&nbsp;text?</p>
+</div>
+<style>
+/* Slide q07. Step 0: the left chart's frame. Builds: 1 the curve of class 2 (100 headlines, 70 sports: the mean loss
+   -(0.7 log q + 0.3 log(1 - q)) against the probability q given to sports), lowest at q = 0.7 (gibbs.two: min_q 0.7,
+   min_loss 0.611); 2 the new case, four next words with shares 1/4 each (star film in the toy texts, slide q06): the model
+   gives q to one of them and (1 - q)/3 to each of the others; the mean loss -(1/4 log q + 3/4 log((1 - q)/3)) is lowest at
+   q = 1/4 (gibbs.four: min_q 0.25, min_loss = log 4 = 1.386), marked in Blue 60; 3 Gibbs' inequality, p the shares in the
+   text, q the model's probabilities; 4 the question that slides q08 to q10 answer. Curves: gibbs.q, gibbs.two.loss,
+   gibbs.four.loss (99 points each), x = 120 + 432 q (left) or 744 + 432 q (right), y = 392 - 44 loss. */
+.reveal section.q07 .q07-h { position: absolute; top: 120px; margin: 0; font-size: 22px; line-height: 30px; white-space: nowrap; }
+.reveal section.q07 .q07-ha { left: 64px; }
+.reveal section.q07 .q07-hb { left: 688px; }
+.reveal section.q07 .q07-h .sw { margin: -2px 8px 0 4px; }
+.reveal section.q07 .q07-h .ex { font-size: 22px; }
+.reveal section.q07 .q07-svg { position: absolute; left: 64px; top: 120px; overflow: visible; }
+.reveal section.q07 .q07-tk { font-size: 22px; fill: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.reveal section.q07 .q07-ax { font-size: 24px; font-style: italic; fill: var(--text-secondary); }
+.reveal section.q07 .q07-ca { fill: none; stroke: var(--mark-context); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.reveal section.q07 .q07-cb { fill: none; stroke: var(--mark-ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.reveal section.q07 .q07-ra { stroke: var(--mark-context); stroke-width: 1.5; stroke-dasharray: 6 4; }
+.reveal section.q07 .q07-rb { stroke: var(--mark-accent); stroke-width: 1.5; stroke-dasharray: 6 4; }
+.reveal section.q07 .q07-da { fill: var(--mark-ink); stroke: var(--background); stroke-width: 2; }
+.reveal section.q07 .q07-db { fill: var(--mark-accent); stroke: var(--background); stroke-width: 2; }
+.reveal section.q07 .q07-v { font-size: 22px; fill: var(--text-primary); font-variant-numeric: tabular-nums; }
+.reveal .slides section.q07 .fragment.q07-late.visible { transition-delay: 500ms; }
+.reveal section.q07 .q07-in { position: absolute; left: 64px; top: 452px; display: flex; align-items: center; gap: 48px; white-space: nowrap; }
+.reveal section.q07 .q07-ie .katex { font-size: 32px; }   /* the index w under each sum at 0.7 x 32 = 22 px */
+.reveal section.q07 .q07-def { display: flex; flex-direction: column; font-size: 22px; line-height: 30px; color: var(--text-secondary); }
+.reveal section.q07 .q07-def .katex { font-size: 23px; }
+.reveal section.q07 .q07-say p { font-size: 28px; line-height: 36px; }
+.reveal section.q07 .q07-say p.q07-q { font-weight: var(--weight-semibold); }
+</style>
+</section>
+<section id="trigrams-in-generation" class="slide level2 q08">
+<h2>Trigrams in generation</h2>
+<p class="q08-mod fragment up" data-fragment-index="1"><span class="sw t2"></span>Trigram model of international, nothing added to the counts</p>
+<p class="q08-key fragment up" data-fragment-index="2">Count in the international training texts</p>
+<div class="q08-txt fragment up" data-fragment-index="1">
+  <div class="q08-ln" style="grid-template-columns: 8px repeat(10, max-content) 8px">
+    <span class="q08-w q08-pad" style="grid-area: 1 / 2">&lt;s&gt;</span>
+    <span class="q08-w q08-pad" style="grid-area: 1 / 3">&lt;s&gt;</span>
+    <span class="q08-w" style="grid-area: 1 / 4">donald</span>
+    <span class="q08-w" style="grid-area: 1 / 5">trump</span>
+    <span class="q08-w" style="grid-area: 1 / 6">s</span>
+    <span class="q08-w" style="grid-area: 1 / 7">uk</span>
+    <span class="q08-w" style="grid-area: 1 / 8">visit</span>
+    <span class="q08-w" style="grid-area: 1 / 9">met</span>
+    <span class="q08-w" style="grid-area: 1 / 10">with</span>
+    <span class="q08-w" style="grid-area: 1 / 11">ukraine</span>
+    <span class="q08-u" style="grid-area: 2 / 2 / 3 / 5"><b class="fragment up" data-fragment-index="2">6</b></span>
+    <span class="q08-u" style="grid-area: 3 / 3 / 4 / 6"><b class="fragment up" data-fragment-index="2">5</b></span>
+    <span class="q08-u" style="grid-area: 4 / 4 / 5 / 7"><b class="fragment up" data-fragment-index="2">13</b></span>
+    <span class="q08-u" style="grid-area: 2 / 5 / 3 / 8"><b class="fragment up" data-fragment-index="2">1</b></span>
+    <span class="q08-u" style="grid-area: 3 / 6 / 4 / 9"><b class="fragment up" data-fragment-index="2">1</b></span>
+    <span class="q08-u" style="grid-area: 4 / 7 / 5 / 10"><b class="fragment up" data-fragment-index="2">1</b></span>
+    <span class="q08-u" style="grid-area: 2 / 8 / 3 / 11"><b class="fragment up" data-fragment-index="2">2</b></span>
+    <span class="q08-u" style="grid-area: 3 / 9 / 4 / 12"><b class="fragment up" data-fragment-index="2">1</b></span>
+    <span class="q08-u q08-or" style="grid-area: 4 / 10 / 5 / 13"></span>
+    <span class="q08-u q08-or" style="grid-area: 2 / 11 / 3 / 13"></span>
+  </div>
+  <div class="q08-ln" style="grid-template-columns: 8px repeat(7, max-content) 8px">
+    <span class="q08-w" style="grid-area: 1 / 2">another</span>
+    <span class="q08-w" style="grid-area: 1 / 3">country</span>
+    <span class="q08-w" style="grid-area: 1 / 4">is</span>
+    <span class="q08-w" style="grid-area: 1 / 5">still</span>
+    <span class="q08-w" style="grid-area: 1 / 6">a</span>
+    <span class="q08-w" style="grid-area: 1 / 7">safe</span>
+    <span class="q08-w" style="grid-area: 1 / 8">place</span>
+    <span class="q08-u q08-ol" style="grid-area: 4 / 2 / 5 / 3"><b class="fragment up" data-fragment-index="2">1</b></span>
+    <span class="q08-u q08-ol" style="grid-area: 2 / 2 / 3 / 4"><b class="fragment up" data-fragment-index="2">1</b></span>
+    <span class="q08-u" style="grid-area: 3 / 2 / 4 / 5"><b class="fragment up" data-fragment-index="2">1</b></span>
+    <span class="q08-u" style="grid-area: 4 / 3 / 5 / 6"><b class="fragment up" data-fragment-index="2">2</b></span>
+    <span class="q08-u" style="grid-area: 2 / 4 / 3 / 7"><b class="fragment up" data-fragment-index="2">4</b></span>
+    <span class="q08-u" style="grid-area: 3 / 5 / 4 / 8"><b class="fragment up" data-fragment-index="2">1</b></span>
+    <span class="q08-u" style="grid-area: 4 / 6 / 5 / 9"><b class="fragment up" data-fragment-index="2">1</b></span>
+  </div>
+</div>
+<div class="end steps q08-say">
+  <p class="fragment current-visible" data-fragment-index="1">In generation, each next word is drawn from trigrams that occur in the training&nbsp;texts.</p>
+  <p class="fragment current-visible" data-fragment-index="2">Every trigram of this sample occurs in the training texts at least&nbsp;once.</p>
+  <p class="fragment keep" data-fragment-index="3">So the generated text repeats parts of the training&nbsp;texts.</p>
+</div>
+<style>
+/* Slide q08 (Part 4 rebuild, ../notes.md, 2026-11-10). Builds: 1 one sample of the trigram model of international
+   without anything added to the counts, drawn as the demo "Three models write" draws (c03_build.py gen_sample: seed
+   14, 15 words; each next word w after u v with probability count(u v w) / count(u v)), on two lines, each trigram
+   underlined by a line with end marks: the trigram of word i (tokens i to i + 2, after <s> <s>) in tier i mod 3, so
+   that the trigrams of one tier do not overlap; the two trigrams across the line break have open ends and carry
+   their count on the second line; 2 on each trigram's line its count in the international training texts
+   (gen_sample.steps[].count: 6 5 13 1 1 1 2 1 1 1 1 2 4 1 1; the smallest is 1); 3 the closing line. Words in IBM
+   Plex Mono 28 px, a grid column each, 20 px apart, from x = 64; an 8 px column at each end of a line (the block
+   starts at x = 36). The open ends of the first line run into its right column; those of the second line start at
+   its first word, x = 64, so that no mark stands in the left margin. */
+.reveal section.q08 .q08-mod { position: absolute; left: 64px; top: 120px; margin: 0; display: flex; align-items: center; gap: 10px; font-size: 22px; line-height: 30px; color: var(--text-secondary); }
+.reveal section.q08 .q08-key { position: absolute; right: 64px; top: 120px; margin: 0; font-size: 22px; line-height: 30px; color: var(--text-secondary); }
+.reveal section.q08 .q08-txt { position: absolute; left: 36px; top: 180px; }
+.reveal section.q08 .q08-ln { display: grid; grid-auto-rows: 30px; grid-template-rows: 40px; column-gap: 20px; row-gap: 8px; align-items: center; }
+.reveal section.q08 .q08-ln + .q08-ln { margin-top: 36px; }
+.reveal section.q08 .q08-w { font-family: var(--mono); font-size: 28px; line-height: 40px; white-space: nowrap; }
+.reveal section.q08 .q08-pad { color: var(--text-helper); }
+.reveal section.q08 .q08-u { position: relative; display: flex; align-items: center; justify-content: center; height: 30px; margin: 0 4px; background: linear-gradient(var(--mark-accent), var(--mark-accent)) left center / 100% 2px no-repeat; }
+.reveal section.q08 .q08-u::before, .reveal section.q08 .q08-u::after { content: ""; position: absolute; top: 7px; width: 2px; height: 16px; background: var(--mark-accent); }
+.reveal section.q08 .q08-u::before { left: 0; }
+.reveal section.q08 .q08-u::after { right: 0; }
+.reveal section.q08 .q08-u.q08-ol { margin-left: 0; }
+.reveal section.q08 .q08-u.q08-or { margin-right: 0; }
+.reveal section.q08 .q08-u.q08-ol::before, .reveal section.q08 .q08-u.q08-or::after { display: none; }
+.reveal section.q08 .q08-u b { padding: 0 8px; background: var(--background); font-size: 24px; line-height: 30px; font-weight: var(--weight-regular); font-variant-numeric: tabular-nums; }
+.reveal section.q08 .q08-say p { font-size: 28px; line-height: 36px; }
+</style>
+</section>
+<section id="trigrams-in-new-text" class="slide level2 q09">
+<h2>Trigrams in new text</h2>
+<p class="q09-mod"><span class="sw t2"></span>Trigram model of international</p>
+<div class="q09-g">
+  <span class="q09-w q09-pad" style="grid-area: 1 / 1">&lt;s&gt;</span>
+  <span class="q09-w q09-pad" style="grid-area: 1 / 2">&lt;s&gt;</span>
+  <span class="q09-w" style="grid-area: 1 / 3">the</span>
+  <span class="q09-w" style="grid-area: 1 / 4">middle</span>
+  <span class="q09-w" style="grid-area: 1 / 5">east</span>
+  <span class="q09-w" style="grid-area: 1 / 6">it</span>
+  <span class="q09-w" style="grid-area: 1 / 7">will</span>
+  <span class="q09-w" style="grid-area: 1 / 8">only</span>
+  <span class="q09-w" style="grid-area: 1 / 9">get</span>
+  <span class="q09-w" style="grid-area: 1 / 10">worse</span>
+  <span class="q09-rl fragment up" data-fragment-index="1" style="grid-area: 2 / 1 / 3 / 3">trigram</span>
+  <span class="q09-m q09-seen fragment up" data-fragment-index="1" style="grid-area: 2 / 3"><span class="q09-mk"></span>seen</span>
+  <span class="q09-m q09-seen fragment up" data-fragment-index="1" style="grid-area: 2 / 4"><span class="q09-mk"></span>seen</span>
+  <span class="q09-m q09-seen fragment up" data-fragment-index="1" style="grid-area: 2 / 5"><span class="q09-mk"></span>seen</span>
+  <span class="q09-m q09-unseen fragment up" data-fragment-index="1" style="grid-area: 2 / 6"><span class="q09-mk"></span>unseen</span>
+  <span class="q09-m q09-unseen fragment up" data-fragment-index="1" style="grid-area: 2 / 7"><span class="q09-mk"></span>unseen</span>
+  <span class="q09-m q09-unseen fragment up" data-fragment-index="1" style="grid-area: 2 / 8"><span class="q09-mk"></span>unseen</span>
+  <span class="q09-m q09-unseen fragment up" data-fragment-index="1" style="grid-area: 2 / 9"><span class="q09-mk"></span>unseen</span>
+  <span class="q09-m q09-unseen fragment up" data-fragment-index="1" style="grid-area: 2 / 10"><span class="q09-mk"></span>unseen</span>
+  <span class="q09-rl q09-rl2 fragment up" data-fragment-index="2" style="grid-area: 3 / 1 / 4 / 3"><span class="math inline">-\log p</span></span>
+  <span class="q09-ax fragment up" data-fragment-index="2" style="grid-area: 3 / 3 / 4 / 11"></span>
+  <span class="q09-bc" style="grid-area: 3 / 3"><span class="q09-bar q09-seen fragment q09-drop" data-fragment-index="2" style="height: 59.8px"></span><span class="q09-v">3.74</span></span>
+  <span class="q09-bc" style="grid-area: 3 / 4"><span class="q09-bar q09-seen fragment q09-drop" data-fragment-index="2" style="height: 64.9px"></span><span class="q09-v">4.05</span></span>
+  <span class="q09-bc" style="grid-area: 3 / 5"><span class="q09-bar q09-seen fragment q09-drop" data-fragment-index="2" style="height: 5.2px"></span><span class="q09-v">0.33</span></span>
+  <span class="q09-bc" style="grid-area: 3 / 6"><span class="q09-bar q09-unseen fragment q09-drop" data-fragment-index="2" style="height: 215.6px"></span><span class="q09-v">13.47</span></span>
+  <span class="q09-bc" style="grid-area: 3 / 7"><span class="q09-bar q09-unseen fragment q09-drop" data-fragment-index="2" style="height: 185.8px"></span><span class="q09-v">11.61</span></span>
+  <span class="q09-bc" style="grid-area: 3 / 8"><span class="q09-bar q09-unseen fragment q09-drop" data-fragment-index="2" style="height: 206.0px"></span><span class="q09-v">12.88</span></span>
+  <span class="q09-bc" style="grid-area: 3 / 9"><span class="q09-bar q09-unseen fragment q09-drop" data-fragment-index="2" style="height: 185.8px"></span><span class="q09-v">11.61</span></span>
+  <span class="q09-bc" style="grid-area: 3 / 10"><span class="q09-bar q09-unseen fragment q09-drop" data-fragment-index="2" style="height: 185.8px"></span><span class="q09-v">11.61</span></span>
+</div>
+<div class="end steps q09-say">
+  <p class="fragment current-visible" data-fragment-index="1">Five of the eight trigrams of this headline never occur in the international training&nbsp;texts.</p>
+  <p class="fragment current-visible" data-fragment-index="2">The count of an unseen trigram is only the small number added to every count, so its probability is very small and its loss is about 12 to&nbsp;13.</p>
+  <p class="fragment keep" data-fragment-index="3">Without that small number, its probability would be 0 and the loss would be&nbsp;infinite.</p>
+</div>
+<style>
+/* Slide q09 (Part 4 rebuild, ../notes.md, 2026-11-10). Step 0 the headline of q01 to q05 (loss_example: dev row
+   2440, dv_02441, international) after <s> <s>, as the trigram model reads it; the model of its true topic. Builds:
+   1 under each word whether its trigram (the two previous words and the word) occurs in the international training
+   texts, Blue 60 seen, Red 60 unseen, each with its label (loss_example_trigram.steps[].seen; 3 of 8 seen); 2 under
+   each word its loss, -log p, from the trigram model at its best k = 0.0001 (loss_example_trigram.steps[].loss; bars
+   hang from a common line, 16 px per unit; the unseen trigrams 11.61 to 13.47); 3 the closing line. An unseen
+   trigram gets p = k / (count(u v) + kV): 1/V when its two previous words never occur together either. Columns: two
+   of 88 px for <s> (they hold the row labels), eight of 122 px for the words. */
+.reveal section.q09 .q09-mod { position: absolute; left: 64px; top: 120px; margin: 0; display: flex; align-items: center; gap: 10px; font-size: 22px; line-height: 30px; color: var(--text-secondary); }
+.reveal section.q09 .q09-g { position: absolute; left: 64px; top: 176px; width: 1152px; display: grid; grid-template-columns: 88px 88px repeat(8, 1fr); grid-template-rows: 44px 74px 256px; }
+.reveal section.q09 .q09-w { justify-self: center; font-family: var(--mono); font-size: 28px; line-height: 44px; white-space: nowrap; }
+.reveal section.q09 .q09-pad { color: var(--text-helper); }
+.reveal section.q09 .q09-m { display: flex; flex-direction: column; align-items: center; padding-top: 8px; font-size: 22px; line-height: 30px; color: var(--text-secondary); }
+.reveal section.q09 .q09-mk { display: block; width: 96px; height: 4px; margin-bottom: 6px; background: var(--c); }
+.reveal section.q09 .q09-seen { --c: var(--mark-accent); }
+.reveal section.q09 .q09-unseen { --c: var(--support-error); }
+.reveal section.q09 .q09-rl { align-self: start; padding-top: 18px; font-size: 22px; line-height: 30px; color: var(--text-secondary); }
+.reveal section.q09 .q09-rl2 { padding-top: 0; margin-top: -4px; }
+.reveal section.q09 .q09-rl2 .katex { font-size: 24px; }
+.reveal section.q09 .q09-ax { align-self: start; height: 0; border-top: var(--rule) solid var(--border-strong); }
+.reveal section.q09 .q09-bc { display: flex; flex-direction: column; align-items: center; }
+.reveal section.q09 .q09-bar { display: block; width: 56px; background: var(--c); }
+.reveal section.q09 .q09-v { margin-top: 6px; font-size: 22px; line-height: 28px; font-variant-numeric: tabular-nums; }
+/* drop: a bar that hangs from the line grows downward; its value follows (as the theme's grow and rise) */
+.reveal .slides section.q09 .fragment.q09-drop { opacity: 1; visibility: inherit; transform: scaleY(0); transform-origin: center top; transition: transform var(--dur-slower) var(--ease-expressive); }
+.reveal .slides section.q09 .fragment.q09-drop.visible { transform: scaleY(1); }
+.reveal .slides section.q09 .fragment.q09-drop ~ .q09-v { opacity: 0; transition: opacity var(--dur-moderate) var(--ease-productive) 500ms; }
+.reveal .slides section.q09 .fragment.q09-drop.visible ~ .q09-v { opacity: 1; }
+html.print-pdf .reveal .slides section.q09 .fragment.q09-drop { transform: scaleY(1); }
+html.print-pdf .reveal .slides section.q09 .fragment.q09-drop ~ .q09-v { opacity: 1; }
+.reveal section.q09 .q09-say p { font-size: 28px; line-height: 36px; }
+.reveal section.q09 .katex .accent { color: inherit; }
+</style>
+</section>
+<section id="why-is-the-trigram-perplexity-high" class="slide level2 q10">
+<h2>Why is the trigram perplexity high?</h2>
+<div class="q10-t">
+  <span class="q10-rule" style="grid-area: 1 / 3 / 2 / 6"></span>
+  <span class="q10-rule q10-rs" style="grid-area: 2 / 1 / 3 / 6"></span>
+  <span class="q10-h" style="grid-area: 1 / 2">Words with an unseen n-gram</span>
+  <span class="q10-h" style="grid-area: 1 / 3 / 2 / 6">Mean loss per word</span>
+  <span class="q10-h q10-h2" style="grid-area: 2 / 2">of the 174,640 dev words</span>
+  <span class="q10-h q10-h2" style="grid-area: 2 / 3">seen</span>
+  <span class="q10-h q10-h2" style="grid-area: 2 / 4">unseen</span>
+  <span class="q10-h q10-h2" style="grid-area: 2 / 5">all</span>
+  <span class="q10-rule" style="grid-area: 3 / 1 / 4 / 6"></span>
+  <span class="q10-n" style="grid-area: 3 / 1">Unigram</span>
+  <span class="q10-c" style="grid-area: 3 / 2"><span class="q10-sh"><span class="q10-tk"></span><span class="q10-b q10-un fragment grow" data-fragment-index="1" style="width: 7.1px"></span><span class="hl-val">3.5%</span></span></span>
+  <span class="q10-c" style="grid-area: 3 / 3"><span class="q10-lb"><span class="q10-b q10-se fragment grow" data-fragment-index="2" style="width: 66.9px"></span><span class="hl-val">8.36</span></span></span>
+  <span class="q10-c" style="grid-area: 3 / 4"><span class="q10-lb"><span class="q10-b q10-un fragment grow" data-fragment-index="3" style="width: 119.6px"></span><span class="hl-val">14.96</span></span></span>
+  <span class="q10-c" style="grid-area: 3 / 5"><span class="q10-lb"><span class="q10-b q10-al fragment grow" data-fragment-index="3" style="width: 68.8px"></span><span class="hl-val">8.59</span></span></span>
+  <span class="q10-rule" style="grid-area: 4 / 1 / 5 / 6"></span>
+  <span class="q10-n" style="grid-area: 4 / 1">Bigram</span>
+  <span class="q10-c" style="grid-area: 4 / 2"><span class="q10-sh"><span class="q10-tk"></span><span class="q10-b q10-un fragment grow" data-fragment-index="1" style="width: 106.7px"></span><span class="hl-val">53.4%</span></span></span>
+  <span class="q10-c" style="grid-area: 4 / 3"><span class="q10-lb"><span class="q10-b q10-se fragment grow" data-fragment-index="2" style="width: 34.2px"></span><span class="hl-val">4.28</span></span></span>
+  <span class="q10-c" style="grid-area: 4 / 4"><span class="q10-lb"><span class="q10-b q10-un fragment grow" data-fragment-index="3" style="width: 98.1px"></span><span class="hl-val">12.26</span></span></span>
+  <span class="q10-c" style="grid-area: 4 / 5"><span class="q10-lb"><span class="q10-b q10-al fragment grow" data-fragment-index="3" style="width: 68.3px"></span><span class="hl-val">8.54</span></span></span>
+  <span class="q10-rule" style="grid-area: 5 / 1 / 6 / 6"></span>
+  <span class="q10-n" style="grid-area: 5 / 1">Trigram</span>
+  <span class="q10-c" style="grid-area: 5 / 2"><span class="q10-sh"><span class="q10-tk"></span><span class="q10-b q10-un fragment grow" data-fragment-index="1" style="width: 168.6px"></span><span class="hl-val">84.3%</span></span></span>
+  <span class="q10-c" style="grid-area: 5 / 3"><span class="q10-lb"><span class="q10-b q10-se fragment grow" data-fragment-index="2" style="width: 22.2px"></span><span class="hl-val">2.77</span></span></span>
+  <span class="q10-c" style="grid-area: 5 / 4"><span class="q10-lb"><span class="q10-b q10-un fragment grow" data-fragment-index="3" style="width: 94.8px"></span><span class="hl-val">11.85</span></span></span>
+  <span class="q10-c" style="grid-area: 5 / 5"><span class="q10-lb"><span class="q10-b q10-al fragment grow" data-fragment-index="3" style="width: 83.4px"></span><span class="hl-val">10.43</span></span></span>
+</div>
+<div class="end steps q10-say">
+  <p class="fragment current-visible" data-fragment-index="1">For the trigram model, 84% of the dev words were never seen after their two previous words in the training texts of their&nbsp;topic.</p>
+  <p class="fragment current-visible" data-fragment-index="2">On the words whose n-gram was seen, the trigram model has the lowest&nbsp;loss.</p>
+  <p class="fragment current-visible" data-fragment-index="3">On the other words, all three models have a large loss. The trigram model has the most of them, so its mean loss is the&nbsp;highest.</p>
+  <p class="fragment keep q10-bad" data-fragment-index="4">Problem: the trigram model gives most words of new text a very small&nbsp;probability.</p>
+</div>
+<style>
+/* Slide q10 (Part 4 rebuild, ../notes.md, 2026-11-10). For each model at its best k (seen_split; k 0.1, 0.001,
+   0.0001), the 174,640 dev words, each article scored by the model of its true topic, </s> left out: a word is seen
+   when its n-gram (the word; the previous word and the word; the two previous words and the word, with the models'
+   <s> padding) occurs in the training texts of that topic. Step 0 the frame. Builds: 1 the share of unseen words, 1
+   - seen_share (3.5%, 53.4%, 84.3%; 200 px for 100%, on a track of 100%); 2 the mean loss on the seen words,
+   seen_loss (8.36, 4.28, 2.77); 3 the mean loss on the unseen words, unseen_loss (14.96, 12.26, 11.85), and on all
+   words, loss (8.59, 8.54, 10.43, the dev loss of the best k, so perplexity = e^loss: 5,404, 5,103, 33,752); losses
+   8 px per unit; 4 the problem, in red. Each mean on all words is share x seen loss + share x unseen loss. "Unseen"
+   here means the n-gram never occurs in its topic's training texts; slide "Unseen n-grams in an article" counts the
+   prediction of </s> too (53.0% of dev pairs, 84.4% of dev trigrams), so the sentences use whole percents. Seen in Blue 60, unseen in Red 60 as on q09, all
+   words in Gray 100. */
+.reveal section.q10 .q10-t { position: absolute; left: 64px; top: 124px; width: 1152px; display: grid; grid-template-columns: 140px 328px repeat(3, 196px); column-gap: 24px; grid-template-rows: 32px 38px repeat(3, 84px); }
+.reveal section.q10 .q10-h { align-self: start; font-size: 22px; line-height: 30px; color: var(--text-secondary); white-space: nowrap; }
+.reveal section.q10 .q10-h2 { padding-top: 4px; }
+.reveal section.q10 .q10-rule { align-self: end; height: 0; border-bottom: var(--rule) solid var(--border-subtle); }
+.reveal section.q10 .q10-rs { border-bottom-color: var(--border-strong); }
+.reveal section.q10 .q10-n, .reveal section.q10 .q10-c { display: flex; align-items: center; }
+.reveal section.q10 .q10-n { font-size: 24px; }
+.reveal section.q10 .q10-sh { position: relative; width: 100%; height: 28px; }
+.reveal section.q10 .q10-tk { position: absolute; left: 0; top: 0; width: 200px; height: 28px; background: var(--track); }
+.reveal section.q10 .q10-sh .q10-b { position: absolute; left: 0; top: 0; }
+.reveal section.q10 .q10-sh .hl-val { position: absolute; left: 200px; top: 0; }
+.reveal section.q10 .q10-lb { display: flex; align-items: center; height: 28px; }
+.reveal section.q10 .q10-b { display: block; height: 28px; }
+.reveal section.q10 .q10-se { background: var(--mark-accent); }
+.reveal section.q10 .q10-un { background: var(--support-error); }
+.reveal section.q10 .q10-al { background: var(--mark-ink); }
+.reveal section.q10 .hl-val { margin-left: 12px; font-size: 24px; line-height: 28px; font-variant-numeric: tabular-nums; }
+.reveal section.q10 .q10-say p { font-size: 28px; line-height: 36px; }
+.reveal section.q10 .q10-say p.q10-bad { color: var(--support-error); font-weight: var(--weight-semibold); }
 </style>
 </section>
 <section id="part-5-unseen-n-grams" class="slide level2 divider dark d5" data-background-color="#161616" data-section="Unseen n-grams">
@@ -2808,7 +3672,7 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 <span class="s30-m2 fragment" data-fragment-index="2" aria-hidden="true"></span>
 <span class="s30-m4 fragment" data-fragment-index="4" aria-hidden="true"></span>
 <div class="end steps s30-say">
-  <p class="fragment fade-out" data-fragment-index="1">A new test headline has the same three words in another order. Its true topic is entertainment.</p>
+  <p class="fragment fade-out" data-fragment-index="1">A new test headline has the three words of Star film wins in another order. Its true topic is entertainment.</p>
   <p class="fragment current-visible" data-fragment-index="1">With &lt;s&gt; and &lt;/s&gt;, the headline has four pairs.</p>
   <p class="fragment current-visible" data-fragment-index="2">In entertainment, star is never followed by wins, so the product is 0.</p>
   <p class="fragment current-visible" data-fragment-index="3">The loss of the headline, <span class="math inline">-\log 0</span>, is infinite.</p>
@@ -2983,7 +3847,7 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 <div class="end steps s32-say">
   <p class="fragment fade-out" data-fragment-index="1">Without smoothing, star is followed by film with probability 4/6.</p>
   <p class="fragment current-visible" data-fragment-index="1">The four pairs that never occur now get 4/12 of the probability, so <span class="math inline">p(\text{film} \mid \text{star})</span> falls from 4/6 to 5/12.</p>
-  <p class="fragment current-visible" data-fragment-index="2">The dev loss per word is the mean of <span class="math inline">-\log p</span> of each word, given the words before it, over the 4,000 dev articles. Each article uses the model of its own topic.</p>
+  <p class="fragment current-visible" data-fragment-index="2">Each article uses the model of its own&nbsp;topic.</p>
   <p class="fragment current-visible" data-fragment-index="3">With add-one, the bigram model predicts the dev text worse than the unigram model, although it uses more context.</p>
   <p class="fragment keep s32-bad" data-fragment-index="4">Problem: in C1, add-one adds <span class="math inline">V = 110{,}609</span> to every row total, so it gives too much probability to pairs that never occur.</p>
 </div>
@@ -3159,15 +4023,14 @@ html.print-pdf .reveal section.s32b .s32b-a { opacity: 0 !important; }
   <p class="fragment current-visible" data-fragment-index="2">The trigram panic among investors never occurs in the training texts.</p>
   <p class="fragment current-visible" data-fragment-index="3">The pair among investors never occurs either.</p>
   <p class="fragment current-visible" data-fragment-index="4">The word investors occurs 64 times, so backoff uses the unigram probability.</p>
-  <p class="fragment current-visible" data-fragment-index="5">Add-one gives every word after panic among the same 1/110,609. Backoff gives investors 64/1,811,637, from its own&nbsp;count.</p>
-  <p class="fragment keep" data-fragment-index="6">Interpolation instead always mixes the trigram, bigram and unigram probabilities, with weights that add up to 1.</p>
+  <p class="fragment keep" data-fragment-index="5">Add-one gives every word after panic among the same 1/110,609. Backoff gives investors 64/1,811,637, from its own&nbsp;count.</p>
 </div>
 <style>
 /* Builds: 1 the three levels of backoff; 2 the trigram of the Brexit article, never seen; 3 its last two words, never
    seen; 4 its last word, seen 64 times, lit as the level used; 5 (instructor, 2026-11-08) the history panic among never
    occurs (backoff_p["panic among"] = 0), so add-one gives every next word (0 + 1)/(0 + 110,609) = 0.0000090
    (backoff_p.addone, V = 110,609), while backoff gives investors 64/1,811,637 = 0.000035 (backoff_p.unigram, tokens);
-   6 interpolation in one sentence (SLP3 sections 3.6.3 and 3.6.4). Counts over all 40,000 training texts from c03_build.py (backoff): panic among investors 0, among investors 0,
+   this line stays (2026-11-10: interpolation is the next slide). Counts over all 40,000 training texts from c03_build.py (backoff): panic among investors 0, among investors 0,
    investors 64. Bands right-aligned, so the word investors stays in one column and the history shortens to the left. */
 .reveal section.s34 .s34-art { position: absolute; left: 64px; top: 112px; width: 1152px; box-sizing: border-box; padding: 12px 16px; background: var(--layer-01); box-shadow: inset 4px 0 0 var(--mark-context); }
 .reveal section.s34 .s34-art .ex { font-size: 22px; line-height: 32px; }
@@ -3190,6 +4053,67 @@ html.print-pdf .reveal section.s32b .s32b-a { opacity: 0 !important; }
 .reveal section.s34 .s34-say p.s34-good { color: var(--support-success); font-weight: var(--weight-semibold); }
 .reveal section.s34 .s34-say p.s34-q { font-weight: var(--weight-semibold); }
 .reveal section.s34 .katex .accent { color: inherit; }
+</style>
+</section>
+<section id="perplexity-with-interpolation" class="slide level2 q11">
+<h2>Perplexity with interpolation</h2>
+<div class="q11-f fragment up" data-fragment-index="1">
+  <div class="q11-eq">
+    <span class="q11-tm"><span class="math inline">\lambda_3\, p_3</span><span class="q11-tl">trigram</span></span>
+    <span class="q11-pl"><span class="math inline">+</span></span>
+    <span class="q11-tm"><span class="math inline">\lambda_2\, p_2</span><span class="q11-tl">bigram</span></span>
+    <span class="q11-pl"><span class="math inline">+</span></span>
+    <span class="q11-tm"><span class="math inline">\lambda_1\, p_1</span><span class="q11-tl">unigram</span></span>
+  </div>
+  <p class="q11-nt">The weights add up to 1.</p>
+</div>
+<div class="q11-c">
+  <p class="q11-ch"><span class="swap"><span class="fragment fade-out" data-fragment-index="3">Perplexity on the dev articles, add-k at the best k</span><span class="fragment" data-fragment-index="3">Perplexity on the dev articles, with interpolation</span></span></p>
+  <div class="q11-b"><span class="q11-bl">Unigram</span><span class="q11-trk"><span class="q11-bar" style="--a: 121.7px; --b: 121.7px"></span><span class="q11-v">5,404</span></span></div>
+  <div class="q11-b"><span class="q11-bl">Bigram</span><span class="q11-trk"><span class="q11-bar fragment custom q11-mv" data-fragment-index="3" style="--a: 114.9px; --b: 31.9px"></span><span class="q11-v swap"><span class="fragment fade-out" data-fragment-index="3">5,103</span><span class="fragment" data-fragment-index="3">1,419</span></span></span></div>
+  <div class="q11-b"><span class="q11-bl">Trigram</span><span class="q11-trk"><span class="q11-bar q11-acc fragment custom q11-mv" data-fragment-index="3" style="--a: 760.0px; --b: 29.3px"></span><span class="q11-v swap"><span class="fragment fade-out" data-fragment-index="3">33,752</span><span class="fragment" data-fragment-index="3">1,301</span></span></span></div>
+</div>
+<div class="end steps q11-say">
+  <p class="fragment fade-out" data-fragment-index="1">These are the perplexities with a small number added to every&nbsp;count.</p>
+  <p class="fragment current-visible" data-fragment-index="1">Interpolation mixes the trigram, bigram and unigram probabilities.</p>
+  <p class="fragment current-visible" data-fragment-index="2">The weights are chosen on training texts held out from the&nbsp;counts.</p>
+  <p class="fragment current-visible" data-fragment-index="3">With interpolation, the perplexity falls as the model uses more previous&nbsp;words.</p>
+  <p class="fragment keep q11-good" data-fragment-index="4">Solved: the trigram model now has the lowest perplexity.</p>
+</div>
+<style>
+/* Slide q11 (Part 4 rebuild, ../notes.md, 2026-11-10), after "Backoff" and before "Handling unseen n-grams" (moved
+   there on 2026-11-10). Step 0 the dev perplexity of each model with add-k at its best k (best: 5,404, 5,103, 33,752),
+   with a line that says so (it fades at build 1). Builds: 1 linear interpolation (SLP3 section
+   3.6.3, eq. 3.29), the trigram model's form; p_3, p_2, p_1 are the relative frequencies of the trigram and the
+   bigram with nothing added and the unigram model at its best k; when the previous words of p_3 or p_2 never occur,
+   that part is left out and the other weights are rescaled to add up to 1 (interp.method); 2 the weights, chosen on
+   held-out training texts, the last tenth of each topic's training texts (3,996 texts, 181,135 words), counted on
+   the other nine tenths, in steps of 0.05 (trigram l3 0.2, l2 0.3, l1 0.5; bigram l2 0.45, l1 0.55; not shown); 3
+   the bars move to the dev perplexity with interpolation (interp: 5,404, 1,419, 1,301); the unigram model has
+   nothing to mix and stays; 4 solved, in green. One scale: 760 px for 33,752. The bars move by a width transition on
+   a custom fragment, the values change by the theme's swap; print shows the interpolated bars. */
+.reveal section.q11 .q11-f { position: absolute; left: 64px; top: 124px; width: 1152px; display: flex; align-items: baseline; column-gap: 72px; }
+.reveal section.q11 .q11-eq { display: flex; align-items: baseline; }
+.reveal section.q11 .q11-tm { display: flex; flex-direction: column; align-items: center; }
+.reveal section.q11 .q11-eq .katex { font-size: 40px; line-height: 56px; }
+.reveal section.q11 .q11-tl { font-size: 22px; line-height: 28px; color: var(--text-secondary); }
+.reveal section.q11 .q11-pl { margin: 0 18px; }
+.reveal section.q11 .q11-nt { margin: 0; font-size: 24px; line-height: 32px; }
+.reveal section.q11 .q11-c { position: absolute; left: 64px; top: 300px; width: 1152px; }
+.reveal section.q11 .q11-ch { margin: 0 0 12px; font-size: 22px; line-height: 30px; color: var(--text-secondary); }
+.reveal section.q11 .q11-b { display: flex; align-items: center; height: 56px; }
+.reveal section.q11 .q11-bl { flex: none; width: 160px; font-size: 24px; }
+.reveal section.q11 .q11-trk { display: flex; align-items: center; }
+.reveal section.q11 .q11-bar { display: block; flex: none; height: 28px; width: var(--a); background: var(--mark-context); }
+.reveal section.q11 .q11-bar.q11-acc { background: var(--mark-accent); }
+.reveal section.q11 .q11-v { margin-left: 12px; font-size: 24px; line-height: 28px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* move: the bar's width changes from --a to --b on its step (a custom fragment is never hidden) */
+.reveal .slides section.q11 .q11-mv.fragment { transition: width var(--dur-slower) var(--ease-expressive); }
+.reveal .slides section.q11 .q11-mv.fragment.visible { width: var(--b); }
+html.print-pdf .reveal .slides section.q11 .q11-mv.fragment { width: var(--b); transition: none; }
+.reveal section.q11 .q11-say p { font-size: 28px; line-height: 36px; }
+.reveal section.q11 .q11-say p.q11-good { color: var(--support-success); font-weight: var(--weight-semibold); }
+.reveal section.q11 .katex .accent { color: inherit; }
 </style>
 </section>
 <section id="handling-unseen-n-grams" class="slide level2 s34b">
@@ -3218,28 +4142,38 @@ html.print-pdf .reveal section.s32b .s32b-a { opacity: 0 !important; }
 <td>Uses the longest n-gram that was seen</td>
 <td>Drops context. To add up to 1, the longer <span class="s34b-nw">n-grams</span> must give up some probability</td>
 </tr>
+<tr class="fragment even" data-fragment-index="4">
+<td class="s34b-k">Interpolation</td>
+<td>Mixes the trigram, bigram and unigram probabilities</td>
+<td>One set of weights for every history</td>
+</tr>
 </tbody>
 </table>
 
 <div class="end steps s34b-say">
-  <p class="fragment fade-out" data-fragment-index="1">Every model must give unseen n-grams a probability above 0. Here are the three ways we saw.</p>
+  <p class="fragment fade-out" data-fragment-index="1">Every model must give unseen n-grams a probability above 0. Here are the four ways we saw.</p>
   <p class="fragment current-visible" data-fragment-index="1">Add-one gives every n-gram a probability above 0, but takes too much from the n-grams that were&nbsp;seen.</p>
   <p class="fragment current-visible" data-fragment-index="2">Add-k adds less. The best k is chosen on the dev&nbsp;set.</p>
   <p class="fragment current-visible" data-fragment-index="3">Backoff uses a shorter history when the longer one was never&nbsp;seen.</p>
-  <p class="fragment keep" data-fragment-index="4">All three only repair counts. None of them knows that two words are&nbsp;alike.</p>
+  <p class="fragment current-visible" data-fragment-index="4">Interpolation always uses the shorter histories as&nbsp;well.</p>
+  <p class="fragment keep" data-fragment-index="5">All four only repair counts. None of them knows that two words are&nbsp;alike.</p>
 </div>
 <style>
-/* A short overview that closes Part 5 (instructor, 2026-11-08: "we give an overview, we do not go deep"). Builds 1 to 3,
-   one row each; 4 the closing line, which leads into class 4. Numbers: add-one, the unseen share of the row of
-   presidential, presidential_row.unseen_share_addone = 0.9979 (slide "What does adding 1 do?"); add-k, dev_loss.bigram
-   10.683 at k = 1 and 8.538 at k = 0.001 (slides "The cost of add-one" and "Add-k smoothing"); backoff, SLP3 section
-   3.6.3 (a backoff model discounts the longer n-grams so that the probabilities add up to 1); no C1 number. */
+/* A short overview that closes Part 5 (instructor, 2026-11-08: "we give an overview, we do not go deep"). Builds 1 to 4,
+   one row each; 5 the closing line, which ends Part 5 and leads into class 4. Numbers: add-one, the unseen share of the
+   row of presidential, presidential_row.unseen_share_addone = 0.9979 (slide "What does adding 1 do?"); add-k,
+   dev_loss.bigram 10.683 at k = 1 and 8.538 at k = 0.001 (slides "The cost of add-one" and "Add-k smoothing"); backoff,
+   SLP3 section 3.6.4 (a backoff model discounts the longer n-grams so that the probabilities add up to 1); interpolation
+   (added 2026-11-10, after slide "Perplexity with interpolation" moved before this one), SLP3 section 3.6.3, eq. 3.29:
+   the weights do not depend on the history (the context-conditioned weights of eq. 3.30 are not taught); no C1 number.
+   Rows 90 px high (were 100; the cells' padding 13 px, not 14, so two lines fit), so that the fourth row stays clear of
+   the closing line. */
 .reveal section.s34b .s34b-t { position: absolute; left: 64px; top: 120px; width: 1152px; margin: 0; font-size: 24px; table-layout: fixed; }
 .reveal section.s34b .s34b-t th, .reveal section.s34b .s34b-t td { padding: 14px 16px; box-sizing: border-box; vertical-align: middle; line-height: 32px; }
 .reveal section.s34b .s34b-t th { font-size: 22px; }
 .reveal section.s34b .s34b-t th:first-child { width: 180px; }
 .reveal section.s34b .s34b-t th:nth-child(2) { width: 460px; }
-.reveal section.s34b .s34b-t td { height: 100px; }
+.reveal section.s34b .s34b-t td { height: 90px; padding-top: 13px; padding-bottom: 13px; }   /* two lines of 32 px fit in 90 */
 .reveal section.s34b .s34b-t td.s34b-k { font-weight: var(--weight-semibold); }
 .reveal section.s34b .s34b-nw { white-space: nowrap; }
 .reveal section.s34b .s34b-say p { font-size: 28px; line-height: 36px; }
@@ -3254,12 +4188,15 @@ html.print-pdf .reveal section.s32b .s32b-a { opacity: 0 !important; }
   <div class="s44-r fragment up" data-fragment-index="1"><span class="s44-n">Word order</span><span>The chain rule conditions each word on every word before it. The Markov assumption keeps only the last N&nbsp;−&nbsp;1.</span><span><span class="math inline">p(w_i \mid w_1 \dots w_{i-1}) \approx p(w_i \mid w_{i-N+1} \dots w_{i-1})</span></span></div>
   <div class="s44-r fragment up" data-fragment-index="2"><span class="s44-n">The bigram model</span><span>Each topic has a table of pairs, counted from its training texts.</span><span><span class="math inline">p(w \mid v, k) = \dfrac{\text{count}(v\,w, k)}{\text{count}(v, k)}</span></span></div>
   <div class="s44-r fragment up" data-fragment-index="3"><span class="s44-n">More context</span><span>Longer histories are rarer, so the trigram model classifies worst.</span><span class="s44-v">Dev macro-F1: unigram 0.836, bigram&nbsp;0.820, trigram&nbsp;0.733</span></div>
-  <div class="s44-r fragment up" data-fragment-index="4"><span class="s44-n">Generation</span><span>Generation chooses the next word. The counts write well, because they follow only <span class="s44-nb">n-grams</span> that were seen.</span><span><span class="math inline">p(\text{next word} \mid \text{history})</span></span></div>
-  <div class="s44-r fragment up" data-fragment-index="5"><span class="s44-n">Unseen n-grams</span><span>Smoothing gives every <span class="s44-nb">n-gram</span> a probability above&nbsp;0. Backoff uses shorter histories.</span><span><span class="math inline">p(w \mid v) = \dfrac{\text{count}(v\,w) + k}{\text{count}(v) + kV}</span></span></div>
+  <div class="s44-r fragment up" data-fragment-index="4"><span class="s44-n">Generation</span><span>Generation chooses the next word. A model is measured by its perplexity on new text: e to the power of the mean loss per&nbsp;word.</span><span class="s44-v">Dev perplexity at the best&nbsp;k: unigram&nbsp;5,404, bigram&nbsp;5,103, trigram&nbsp;33,752</span></div>
+  <div class="s44-r fragment up" data-fragment-index="5"><span class="s44-n">Unseen n-grams</span><span>Smoothing gives every <span class="s44-nb">n-gram</span> a probability above&nbsp;0. Backoff and interpolation also use shorter histories.</span><span class="s44-v">Dev perplexity with interpolation: unigram&nbsp;5,404, bigram&nbsp;1,419, trigram&nbsp;1,301</span></div>
 </div>
 <style>
 /* Builds 1 to 5: one row per part: its name, what it showed, its formula or result. Row 3: dev macro-F1 of the
-   unigram, bigram and trigram models with add-1 (c03_data.json unigram.f1, bigram.f1, trigram.f1). */
+   unigram, bigram and trigram models with add-1 (c03_data.json unigram.f1, bigram.f1, trigram.f1). Row 4: dev
+   perplexity of each model at its best k, as on slide "Perplexity" (best.<model>.perplexity: 5,404.5, 5,103.5,
+   33,752.2). Row 5: with interpolation, as on slide "Perplexity with interpolation" (interp.<model>.perplexity:
+   5,404.5, 1,418.9, 1,301.5). */
 .reveal section.s44 .s44-rows { position: absolute; left: 64px; top: 112px; width: 1152px; }
 .reveal section.s44 .s44-r { display: grid; grid-template-columns: 184px 480px 1fr; column-gap: 32px; align-items: center; min-height: 76px; padding: 8px 0; box-sizing: border-box; border-bottom: var(--rule) solid var(--border-subtle); font-size: 22px; line-height: 28px; }
 .reveal section.s44 .s44-nb { white-space: nowrap; }
@@ -3275,16 +4212,18 @@ html.print-pdf .reveal section.s32b .s32b-a { opacity: 0 !important; }
 <div class="g refs">
 <div class="s8">
 <h4>Textbook</h4>
-<p>Jurafsky, D. and Martin, J. H. (2026). <em>Speech and Language Processing</em>, 3rd&nbsp;ed.&nbsp;draft, August 2026. <span class="so">Chapter 3, sections 3.1–3.7, pp. 68–88 (n-gram language models: the chain rule, eq. 3.4; the Markov assumption, eqs. 3.7 and 3.8; probabilities from counts, eq. 3.11; Laplace smoothing, eq. 3.26; add-k smoothing, eq. 3.28; interpolation and backoff, sections 3.6.3 and 3.6.4; perplexity, section 3.3, p. 76, eqs. 3.14 to 3.16).</span></p>
+<p>Jurafsky, D. and Martin, J. H. (2026). <em>Speech and Language Processing</em>, 3rd&nbsp;ed.&nbsp;draft, August 2026. <span class="so">Chapter 3, sections 3.1–3.7, pp. 68–88 (n-gram language models: the chain rule, eq. 3.4; the Markov assumption, eqs. 3.7 and 3.8; probabilities from counts, eq. 3.11; perplexity, section 3.3, p. 76, eqs. 3.14 to 3.16; Laplace smoothing, eq. 3.26; add-k smoothing, eq. 3.28; backoff, section 3.6.4; linear interpolation with weights set on a held-out corpus, section 3.6.3, eq. 3.29, p. 84; the cross-entropy as an upper bound on the entropy, eq. 3.41, p. 87).</span></p>
 </div>
 <div class="s8">
 <h4>Data and code</h4>
-<p>The script <span class="so">c03_build.py</span> (the class 1 tokenizer; the unigram, bigram and trigram models; add-k smoothing), on the C1 training set (40,000 texts) and dev set (4,000 texts).</p>
+<p>The script <span class="so">c03_build.py</span> (the class 1 tokenizer; the unigram, bigram and trigram models; add-k smoothing; interpolation), on the C1 training set (40,000 texts) and dev set (4,000 texts).</p>
 </div>
 </div>
 <style>
 /* references: as c01 slide 36 and c02, Carbon body-compact type at 15/21. Pages checked in
-   library/books/SLP3_Jurafsky_Martin_Aug2026.pdf on 2026-11-08 (printed page = PDF page - 8). */
+   library/books/SLP3_Jurafsky_Martin_Aug2026.pdf on 2026-11-08 (printed page = PDF page - 8); eq. 3.29 (p. 84, the
+   interpolation of slide "Perplexity with interpolation") and eq. 3.41 (p. 87, H(p) <= H(p, m), the inequality of
+   slide "The lowest possible loss") checked on 2026-11-10. */
 .reveal section.s45 .refs { row-gap: 0; }
 .reveal section.s45 .refs h4 { font-size: 15px; line-height: 21px; font-weight: var(--weight-semibold); color: var(--text-primary); margin: 18px 0 6px; }
 .reveal section.s45 .refs h4:first-child { margin-top: 0; }

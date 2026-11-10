@@ -221,9 +221,9 @@ footer .end{margin:40px 0 0;font-size:15px;line-height:21px;color:rgba(255,255,2
   <div class="c"><div class="b"><i style="width:25%"></i></div><div class="v">25</div><div class="l">Term paper</div></div>
   <div class="c"><div class="b"><i style="width:40%"></i></div><div class="v">40</div><div class="l">Final examination</div></div>
 </div>
-<div class="shrow" id="classes"><h2>Classes</h2><div class="tools"><div class="sw" role="group" aria-label="Section"><button data-sec="A" class="on" aria-pressed="true" onclick="setSec('A')"><span class="chk" aria-hidden="true"></span>BA, Sat and Tue</button><button data-sec="C" aria-pressed="false" onclick="setSec('C')"><span class="chk" aria-hidden="true"></span>BB, Sun and Wed</button></div><button class="xall" id="xall" onclick="xAll()">Expand all</button></div></div>
+<div class="shrow" id="classes"><h2>Classes</h2><div class="tools"><div class="sw" role="group" aria-label="Section"><button data-sec="BA" class="on" aria-pressed="true" onclick="setSec('BA')"><span class="chk" aria-hidden="true"></span>BA, Sat and Tue</button><button data-sec="BB" aria-pressed="false" onclick="setSec('BB')"><span class="chk" aria-hidden="true"></span>BB, Sun and Wed</button></div><button class="xall" id="xall" onclick="xAll()">Expand all</button></div></div>
 <div class="line" id="list"></div>
-<div class="shrow" id="calendar"><h2>Calendar</h2><div class="tools"><div class="sw" role="group" aria-label="Section"><button data-sec="A" class="on" aria-pressed="true" onclick="setSec('A')"><span class="chk" aria-hidden="true"></span>BA, Sat and Tue</button><button data-sec="C" aria-pressed="false" onclick="setSec('C')"><span class="chk" aria-hidden="true"></span>BB, Sun and Wed</button></div></div></div>
+<div class="shrow" id="calendar"><h2>Calendar</h2><div class="tools"><div class="sw" role="group" aria-label="Section"><button data-sec="BA" class="on" aria-pressed="true" onclick="setSec('BA')"><span class="chk" aria-hidden="true"></span>BA, Sat and Tue</button><button data-sec="BB" aria-pressed="false" onclick="setSec('BB')"><span class="chk" aria-hidden="true"></span>BB, Sun and Wed</button></div></div></div>
 <div class="calw"><div id="cal"></div><div class="tip" id="tip" hidden></div></div>
 </div>
 <footer><div class="page">
@@ -266,7 +266,7 @@ const C=[[1,0,"2026-10-27","2026-10-28","Introduction to natural language proces
 const CT={6:"Class test 1 on classes 1 to 5",12:"Class test 2 on classes 6 to 11",16:"Class test 3 on classes 12 to 15",20:"Class test 4 on classes 16 to 19"},MS={14:"Proposal due",18:"Baseline due",22:"Draft due"};
 const DL={"2026-11-13":"R1","2026-11-20":"R2","2026-11-27":"R3","2026-12-04":"R4","2026-12-18":"R5","2026-12-25":"R6","2027-01-01":"R7","2027-01-08":"R8","2027-01-15":"R9","2027-01-22":"R10","2027-01-23":"Paper"};
 const EV=[["2026-10-27","term","Classes begin"],["2026-11-07","hol","Holiday"],["2026-12-05","exam","Mid-term exams","2026-12-12"],["2026-12-16","hol","Holiday"],["2026-12-23","term","Withdrawal closes"],["2026-12-25","hol","Christmas"],["2027-01-20","term","Last class day"],["2027-01-21","off","Classes suspended","2027-01-24"],["2027-01-24","hol","Shab-e-Barat"],["2027-01-25","exam","Final exams","2027-02-01"]];
-const MISS={A:["2026-11-03","2026-11-05","2026-11-09"],C:["2026-11-04"]},TODAY=new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Dhaka"}),SECN={A:"BA",C:"BB"},SKEY="uiu-nlp-263-section";
+const MISS={BA:["2026-11-03","2026-11-05","2026-11-09"],BB:["2026-11-04"]},TODAY=new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Dhaka"}),SKEY="uiu-nlp-263-section";
 const TERM=["2026-10-27","2027-02-01"],MONTHS=[[2026,9],[2026,10],[2026,11],[2027,0]];
 const MON=["January","February","March","April","May","June","July","August","September","October","November","December"],WD=["Sa","Su","Mo","Tu","We","Th","Fr"];
 const LIST=document.getElementById("list"),CAL=document.getElementById("cal"),RM=matchMedia("(prefers-reduced-motion: reduce)"),HOV=matchMedia("(hover:hover)").matches;
@@ -280,11 +280,11 @@ const rg=(a,b)=>day(a).getMonth()==day(b).getMonth()?`${day(a).getDate()} to ${d
 const esc=v=>String(v).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const KINDS=[["s","Slides"],["p","Slides as PDF"],["x","Practice problems"]];
 // the section: from a link such as ?section=bb, else as last chosen in this browser, else BA
-let sec=(()=>{const q={ba:"A",bb:"C"}[(new URLSearchParams(location.search).get("section")||"").toLowerCase()];
-  try{if(q)localStorage.setItem(SKEY,q);else{const v=localStorage.getItem(SKEY);if(v=="A"||v=="C")return v}}catch(e){}return q||"A"})();
+let sec=(()=>{const q={ba:"BA",bb:"BB"}[(new URLSearchParams(location.search).get("section")||"").toLowerCase()];
+  try{if(q)localStorage.setItem(SKEY,q);else{const v=localStorage.getItem(SKEY);if(v=="BA"||v=="BB")return v}}catch(e){}return q||"BA"})();
 
 // a class is done once its day has passed in Dhaka; the first class not done is the next one
-function schedule(){const di=sec=="A"?2:3,s=C.map(c=>{const d=CD[c[0]]||{};return {no:c[0],part:c[1],title:c[4],date:c[di].slice(0,10),online:c[di].endsWith("o"),
+function schedule(){const di=sec=="BA"?2:3,s=C.map(c=>{const d=CD[c[0]]||{};return {no:c[0],part:c[1],title:c[4],date:c[di].slice(0,10),online:c[di].endsWith("o"),
     events:[CT[c[0]],MS[c[0]]].filter(Boolean),mat:d.mat||{},top:d.top||"",read:d.read||{}}});
   s.forEach(c=>{c.done=!!c.date&&c.date<TODAY;c.today=c.date==TODAY});const nx=s.find(c=>!c.done);if(nx)nx.next=true;return s}
 function keyDates(s){const L=[],add=(k,kind,sh,t,k2)=>L.push({k,k2:k2||k,kind,s:sh,t:t||sh}),o={term:0,exam:1,off:2,ct:3,onl:4,due:5,hol:6,miss:7};
@@ -325,7 +325,7 @@ function openClass(n){const li=LIST.querySelectorAll(".st")[n-1];if(!li)return;l
 function xAll(){const rows=[...LIST.querySelectorAll(".st")],o=rows.some(l=>!l.classList.contains("open"));
   rows.forEach(l=>{l.classList.toggle("open",o);l.classList.remove("peek");l.querySelector(".hd").setAttribute("aria-expanded",o)});label();setTimeout(fit,300)}
 function setSec(s,init){sec=s;document.querySelectorAll("[data-sec]").forEach(b=>{const on=b.dataset.sec==s;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)});
-  if(!init){try{localStorage.setItem(SKEY,s)}catch(e){}const u=new URL(location.href);u.searchParams.set("section",SECN[s].toLowerCase());history.replaceState(null,"",u)}render()}
+  if(!init){try{localStorage.setItem(SKEY,s)}catch(e){}const u=new URL(location.href);u.searchParams.set("section",s.toLowerCase());history.replaceState(null,"",u)}render()}
 
 function render(){
   const s=schedule();
