@@ -2572,31 +2572,32 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 <h2>Loss in classification</h2>
 <div class="q01-in">
   <div class="q01-hl">
-    <div class="chips"><span class="chip">the</span><span class="chip">middle</span></div>
-    <div class="chips"><span class="chip">east</span><span class="chip">it</span></div>
-    <div class="chips"><span class="chip">will</span><span class="chip">only</span></div>
-    <div class="chips"><span class="chip">get</span><span class="chip">worse</span></div>
+    <div class="chips"><span class="chip">what</span><span class="chip">you</span></div>
+    <div class="chips"><span class="chip">don</span><span class="chip">t</span></div>
+    <div class="chips"><span class="chip">know</span><span class="chip">about</span></div>
+    <div class="chips"><span class="chip">overnight</span></div>
+    <div class="chips"><span class="chip">success</span></div>
   </div>
   <svg class="q01-ar" height="16" aria-hidden="true"><line x1="0" y1="8" x2="100%" y2="8"></line><svg x="100%" overflow="visible"><path d="M-6 2l6 6-6 6"></path></svg></svg>
 </div>
 <div class="node q01-m"><span>Naive Bayes</span></div>
 <span class="arr q01-a2 fragment up" data-fragment-index="1"></span>
 <div class="hbars q01-bars fragment up" data-fragment-index="1">
-  <span class="hl-lab q01-o"><span class="sw t1"></span>national politics</span><span class="hl-trk q01-o" style="--v:0.0434"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.043</span></span>
-  <span class="hl-lab q01-t"><span class="sw t2"></span>international</span><span class="hl-trk q01-t" style="--v:0.7195"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val q01-v">0.72</span></span>
-  <span class="hl-lab q01-o"><span class="sw t3"></span>sports</span><span class="hl-trk q01-o" style="--v:0.0182"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.018</span></span>
-  <span class="hl-lab q01-o"><span class="sw t4"></span>business and economy</span><span class="hl-trk q01-o" style="--v:0.2108"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.21</span></span>
-  <span class="hl-lab q01-o"><span class="sw t5"></span>entertainment</span><span class="hl-trk q01-o" style="--v:0.0033"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.0033</span></span>
-  <span class="hl-lab q01-o"><span class="sw t6"></span>science and technology</span><span class="hl-trk q01-o" style="--v:0.0049"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.0049</span></span>
+  <span class="hl-lab q01-o"><span class="sw t1"></span>national politics</span><span class="hl-trk q01-o" style="--v:0.0097"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.0097</span></span>
+  <span class="hl-lab q01-o"><span class="sw t2"></span>international</span><span class="hl-trk q01-o" style="--v:0.0001"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.00014</span></span>
+  <span class="hl-lab q01-o"><span class="sw t3"></span>sports</span><span class="hl-trk q01-o" style="--v:0.0013"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.0013</span></span>
+  <span class="hl-lab q01-t"><span class="sw t4"></span>business and economy</span><span class="hl-trk q01-t" style="--v:0.9494"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val q01-v">0.95</span></span>
+  <span class="hl-lab q01-o"><span class="sw t5"></span>entertainment</span><span class="hl-trk q01-o" style="--v:0.0294"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.029</span></span>
+  <span class="hl-lab q01-o"><span class="sw t6"></span>science and technology</span><span class="hl-trk q01-o" style="--v:0.0100"><span class="hl-bar fragment grow" data-fragment-index="1"></span><span class="hl-val">0.010</span></span>
 </div>
 <span class="q01-mk fragment" data-fragment-index="2" aria-hidden="true">.</span>
 <div class="q01-res">
-  <p class="q01-loss"><span class="q01-f fragment" data-fragment-index="3"><span class="math inline">\text{loss} = -\log\,</span></span><span class="q01-fly fragment" data-fragment-index="3"><span class="math inline">0.72</span></span><span class="q01-f fragment" data-fragment-index="3"><span class="math inline">\;= 0.33</span></span></p>
+  <p class="q01-loss"><span class="q01-f fragment" data-fragment-index="3"><span class="math inline">\text{loss} = -\log\,</span></span><span class="q01-fly fragment" data-fragment-index="3"><span class="math inline">0.95</span></span><span class="q01-f fragment" data-fragment-index="3"><span class="math inline">\;= 0.05</span></span></p>
 </div>
 <div class="end steps q01-say">
   <p class="fragment fade-out" data-fragment-index="1">To measure a language model, we start from the loss of class&nbsp;2.</p>
   <p class="fragment current-visible" data-fragment-index="1">The model gives a probability to each of the six topics. They add up to&nbsp;1.</p>
-  <p class="fragment current-visible" data-fragment-index="2">We know the true topic: international. Its probability is&nbsp;0.72.</p>
+  <p class="fragment current-visible" data-fragment-index="2">We know the true topic: business and economy. Its probability is&nbsp;0.95.</p>
   <p class="fragment current-visible" data-fragment-index="3">The loss is <span class="math inline">-\log</span> of the probability of the true&nbsp;topic.</p>
   <p class="fragment keep" data-fragment-index="4">On the dev set, the loss is the mean over the 4,000&nbsp;articles.</p>
 </div>
@@ -2607,27 +2608,27 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
    probability of 1 is --q-one long); 2 the true topic's bar turns Blue 60, the other rows dim (a hidden marker drives both,
    as on slide "Classifying a headline"); 3 the true topic's value leaves its bar and moves into the loss (the script
    measures the way), then the rest of the formula appears; 4 the line on the dev set (no label beside the formula).
-   Numbers: c03_data.json, loss_example (dev row 2440, dv_02441, headline "The Middle East: It Will Only Get Worse", topic
-   international): words; nb_p in the order t1 to t6 (national politics 0.04337, international 0.71946, sports 0.01819,
-   business and economy 0.21081, entertainment 0.00331, science and technology 0.00486; the posterior of Naive Bayes, the
-   unigram model with add-1 of class 2, as in classification); nb_loss 0.3292 = -log 0.71946. n_dev 4,000.
+   Numbers: c03_data.json, loss_example (dev row 1939, dv_01940, headline "What You Don't Know About Overnight Success",
+   topic business and economy): words; nb_p in the order t1 to t6 (national politics 0.00971, international 0.00014,
+   sports 0.00127, business and economy 0.94943, entertainment 0.02943, science and technology 0.01003; the posterior of
+   Naive Bayes, the unigram model with add-1 of class 2, as in classification); nb_loss 0.0519 = -log 0.94943. n_dev 4,000.
    Geometry: as q02 (--q-mid, --q-in-x, --q-box-x/-w/-h, --q-lab-x, --q-bar-x, --q-one, --q-bar-h, --q-row); the
    longest topic name with its swatch is 254 px wide at 22 px (science and technology), so the bars of both slides start
-   at 880. The headline is four rows of two tokens (190 px), so it fits the input space of q02 (64 to 296) with an
-   arrow of 34 px. */
+   at 880. The headline is five rows of one or two tokens (at most know about, about 190 px), so it fits the
+   input space of q02 (64 to 296) with an arrow of 34 px. */
 .reveal section.q01 {
   --q-mid: 352px;
   --q-in-x: 64px;
   --q-box-x: 312px;
   --q-box-w: 216px;
-  --q-box-h: 88px;
+  --q-box-h: 120px;
   --q-lab-x: 592px;
   --q-bar-x: 880px;
   --q-one: 300px;
   --q-bar-h: 24px;
   --q-row: 34px;
 }
-.reveal section.q01 .q01-in { position: absolute; left: var(--q-in-x); top: calc(var(--q-mid) - 100px); width: calc(var(--q-box-x) - var(--q-in-x) - 16px); height: 200px; display: flex; align-items: center; gap: var(--spacing-03); }
+.reveal section.q01 .q01-in { position: absolute; left: var(--q-in-x); top: calc(var(--q-mid) - 130px); width: calc(var(--q-box-x) - var(--q-in-x) - 16px); height: 260px; display: flex; align-items: center; gap: var(--spacing-03); }
 .reveal section.q01 .q01-hl { flex: none; display: flex; flex-direction: column; gap: var(--spacing-03); }
 .reveal section.q01 .q01-hl .chips { flex-wrap: nowrap; }
 .reveal section.q01 .q01-hl .chip { height: 44px; font-size: 24px; }
@@ -2646,7 +2647,7 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 .reveal section.q01:has(.q01-mk.visible) .q01-o { opacity: 0.25; }
 .reveal .slides section.q01 .q01-t .hl-bar { transition: transform var(--dur-slower) var(--ease-expressive), background-color var(--dur-moderate) var(--ease-productive); }
 .reveal section.q01:has(.q01-mk.visible) .q01-t .hl-bar { --c: var(--mark-accent); }
-/* build 3: the value 0.72 leaves the bar (it fades there) and the same number in the formula comes from that place */
+/* build 3: the value 0.95 leaves the bar (it fades there) and the same number in the formula comes from that place */
 .reveal section.q01 .q01-res { position: absolute; left: var(--q-bar-x); top: 480px; }
 .reveal section.q01 .q01-loss { margin: 0; white-space: nowrap; line-height: 44px; }
 .reveal section.q01 .q01-loss .katex { font-size: 30px; }
@@ -2712,7 +2713,7 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
   --q-in-x: 64px;
   --q-box-x: 312px;
   --q-box-w: 216px;
-  --q-box-h: 88px;
+  --q-box-h: 120px;
   --q-lab-x: 592px;
   --q-bar-x: 880px;
   --q-one: 300px;
@@ -2727,7 +2728,8 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 .reveal section.q02 .q02-ar { flex: 1 1 0; min-width: 32px; overflow: visible; }
 .reveal section.q02 .q02-ar :is(line, path) { fill: none; stroke: var(--mark-context); stroke-width: 1.5; }
 .reveal section.q02 .q02-m { position: absolute; left: var(--q-box-x); top: calc(var(--q-mid) - var(--q-box-h) / 2); width: var(--q-box-w); height: var(--q-box-h); gap: var(--spacing-02); padding: var(--spacing-04) var(--spacing-06); font-size: 24px; line-height: 32px; white-space: nowrap; }
-.reveal section.q02 .q02-tp { display: flex; align-items: center; gap: var(--spacing-03); font-size: 22px; line-height: 28px; color: var(--text-secondary); }
+.reveal section.q02 .q02-tp { display: flex; align-items: flex-start; gap: var(--spacing-03); font-size: 22px; line-height: 28px; color: var(--text-secondary); white-space: normal; }
+.reveal section.q02 .q02-tp .sw { flex: none; margin-top: 8px; }   /* a long topic name wraps under itself, the swatch on its first line */
 .reveal section.q02 .q02-a2 { position: absolute; left: calc(var(--q-box-x) + var(--q-box-w) + 16px); top: calc(var(--q-mid) - 8px); }
 .reveal section.q02 .q02-bars { position: absolute; left: var(--q-lab-x); top: calc(var(--q-mid) - 4.5 * var(--q-row)); box-sizing: content-box; width: calc(var(--q-bar-x) - var(--q-lab-x) + var(--q-one)); --max: 1; --lw: calc(var(--q-bar-x) - var(--q-lab-x) - 16px); --room: 96px; column-gap: 16px; row-gap: 0; grid-auto-rows: var(--q-row); }
 .reveal section.q02 .q02-bars .hl-lab { font-size: 22px; line-height: 24px; white-space: nowrap; }
@@ -2801,7 +2803,7 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
    each press (the script sets their steps; the indices in the HTML are those of the example's first presses): on step
    3 the line on repeating; from step 4, a word with a probability above 0.3 gets the line on a high probability, a word
    below 0.001 the line on a low one (the bounds of the example's choice in c03_build.py), any other word the line on
-   repeating again. For the example: middle repeat, east high, it low, will repeat, only, get and worse low. A high or
+   repeating again. For the example: you and don repeat, t high, know and about repeat, overnight and success low. A high or
    low line that falls on step 2 or 3 joins the line already there.
    Drawn 1:1 in slide pixels on the 1152 px content width, from (64, 116): the text on a row 44 px high; the bars
    from y = 72, rows of 32 px, bars of 24 px, on one scale for every step (a probability of 1 is at most 460 px, less if
@@ -2889,7 +2891,7 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
   var C = {}, svg = d3.select(node), gTok, outline, gBars, gRows, gSum;
   var print = location.search.indexOf('print-pdf') > -1;
   var MOTION = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  function rowY(r) { return BY + r * RH + (r >= 9 ? XG : 0); }
+  function rowY(r, kind) { return BY + r * RH + (kind === 'extra' ? XG : 0); }
   function bw(p) { return Math.max(p * SC, 3); }
 
   function layout() {             // measure the text in its faces, then place the text, the bars and the column
@@ -2977,14 +2979,16 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 
     // the bars of the prediction at this position; the true word's bar in Blue 60 once it is scored
     var st = S[s.pos], ti = inTop(st);
+    // a history followed by fewer than eight different words shows only those words: all other words follows them
+    var m = Math.min(8, st.top.length);
     var items = st.top.slice(0, 8).map(function (q, r) { return { key: 'w' + q[0], label: q[0], p: q[1], row: r, kind: s.scored && r === ti ? 'true' : 'word' }; });
     var extra = s.scored && ti < 0;              // the true word gets its own bar, so all other words loses its share
-    items.push({ key: 'other', label: 'all other words', p: extra ? st.other - st.p : st.other, row: 8, kind: 'other' });
-    if (extra) items.push({ key: 'x' + st.word, label: st.word, p: st.p, row: 9, kind: 'extra', rank: st.rank, vw: XW[s.pos] });
+    items.push({ key: 'other', label: 'all other words', p: extra ? st.other - st.p : st.other, row: m, kind: 'other' });
+    if (extra) items.push({ key: 'x' + st.word, label: st.word, p: st.p, row: m + 1, kind: 'extra', rank: st.rank, vw: XW[s.pos] });
     function fill(d) { return d.kind === 'true' || d.kind === 'extra' ? C['mark-accent'] : d.kind === 'other' ? C['mark-quiet'] : C['mark-context']; }
     var bars = gBars.selectAll('g.q03-b').data(items, function (d) { return d.key; });
     tr(bars.exit(), 200 * A).style('opacity', 0).remove();
-    var be = bars.enter().append('g').attr('class', 'q03-b').style('opacity', 0).attr('transform', function (d) { return 'translate(0,' + rowY(d.row) + ')'; });
+    var be = bars.enter().append('g').attr('class', 'q03-b').style('opacity', 0).attr('transform', function (d) { return 'translate(0,' + rowY(d.row, d.kind) + ')'; });
     function ink(d) { return d.kind === 'true' || d.kind === 'extra' ? C.interactive : d.kind === 'other' ? C['text-secondary'] : C['text-primary']; }
     be.append('text').attr('class', function (d) { return d.kind === 'other' ? 'q03-bl' : 'q03-bl q03-w' + (BN.test(d.label) ? ' bn' : ''); })
       .attr('y', RH / 2).attr('dominant-baseline', 'central').style('fill', ink).text(function (d) { return d.label; });
@@ -2992,7 +2996,7 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
     be.append('text').attr('class', 'q03-bv').attr('y', RH / 2).attr('dominant-baseline', 'central').attr('x', BX + 10).style('fill', C['text-primary']);
     be.append('text').attr('class', 'q03-br').attr('y', RH / 2).attr('dominant-baseline', 'central').style('fill', C['text-secondary']);
     function place(sel, delay, ms) {   // a bar to its row, length and color
-      tr(sel, ms * A, delay).style('opacity', 1).attr('transform', function (d) { return 'translate(0,' + rowY(d.row) + ')'; });
+      tr(sel, ms * A, delay).style('opacity', 1).attr('transform', function (d) { return 'translate(0,' + rowY(d.row, d.kind) + ')'; });
       tr(sel.select('rect'), ms * A, delay).attr('width', function (d) { return bw(d.p); }).style('fill', fill);
       tr(sel.select('.q03-bl'), ms * A, delay).style('fill', ink);
       tr(sel.select('.q03-bv'), ms * A, delay).attr('x', function (d) { return BX + bw(d.p) + 12; }).text(function (d) { return fmtP(d.p); });
@@ -3039,14 +3043,14 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 </section>
 <section id="the-loss-of-a-text" class="slide level2 q04">
 <h2>The loss of a text</h2>
-<p class="q04-hl"><span class="q04-b">&lt;s&gt;</span><span>the</span><span>middle</span><span>east</span><span>it</span><span>will</span><span>only</span><span>get</span><span>worse</span></p>
+<p class="q04-hl"><span class="q04-b">&lt;s&gt;</span><span>what</span><span>you</span><span>don</span><span>t</span><span>know</span><span>about</span><span>overnight</span><span>success</span></p>
 <div class="q04-eq">
   <span class="q04-l fragment up" data-fragment-index="1"><span class="math inline">p(\text{headline})</span></span>
-  <span class="q04-r fragment up" data-fragment-index="1"><span class="math inline">= p(\text{the} \mid \text{&lt;s&gt;}) \times p(\text{middle} \mid \text{the}) \times \cdots \times p(\text{worse} \mid \text{get})</span></span>
+  <span class="q04-r fragment up" data-fragment-index="1"><span class="math inline">= p(\text{what} \mid \text{&lt;s&gt;}) \times p(\text{you} \mid \text{what}) \times \cdots \times p(\text{success} \mid \text{overnight})</span></span>
   <span class="q04-l fragment up" data-fragment-index="2"><span class="math inline">-\log p(\text{headline})</span></span>
-  <span class="q04-r fragment up" data-fragment-index="2"><span class="math inline">= -\log p(\text{the} \mid \text{&lt;s&gt;}) - \log p(\text{middle} \mid \text{the}) - \cdots - \log p(\text{worse} \mid \text{get})</span></span>
+  <span class="q04-r fragment up" data-fragment-index="2"><span class="math inline">= -\log p(\text{what} \mid \text{&lt;s&gt;}) - \log p(\text{you} \mid \text{what}) - \cdots - \log p(\text{success} \mid \text{overnight})</span></span>
   <span class="q04-l"></span>
-  <span class="q04-r fragment up" data-fragment-index="3"><span class="math inline">= 3.75 + 4.76 + 1.11 + 12.20 + 3.21 + 13.00 + 12.12 + 12.01 = \mathbf{62.16}</span></span>
+  <span class="q04-r fragment up" data-fragment-index="3"><span class="math inline">= 4.61 + 2.80 + 3.80 + 0.50 + 3.46 + 2.46 + 13.17 + 11.63 = \mathbf{42.43}</span></span>
 </div>
 <div class="end steps q04-say">
   <p class="fragment current-visible" data-fragment-index="1">By the chain rule and the Markov assumption, the probability of the headline is the product of its word&nbsp;probabilities.</p>
@@ -3058,8 +3062,8 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
    20 px apart, on a row 44 px high). Builds: 1 the probability of the headline as the product of its eight word
    probabilities (the bigram model of slides q02 and q03); 2 the log turns it into a sum; 3 the eight losses and their sum.
    The lines are aligned on their equals signs. Numbers: c03_data.json, loss_example.steps[i].loss (-log p of each word
-   given the previous word, natural log, the bigram model of international with k = 0.001): 3.7545, 4.7609, 1.1075,
-   12.2041, 3.2053, 13.0027, 12.1151, 12.0113; loss_example.sum 62.1615 (the rounded losses also add up to 62.16). As in
+   given the previous word, natural log, the bigram model of business and economy with k = 0.001): 4.6077, 2.7973,
+   3.8034, 0.5047, 3.4576, 2.4551, 13.1704, 11.6317; loss_example.sum 42.4279 (the rounded losses also add up to 42.43). As in
    dev_loss and on slide q03, </s> is not predicted, so the headline has eight factors. */
 .reveal section.q04 .q04-hl { position: absolute; left: 72px; top: 120px; height: 44px; margin: 0; display: flex; align-items: center; gap: 20px; font-family: var(--mono); font-size: 24px; line-height: 44px; white-space: nowrap; }
 .reveal section.q04 .q04-b { color: var(--text-helper); }
@@ -3071,9 +3075,9 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 </section>
 <section id="mean-loss-per-word" class="slide level2 q05">
 <h2>Mean loss per word</h2>
-<p class="q05-hl"><span class="q05-b">&lt;s&gt;</span><span>the</span><span>middle</span><span>east</span><span>it</span><span>will</span><span>only</span><span>get</span><span>worse</span></p>
+<p class="q05-hl"><span class="q05-b">&lt;s&gt;</span><span>what</span><span>you</span><span>don</span><span>t</span><span>know</span><span>about</span><span>overnight</span><span>success</span></p>
 <div class="q05-f">
-  <span class="q05-a fragment up" data-fragment-index="1"><span class="math inline">\dfrac{62.16}{8} = 7.77</span></span>
+  <span class="q05-a fragment up" data-fragment-index="1"><span class="math inline">\dfrac{42.43}{8} = 5.30</span></span>
   <span class="q05-g fragment up" data-fragment-index="2"><span class="math inline">\displaystyle \text{loss} = -\frac{1}{n}\sum_{i=1}^{n} \log p(w_i \mid \text{previous words})</span></span>
 </div>
 
@@ -3117,8 +3121,8 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 <style>
 /* Slide q05. Step 0: the headline, as on q04. Builds: 1 the loss of the headline divided by its 8 words; 2 the mean loss
    per word of any text of n words (on the dev set n = 174,640); 3 to 6 the table, one row per build, classification
-   beside generation; the closing line from the first row on. Numbers: c03_data.json, loss_example.sum 62.1615, loss_example.n
-   8, loss_example.mean 7.7702; dev_n_words 174,640 (the words scored by each model: words outside the vocabulary are
+   beside generation; the closing line from the first row on. Numbers: c03_data.json, loss_example.sum 42.4279, loss_example.n
+   8, loss_example.mean 5.3035; dev_n_words 174,640 (the words scored by each model: words outside the vocabulary are
    skipped and </s> is not predicted); classes_next 110,609 (every word of the vocabulary and </s>); n_dev 4,000. */
 .reveal section.q05 .q05-hl { position: absolute; left: 72px; top: 120px; height: 44px; margin: 0; display: flex; align-items: center; gap: 20px; font-family: var(--mono); font-size: 24px; line-height: 44px; white-space: nowrap; }
 .reveal section.q05 .q05-b { color: var(--text-helper); }
@@ -3295,44 +3299,44 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 </section>
 <section id="trigrams-in-generation" class="slide level2 q08">
 <h2>Trigrams in generation</h2>
-<p class="q08-mod fragment up" data-fragment-index="1"><span class="sw t2"></span>Trigram model of international, nothing added to the counts</p>
-<p class="q08-key fragment up" data-fragment-index="2">Count in the international training texts</p>
+<p class="q08-mod fragment up" data-fragment-index="1"><span class="sw t4"></span>Trigram model of business and economy, nothing added to the counts</p>
+<p class="q08-key fragment up" data-fragment-index="2">Count in its training texts</p>
 <div class="q08-txt fragment up" data-fragment-index="1">
   <div class="q08-ln" style="grid-template-columns: 8px repeat(10, max-content) 8px">
     <span class="q08-w q08-pad" style="grid-area: 1 / 2">&lt;s&gt;</span>
     <span class="q08-w q08-pad" style="grid-area: 1 / 3">&lt;s&gt;</span>
-    <span class="q08-w" style="grid-area: 1 / 4">donald</span>
-    <span class="q08-w" style="grid-area: 1 / 5">trump</span>
-    <span class="q08-w" style="grid-area: 1 / 6">s</span>
-    <span class="q08-w" style="grid-area: 1 / 7">uk</span>
-    <span class="q08-w" style="grid-area: 1 / 8">visit</span>
-    <span class="q08-w" style="grid-area: 1 / 9">met</span>
-    <span class="q08-w" style="grid-area: 1 / 10">with</span>
-    <span class="q08-w" style="grid-area: 1 / 11">ukraine</span>
-    <span class="q08-u" style="grid-area: 2 / 2 / 3 / 5"><b class="fragment up" data-fragment-index="2">6</b></span>
-    <span class="q08-u" style="grid-area: 3 / 3 / 4 / 6"><b class="fragment up" data-fragment-index="2">5</b></span>
-    <span class="q08-u" style="grid-area: 4 / 4 / 5 / 7"><b class="fragment up" data-fragment-index="2">13</b></span>
+    <span class="q08-w" style="grid-area: 1 / 4">america</span>
+    <span class="q08-w" style="grid-area: 1 / 5">s</span>
+    <span class="q08-w" style="grid-area: 1 / 6">largest</span>
+    <span class="q08-w" style="grid-area: 1 / 7">network</span>
+    <span class="q08-w" style="grid-area: 1 / 8">of</span>
+    <span class="q08-w" style="grid-area: 1 / 9">friends</span>
+    <span class="q08-w" style="grid-area: 1 / 10">but</span>
+    <span class="q08-w" style="grid-area: 1 / 11">what</span>
+    <span class="q08-u" style="grid-area: 2 / 2 / 3 / 5"><b class="fragment up" data-fragment-index="2">21</b></span>
+    <span class="q08-u" style="grid-area: 3 / 3 / 4 / 6"><b class="fragment up" data-fragment-index="2">21</b></span>
+    <span class="q08-u" style="grid-area: 4 / 4 / 5 / 7"><b class="fragment up" data-fragment-index="2">3</b></span>
     <span class="q08-u" style="grid-area: 2 / 5 / 3 / 8"><b class="fragment up" data-fragment-index="2">1</b></span>
     <span class="q08-u" style="grid-area: 3 / 6 / 4 / 9"><b class="fragment up" data-fragment-index="2">1</b></span>
     <span class="q08-u" style="grid-area: 4 / 7 / 5 / 10"><b class="fragment up" data-fragment-index="2">1</b></span>
-    <span class="q08-u" style="grid-area: 2 / 8 / 3 / 11"><b class="fragment up" data-fragment-index="2">2</b></span>
+    <span class="q08-u" style="grid-area: 2 / 8 / 3 / 11"><b class="fragment up" data-fragment-index="2">1</b></span>
     <span class="q08-u" style="grid-area: 3 / 9 / 4 / 12"><b class="fragment up" data-fragment-index="2">1</b></span>
     <span class="q08-u q08-or" style="grid-area: 4 / 10 / 5 / 13"></span>
     <span class="q08-u q08-or" style="grid-area: 2 / 11 / 3 / 13"></span>
   </div>
   <div class="q08-ln" style="grid-template-columns: 8px repeat(7, max-content) 8px">
-    <span class="q08-w" style="grid-area: 1 / 2">another</span>
-    <span class="q08-w" style="grid-area: 1 / 3">country</span>
-    <span class="q08-w" style="grid-area: 1 / 4">is</span>
-    <span class="q08-w" style="grid-area: 1 / 5">still</span>
-    <span class="q08-w" style="grid-area: 1 / 6">a</span>
-    <span class="q08-w" style="grid-area: 1 / 7">safe</span>
-    <span class="q08-w" style="grid-area: 1 / 8">place</span>
+    <span class="q08-w" style="grid-area: 1 / 2">about</span>
+    <span class="q08-w" style="grid-area: 1 / 3">the</span>
+    <span class="q08-w" style="grid-area: 1 / 4">people</span>
+    <span class="q08-w" style="grid-area: 1 / 5">behind</span>
+    <span class="q08-w" style="grid-area: 1 / 6">that</span>
+    <span class="q08-w" style="grid-area: 1 / 7">system</span>
+    <span class="q08-w" style="grid-area: 1 / 8">and</span>
     <span class="q08-u q08-ol" style="grid-area: 4 / 2 / 5 / 3"><b class="fragment up" data-fragment-index="2">1</b></span>
-    <span class="q08-u q08-ol" style="grid-area: 2 / 2 / 3 / 4"><b class="fragment up" data-fragment-index="2">1</b></span>
+    <span class="q08-u q08-ol" style="grid-area: 2 / 2 / 3 / 4"><b class="fragment up" data-fragment-index="2">2</b></span>
     <span class="q08-u" style="grid-area: 3 / 2 / 4 / 5"><b class="fragment up" data-fragment-index="2">1</b></span>
-    <span class="q08-u" style="grid-area: 4 / 3 / 5 / 6"><b class="fragment up" data-fragment-index="2">2</b></span>
-    <span class="q08-u" style="grid-area: 2 / 4 / 3 / 7"><b class="fragment up" data-fragment-index="2">4</b></span>
+    <span class="q08-u" style="grid-area: 4 / 3 / 5 / 6"><b class="fragment up" data-fragment-index="2">1</b></span>
+    <span class="q08-u" style="grid-area: 2 / 4 / 3 / 7"><b class="fragment up" data-fragment-index="2">1</b></span>
     <span class="q08-u" style="grid-area: 3 / 5 / 4 / 8"><b class="fragment up" data-fragment-index="2">1</b></span>
     <span class="q08-u" style="grid-area: 4 / 6 / 5 / 9"><b class="fragment up" data-fragment-index="2">1</b></span>
   </div>
@@ -3343,13 +3347,13 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
   <p class="fragment keep" data-fragment-index="3">So the generated text repeats parts of the training&nbsp;texts.</p>
 </div>
 <style>
-/* Slide q08 (Part 4 rebuild, ../notes.md, 2026-11-10). Builds: 1 one sample of the trigram model of international
-   without anything added to the counts, drawn as the demo "Three models write" draws (c03_build.py gen_sample: seed
-   14, 15 words; each next word w after u v with probability count(u v w) / count(u v)), on two lines, each trigram
+/* Slide q08 (Part 4 rebuild, ../notes.md, 2026-11-10). Builds: 1 one sample of the trigram model of business and
+   economy, the topic of the example of q01 to q05, without anything added to the counts, drawn as the demo "Three
+   models write" draws (c03_build.py gen_sample: seed 31, 15 words; each next word w after u v with probability count(u v w) / count(u v)), on two lines, each trigram
    underlined by a line with end marks: the trigram of word i (tokens i to i + 2, after <s> <s>) in tier i mod 3, so
    that the trigrams of one tier do not overlap; the two trigrams across the line break have open ends and carry
-   their count on the second line; 2 on each trigram's line its count in the international training texts
-   (gen_sample.steps[].count: 6 5 13 1 1 1 2 1 1 1 1 2 4 1 1; the smallest is 1); 3 the closing line. Words in IBM
+   their count on the second line; 2 on each trigram's line its count in the business and economy training
+   texts (gen_sample.steps[].count: 21 21 3 1 1 1 1 1 1 2 1 1 1 1 1; the smallest is 1); 3 the closing line. Words in IBM
    Plex Mono 28 px, a grid column each, 20 px apart, from x = 64; an 8 px column at each end of a line (the block
    starts at x = 36). The open ends of the first line run into its right column; those of the second line start at
    its first word, x = 64, so that no mark stands in the left margin. */
@@ -3373,54 +3377,56 @@ html.print-pdf .reveal section.s28 .s28-scene * { transition: none !important; a
 </section>
 <section id="trigrams-in-new-text" class="slide level2 q09">
 <h2>Trigrams in new text</h2>
-<p class="q09-mod"><span class="sw t2"></span>Trigram model of international</p>
+<p class="q09-mod"><span class="sw t4"></span>Trigram model of business and economy</p>
 <div class="q09-g">
   <span class="q09-w q09-pad" style="grid-area: 1 / 1">&lt;s&gt;</span>
   <span class="q09-w q09-pad" style="grid-area: 1 / 2">&lt;s&gt;</span>
-  <span class="q09-w" style="grid-area: 1 / 3">the</span>
-  <span class="q09-w" style="grid-area: 1 / 4">middle</span>
-  <span class="q09-w" style="grid-area: 1 / 5">east</span>
-  <span class="q09-w" style="grid-area: 1 / 6">it</span>
-  <span class="q09-w" style="grid-area: 1 / 7">will</span>
-  <span class="q09-w" style="grid-area: 1 / 8">only</span>
-  <span class="q09-w" style="grid-area: 1 / 9">get</span>
-  <span class="q09-w" style="grid-area: 1 / 10">worse</span>
+  <span class="q09-w" style="grid-area: 1 / 3">what</span>
+  <span class="q09-w" style="grid-area: 1 / 4">you</span>
+  <span class="q09-w" style="grid-area: 1 / 5">don</span>
+  <span class="q09-w" style="grid-area: 1 / 6">t</span>
+  <span class="q09-w" style="grid-area: 1 / 7">know</span>
+  <span class="q09-w" style="grid-area: 1 / 8">about</span>
+  <span class="q09-w" style="grid-area: 1 / 9">overnight</span>
+  <span class="q09-w" style="grid-area: 1 / 10">success</span>
   <span class="q09-rl fragment up" data-fragment-index="1" style="grid-area: 2 / 1 / 3 / 3">trigram</span>
   <span class="q09-m q09-seen fragment up" data-fragment-index="1" style="grid-area: 2 / 3"><span class="q09-mk"></span>seen</span>
   <span class="q09-m q09-seen fragment up" data-fragment-index="1" style="grid-area: 2 / 4"><span class="q09-mk"></span>seen</span>
   <span class="q09-m q09-seen fragment up" data-fragment-index="1" style="grid-area: 2 / 5"><span class="q09-mk"></span>seen</span>
-  <span class="q09-m q09-unseen fragment up" data-fragment-index="1" style="grid-area: 2 / 6"><span class="q09-mk"></span>unseen</span>
-  <span class="q09-m q09-unseen fragment up" data-fragment-index="1" style="grid-area: 2 / 7"><span class="q09-mk"></span>unseen</span>
-  <span class="q09-m q09-unseen fragment up" data-fragment-index="1" style="grid-area: 2 / 8"><span class="q09-mk"></span>unseen</span>
+  <span class="q09-m q09-seen fragment up" data-fragment-index="1" style="grid-area: 2 / 6"><span class="q09-mk"></span>seen</span>
+  <span class="q09-m q09-seen fragment up" data-fragment-index="1" style="grid-area: 2 / 7"><span class="q09-mk"></span>seen</span>
+  <span class="q09-m q09-seen fragment up" data-fragment-index="1" style="grid-area: 2 / 8"><span class="q09-mk"></span>seen</span>
   <span class="q09-m q09-unseen fragment up" data-fragment-index="1" style="grid-area: 2 / 9"><span class="q09-mk"></span>unseen</span>
   <span class="q09-m q09-unseen fragment up" data-fragment-index="1" style="grid-area: 2 / 10"><span class="q09-mk"></span>unseen</span>
   <span class="q09-rl q09-rl2 fragment up" data-fragment-index="2" style="grid-area: 3 / 1 / 4 / 3"><span class="math inline">-\log p</span></span>
   <span class="q09-ax fragment up" data-fragment-index="2" style="grid-area: 3 / 3 / 4 / 11"></span>
-  <span class="q09-bc" style="grid-area: 3 / 3"><span class="q09-bar q09-seen fragment q09-drop" data-fragment-index="2" style="height: 59.8px"></span><span class="q09-v">3.74</span></span>
-  <span class="q09-bc" style="grid-area: 3 / 4"><span class="q09-bar q09-seen fragment q09-drop" data-fragment-index="2" style="height: 64.9px"></span><span class="q09-v">4.05</span></span>
-  <span class="q09-bc" style="grid-area: 3 / 5"><span class="q09-bar q09-seen fragment q09-drop" data-fragment-index="2" style="height: 5.2px"></span><span class="q09-v">0.33</span></span>
-  <span class="q09-bc" style="grid-area: 3 / 6"><span class="q09-bar q09-unseen fragment q09-drop" data-fragment-index="2" style="height: 215.6px"></span><span class="q09-v">13.47</span></span>
-  <span class="q09-bc" style="grid-area: 3 / 7"><span class="q09-bar q09-unseen fragment q09-drop" data-fragment-index="2" style="height: 185.8px"></span><span class="q09-v">11.61</span></span>
-  <span class="q09-bc" style="grid-area: 3 / 8"><span class="q09-bar q09-unseen fragment q09-drop" data-fragment-index="2" style="height: 206.0px"></span><span class="q09-v">12.88</span></span>
-  <span class="q09-bc" style="grid-area: 3 / 9"><span class="q09-bar q09-unseen fragment q09-drop" data-fragment-index="2" style="height: 185.8px"></span><span class="q09-v">11.61</span></span>
+  <span class="q09-bc" style="grid-area: 3 / 3"><span class="q09-bar q09-seen fragment q09-drop" data-fragment-index="2" style="height: 73.5px"></span><span class="q09-v">4.59</span></span>
+  <span class="q09-bc" style="grid-area: 3 / 4"><span class="q09-bar q09-seen fragment q09-drop" data-fragment-index="2" style="height: 52.5px"></span><span class="q09-v">3.28</span></span>
+  <span class="q09-bc" style="grid-area: 3 / 5"><span class="q09-bar q09-seen fragment q09-drop" data-fragment-index="2" style="height: 60.9px"></span><span class="q09-v">3.81</span></span>
+  <span class="q09-bc" style="grid-area: 3 / 6"><span class="q09-bar q09-seen fragment q09-drop" data-fragment-index="2" style="height: 5.0px"></span><span class="q09-v">0.31</span></span>
+  <span class="q09-bc" style="grid-area: 3 / 7"><span class="q09-bar q09-seen fragment q09-drop" data-fragment-index="2" style="height: 48.0px"></span><span class="q09-v">3.00</span></span>
+  <span class="q09-bc" style="grid-area: 3 / 8"><span class="q09-bar q09-seen fragment q09-drop" data-fragment-index="2" style="height: 33.3px"></span><span class="q09-v">2.08</span></span>
+  <span class="q09-bc" style="grid-area: 3 / 9"><span class="q09-bar q09-unseen fragment q09-drop" data-fragment-index="2" style="height: 202.8px"></span><span class="q09-v">12.68</span></span>
   <span class="q09-bc" style="grid-area: 3 / 10"><span class="q09-bar q09-unseen fragment q09-drop" data-fragment-index="2" style="height: 185.8px"></span><span class="q09-v">11.61</span></span>
 </div>
 <div class="end steps q09-say">
-  <p class="fragment current-visible" data-fragment-index="1">Five of the eight trigrams of this headline never occur in the international training&nbsp;texts.</p>
+  <p class="fragment current-visible" data-fragment-index="1">Two of the eight trigrams of this headline never occur in the business and economy training&nbsp;texts.</p>
   <p class="fragment current-visible" data-fragment-index="2">The count of an unseen trigram is only the small number added to every count, so its probability is very small and its loss is about 12 to&nbsp;13.</p>
   <p class="fragment keep" data-fragment-index="3">Without that small number, its probability would be 0 and the loss would be&nbsp;infinite.</p>
 </div>
 <style>
 /* Slide q09 (Part 4 rebuild, ../notes.md, 2026-11-10). Step 0 the headline of q01 to q05 (loss_example: dev row
-   2440, dv_02441, international) after <s> <s>, as the trigram model reads it; the model of its true topic. Builds:
-   1 under each word whether its trigram (the two previous words and the word) occurs in the international training
-   texts, Blue 60 seen, Red 60 unseen, each with its label (loss_example_trigram.steps[].seen; 3 of 8 seen); 2 under
+   1939, dv_01940, business and economy) after <s> <s>, as the trigram model reads it; the model of its true topic.
+   Builds: 1 under each word whether its trigram (the two previous words and the word) occurs in the business and
+   economy training texts, Blue 60 seen, Red 60 unseen, each with its label (loss_example_trigram.steps[].seen; 6 of 8
+   seen); 2 under
    each word its loss, -log p, from the trigram model at its best k = 0.0001 (loss_example_trigram.steps[].loss; bars
-   hang from a common line, 16 px per unit; the unseen trigrams 11.61 to 13.47); 3 the closing line. An unseen
+   hang from a common line, 16 px per unit; the unseen trigrams 11.61 and 12.68); 3 the closing line. An unseen
    trigram gets p = k / (count(u v) + kV): 1/V when its two previous words never occur together either. Columns: two
-   of 88 px for <s> (they hold the row labels), eight of 122 px for the words. */
+   of 88 px for <s> (they hold the row labels), eight for the words, 12 px apart, each at least as wide as its word
+   (overnight needs about 151 px at 28 px), the rest of the width shared. */
 .reveal section.q09 .q09-mod { position: absolute; left: 64px; top: 120px; margin: 0; display: flex; align-items: center; gap: 10px; font-size: 22px; line-height: 30px; color: var(--text-secondary); }
-.reveal section.q09 .q09-g { position: absolute; left: 64px; top: 176px; width: 1152px; display: grid; grid-template-columns: 88px 88px repeat(8, 1fr); grid-template-rows: 44px 74px 256px; }
+.reveal section.q09 .q09-g { position: absolute; left: 64px; top: 176px; width: 1152px; display: grid; grid-template-columns: 88px 88px repeat(8, minmax(max-content, 1fr)); column-gap: 12px; grid-template-rows: 44px 74px 256px; }
 .reveal section.q09 .q09-w { justify-self: center; font-family: var(--mono); font-size: 28px; line-height: 44px; white-space: nowrap; }
 .reveal section.q09 .q09-pad { color: var(--text-helper); }
 .reveal section.q09 .q09-m { display: flex; flex-direction: column; align-items: center; padding-top: 8px; font-size: 22px; line-height: 30px; color: var(--text-secondary); }
