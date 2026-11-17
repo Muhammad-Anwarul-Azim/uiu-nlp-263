@@ -1,0 +1,609 @@
+<title>If p, then q</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&family=Noto+Sans+Math&display=swap">
+<style>
+/* One idea per slide on a fixed 1600x900 stage, scaled to the screen. White room, ink text,
+   blue = the "if" part, amber = the "then" part, red = the broken case. */
+:root{
+  --bg:#FCFCFA; --ink:#1B1E23; --mute:#2A2E35; --rule:#D9DCE1;
+  --h:#1F63B5; --c:#A35A00;
+  --bad:#C2362B; --bad-bg:#FBE8E6;
+  --ok:#2B7A44; --ok-bg:#E5F2E9;
+  --alt:#6A47BF; --alt-bg:#EEE9FA;
+  --hl:#FFE27A; --key-bg:#FFF4C2;
+  --serif:'STIX Two Text','Noto Sans Math','STIX Two Math','Cambria Math',Georgia,serif;
+  color-scheme:light;
+}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--ink)}
+body{font-family:var(--serif);-webkit-font-smoothing:antialiased}
+#stage{position:fixed;left:50%;top:50%;width:1600px;height:900px;transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:center}
+.slide{position:absolute;inset:0;box-sizing:border-box;padding:160px 120px 90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:44px;text-align:center;opacity:0;visibility:hidden;transition:opacity .55s ease,visibility 0s .55s}
+.slide.cur{opacity:1;visibility:visible;transition:opacity .55s ease}
+
+/* step reveal */
+[data-s]{transition:opacity .5s ease,transform .5s ease,clip-path .9s ease;transition-delay:calc(var(--d,0) * 90ms)}
+[data-s]:not(.on){opacity:0;transform:translateY(14px)}
+.w[data-s]:not(.on){clip-path:inset(0 100% 0 0);transform:none}
+.w[data-s].on{clip-path:inset(0 0 0 0)}
+.off{opacity:0 !important;transform:translateY(-10px) !important}
+[data-h]{transition:opacity .45s ease,transform .45s ease}
+
+/* type */
+.title{font-size:132px;font-weight:500;margin:0;letter-spacing:-.01em}
+.sub{font-size:48px;color:var(--ink);margin:0}
+.chap{font-size:92px;font-weight:500;margin:0;text-wrap:balance}
+.say{font-size:50px;line-height:1.38;margin:0;max-width:1320px;text-wrap:balance}
+.say.sm{font-size:44px}
+.big{font-size:60px}
+.q{font-size:60px;margin:0;font-style:italic}
+.fx{font-size:76px;line-height:1.2;margin:0;white-space:nowrap}
+.fx.md{font-size:60px}
+.fx.sm{font-size:48px}
+i{font-style:italic}
+.muted{color:var(--mute)}
+.note{font-size:40px;color:var(--ink);margin:0;font-style:italic}
+
+/* colour roles, animated in */
+.h,.c{transition:color .5s ease,background-color .5s ease}
+.h{color:var(--h)} .c{color:var(--c)}
+.cn{transition:opacity .5s ease,transform .5s ease}
+.cn.dimc.on{opacity:.22}
+.cn .fx{padding:2px 18px;border-radius:6px;transition:background-color .5s ease}
+.cn.okc .fx{background:var(--ok-bg)}
+.kw{background:linear-gradient(var(--hl),var(--hl)) no-repeat 0 90%/0% .42em;transition:background-size .6s ease;padding:0 .04em}
+.kw.lit{background-size:100% .42em}
+
+/* corner labels */
+.tag{position:absolute;top:44px;right:100px;font-size:34px;font-weight:700;color:var(--h)}
+.leg{position:absolute;top:40px;left:100px;max-width:960px;display:flex;flex-wrap:wrap;gap:8px 40px;font-size:34px;color:var(--ink);text-align:left}
+.leg i{font-size:38px;font-weight:600}
+.num{position:fixed;right:28px;bottom:18px;font:20px var(--serif);color:#4A4F57}
+#bar{position:fixed;left:0;bottom:0;height:3px;background:var(--rule);transition:width .4s ease}
+
+/* layout helpers */
+.row{display:flex;align-items:center;justify-content:center;gap:96px}
+.col{display:flex;flex-direction:column;align-items:center;gap:22px}
+.stack{display:grid;justify-items:center;align-items:center}
+.stack>*{grid-area:1/1}
+
+/* truth tables */
+table.tt{border-collapse:collapse;font-size:40px;font-variant-numeric:tabular-nums}
+.tt th{font-weight:400;padding:6px 26px 12px;border-bottom:2px solid var(--ink);white-space:nowrap}
+.tt td{padding:7px 26px;color:var(--mute);transition:background-color .5s ease,color .5s ease}
+.tt td.r{color:var(--ink);font-weight:600}
+.tt td.f{color:var(--bad);font-weight:600}
+.tt td.lab{font-size:36px;font-style:italic;text-align:left;padding-left:34px}
+.tt th.sep,.tt td.sep{border-left:2px solid var(--rule)}
+.tt .bad td{background:var(--bad-bg);color:var(--bad)}
+.tt .bad td.lab{background:none}
+.tt .key td{background:var(--key-bg)}
+.tt .key td.lab{background:none;color:var(--ink)}
+.tt .fade td{color:#C6C9CF}
+.tt .fade td.f,.tt .fade td.r{color:#C6C9CF}
+.tt td.hit{background:var(--bad-bg);color:var(--bad)}
+.tt td.hit2{background:var(--alt-bg);color:var(--alt)}
+.tt th small{display:block;font-size:32px;color:var(--ink);font-weight:600;font-style:italic;margin-bottom:6px}
+
+/* strike-through for a wrong form */
+.nope{position:relative;color:var(--mute);font-size:52px}
+.nope::after{content:"";position:absolute;left:-8px;right:-8px;top:54%;height:4px;background:var(--bad);transform:scaleX(0);transform-origin:left;transition:transform .5s ease .35s}
+.nope.on::after{transform:scaleX(1)}
+
+/* the square */
+.sq{position:relative;width:1240px;height:560px}
+.cn{position:absolute;width:430px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.cn .nm{font-size:44px;font-style:italic;font-weight:600;color:var(--ink)}
+.cn .fx{font-size:66px}
+.cn .op{font-size:34px;color:var(--alt)}
+.tl{left:0;top:10px}.tr{right:0;top:10px}.bl{left:0;bottom:10px}.br{right:0;bottom:10px}
+.sq svg{position:absolute;inset:0;overflow:visible}
+.draw{fill:none;stroke-width:3;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1s ease}
+.draw.on{stroke-dashoffset:0}
+.eq{position:absolute;font-size:46px}
+
+/* five-step routine */
+.routine{display:flex;align-items:baseline;gap:30px;font-size:46px}
+.routine .ar{color:var(--h)}
+
+/* cards */
+.cards{display:flex;gap:28px}
+.card{width:250px;padding:30px 0 26px;border:2px solid var(--rule);border-radius:6px;display:flex;flex-direction:column;gap:10px;align-items:center;transition:border-color .5s ease,background-color .5s ease}
+.card .t{font-size:38px}
+.card .v{font-size:44px;height:52px}
+.card.yes{border-color:var(--ok);background:var(--ok-bg)}
+.card.no{border-color:var(--bad);background:var(--bad-bg)}
+.card.yes .v{color:var(--ok)} .card.no .v{color:var(--bad)}
+
+/* answers on practice slides */
+.ans{display:grid;grid-template-columns:max-content max-content minmax(0,640px);gap:26px 44px;align-items:baseline;text-align:left}
+.ans .nm{font-size:40px;font-style:italic;font-weight:600;color:var(--ink)}
+.ans .fx{font-size:50px}
+.ans .en{font-size:34px;line-height:1.35}
+
+/* keyword board */
+.board{border-collapse:collapse;font-size:42px;text-align:left}
+.board td{padding:12px 40px;border-bottom:1px solid var(--rule)}
+.board td:first-child{font-style:italic}
+.board tr:last-child td{border-bottom:none}
+
+.blanks{display:flex;gap:70px;font-size:36px;color:var(--mute)}
+.blanks span{display:inline-block;min-width:300px;padding-bottom:70px;border-bottom:2px solid var(--rule)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none !important}
+}
+</style>
+
+<div id="stage">
+
+<!-- 1 -->
+<section class="slide">
+  <h1 class="title">If <i class="h">p</i>, then <i class="c">q</i></h1>
+  <p class="sub">Discrete Mathematics · CSE 2213</p>
+</section>
+
+<!-- 2 cold open -->
+<section class="slide">
+  <p class="say big">“Barcelona cannot win the match unless Lamin Yamal plays.”</p>
+  <p class="say muted" data-s="1">Yamal played. Barcelona lost.</p>
+  <p class="q" data-s="2">Was the sentence false?</p>
+</section>
+
+<!-- 3 the promise -->
+<section class="slide">
+  <p class="say">If <span data-k="1:h">you study</span>, <span data-k="1:c">you will ace the exam</span>.</p>
+  <div class="row">
+    <p class="fx w" data-s="2"><i class="h">p</i> → <i class="c">q</i></p>
+    <table class="tt" data-s="3">
+      <tr><th><i class="h">p</i></th><th><i class="c">q</i></th><th class="sep"><i>p</i> → <i>q</i></th></tr>
+      <tr><td>T</td><td>T</td><td class="sep r" data-s="4" style="--d:0">T</td></tr>
+      <tr data-k="5:bad"><td>T</td><td>F</td><td class="sep f" data-s="4" style="--d:1">F</td></tr>
+      <tr><td>F</td><td>T</td><td class="sep r" data-s="4" style="--d:2">T</td></tr>
+      <tr><td>F</td><td>F</td><td class="sep r" data-s="4" style="--d:3">T</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 4 the square -->
+<section class="slide">
+  <div class="sq">
+    <svg viewBox="0 0 1240 560" aria-hidden="true">
+      <line class="draw" data-s="4" x1="440" y1="150" x2="800" y2="410" pathLength="1" stroke="#1B1E23"/>
+      <line class="draw" data-s="4" style="--d:3" x1="800" y1="150" x2="440" y2="410" pathLength="1" stroke="#6A47BF"/>
+    </svg>
+    <div class="eq" data-s="4" style="left:536px;top:146px;--d:6">≡</div>
+    <div class="eq" data-s="4" style="left:672px;top:146px;color:var(--alt);--d:9">≡</div>
+    <div class="cn tl"><span class="nm">original</span><span class="fx"><i class="h">p</i> → <i class="c">q</i></span></div>
+    <div class="cn tr" data-s="1" data-k="5:dimc"><span class="nm">converse</span><span class="fx"><i class="c">q</i> → <i class="h">p</i></span><span class="op">swap</span></div>
+    <div class="cn bl" data-s="2" data-k="5:dimc"><span class="nm">inverse</span><span class="fx">¬<i class="h">p</i> → ¬<i class="c">q</i></span><span class="op">negate both</span></div>
+    <div class="cn br" data-s="3" data-k="5:okc"><span class="nm">contrapositive</span><span class="fx">¬<i class="c">q</i> → ¬<i class="h">p</i></span><span class="op">swap and negate</span></div>
+  </div>
+</section>
+
+<!-- 5 chapter -->
+<section class="slide">
+  <h2 class="chap">Reading exam sentences</h2>
+  <div class="routine">
+    <span data-s="1" style="--d:0">Cast</span><span class="ar" data-s="1" style="--d:1">→</span>
+    <span data-s="1" style="--d:2">Keywords</span><span class="ar" data-s="1" style="--d:3">→</span>
+    <span data-s="1" style="--d:4">Rewrite</span><span class="ar" data-s="1" style="--d:5">→</span>
+    <span data-s="1" style="--d:6">Symbols</span><span class="ar" data-s="1" style="--d:7">→</span>
+    <span data-s="1" style="--d:8">Test</span>
+  </div>
+</section>
+
+<!-- 6 Q4(i) -->
+<section class="slide">
+  <div class="leg"><span class="h"><i>b</i>: Brazil goes to semi-final</span><span class="c"><i>a</i>: Argentina wins</span><span class="c"><i>f</i>: France wins</span></div>
+  <div class="tag">Spring 2023 mid · Q1(a)</div>
+  <p class="say"><span class="kw" data-k="1:lit">If</span> <span data-k="2:h">Brazil goes to semi-final</span>, then <span data-k="2:c"><span class="kw" data-k="1:lit">neither</span> Argentina <span class="kw" data-k="1:lit">nor</span> France will win the match</span>.</p>
+  <div class="row">
+    <div class="col">
+      <p class="fx w" data-s="3"><i class="h">b</i> → <span class="c">(¬<i>a</i> ∧ ¬<i>f</i>)</span></p>
+      <span class="nope" data-s="6">¬<i>a</i> ∨ ¬<i>f</i></span>
+    </div>
+    <table class="tt" data-s="4">
+      <tr><th><i class="h">b</i></th><th><i class="c">a</i></th><th><i class="c">f</i></th><th class="sep">result</th></tr>
+      <tr><td>T</td><td>F</td><td>F</td><td class="sep r" data-s="5">T</td></tr>
+      <tr data-k="5:bad"><td>T</td><td>T</td><td>F</td><td class="sep f" data-s="5" style="--d:1">F</td></tr>
+      <tr><td>F</td><td>T</td><td>F</td><td class="sep r" data-s="5" style="--d:2">T</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 7 Q4(ii) -->
+<section class="slide">
+  <div class="leg"><span class="h"><i>a</i>: Argentina wins</span><span class="c"><i>e</i>: Emi Martinez plays well</span></div>
+  <div class="tag">Spring 2023 mid · Q1(a)</div>
+  <p class="say"><span class="kw" data-k="1:lit">For</span> <span data-k="2:h">Argentina to win the match</span>, <span data-k="2:c">Emi Martinez <span class="kw" data-k="1:lit">must</span> play well</span>.</p>
+  <div class="row">
+    <div class="col">
+      <p class="fx w" data-s="3"><i class="h">a</i> → <i class="c">e</i></p>
+      <div class="row" style="gap:120px">
+        <span class="note h" data-s="6">sufficient</span><span class="note c" data-s="6" style="--d:2">necessary</span>
+      </div>
+    </div>
+    <table class="tt" data-s="4">
+      <tr><th><i class="h">a</i></th><th><i class="c">e</i></th><th class="sep"><i>a</i> → <i>e</i></th></tr>
+      <tr data-k="5:bad"><td>T</td><td>F</td><td class="sep f" data-s="5">F</td></tr>
+      <tr data-k="5:key"><td>F</td><td>T</td><td class="sep r" data-s="5" style="--d:1">T</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 8 Q4(iii) -->
+<section class="slide">
+  <div class="leg"><span><i>a</i>: Argentina wins</span><span><i>e</i>: Emi Martinez plays well</span><span><i>f</i>: France wins</span><span><i>m</i>: Mbappe plays well</span></div>
+  <div class="tag">Spring 2023 mid · Q1(a)</div>
+  <p class="say"><span class="kw" data-k="1:lit">Both</span> Mbappe <span class="kw" data-k="1:lit">and</span> Emi Martinez play well, <span class="kw" data-k="1:lit">but</span> <span class="kw" data-k="1:lit">either only</span> Argentina <span class="kw" data-k="1:lit">or</span> France will win the match.</p>
+  <p class="fx"><span data-s="2">(<i>m</i> ∧ <i>e</i>)</span> <span data-s="3">∧</span> <span data-s="4">(<i>a</i> ⊕ <i>f</i>)</span></p>
+  <div class="col" data-s="5">
+    <p class="note">World Cup final 2022 · Argentina 3–3 France · 4–2 on penalties</p>
+    <table class="tt">
+      <tr><th><i>m</i></th><th><i>e</i></th><th><i>a</i></th><th><i>f</i></th><th class="sep">result</th></tr>
+      <tr data-k="6:key"><td>T</td><td>T</td><td>T</td><td>F</td><td class="sep r" data-s="6">T</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 9 Q21 Yamal -->
+<section class="slide">
+  <div class="leg"><span class="h"><i>y</i>: Yamal plays</span><span class="c"><i>w</i>: Barcelona wins</span></div>
+  <div class="tag">Summer 2025 mid · Q1(b)</div>
+  <p class="say"><span data-k="2:c">Barcelona cannot win the match</span> <span class="kw" data-k="1:lit">unless</span> <span data-k="2:h">Lamin Yamal plays</span>.</p>
+  <p class="say muted" data-s="3">If <span class="h">Yamal does not play</span>, <span class="c">Barcelona cannot win</span>.</p>
+  <div class="row">
+    <p class="fx w" data-s="4">¬<i class="h">y</i> → ¬<i class="c">w</i></p>
+    <table class="tt" data-s="5">
+      <tr><th><i class="h">y</i></th><th><i class="c">w</i></th><th class="sep">¬<i>y</i> → ¬<i>w</i></th><th></th></tr>
+      <tr data-k="6:bad"><td>F</td><td>T</td><td class="sep f" data-s="6">F</td><td class="lab" data-s="6">won without Yamal</td></tr>
+      <tr data-k="7:key"><td>T</td><td>F</td><td class="sep r" data-s="6" style="--d:1">T</td><td class="lab" data-s="7">the headline</td></tr>
+      <tr><td>F</td><td>F</td><td class="sep r" data-s="6" style="--d:2">T</td><td class="lab"></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 10 same shape -->
+<section class="slide">
+  <div class="ans" style="grid-template-columns:max-content max-content;gap:56px 90px;align-items:center">
+    <p class="say sm" style="text-align:left">For Argentina to win, Emi must play well</p>
+    <p class="fx md"><i class="h">a</i> → <i class="c">e</i></p>
+    <p class="say sm" style="text-align:left">Barcelona cannot win unless Yamal plays</p>
+    <div class="stack" style="justify-items:start">
+      <p class="fx md" data-h="1">¬<i class="h">y</i> → ¬<i class="c">w</i></p>
+      <p class="fx md" data-s="1"><i class="h">w</i> → <i class="c">y</i></p>
+    </div>
+  </div>
+  <p class="note" data-s="1">contrapositive</p>
+</section>
+
+<!-- 11 Q7(i) -->
+<section class="slide">
+  <div class="leg"><span><i>p</i>: you visit the amusement park</span><span><i>z</i>: you visit the zoo</span></div>
+  <div class="tag">Spring 2025 mid · Q1(b)</div>
+  <p class="say">You can <span class="kw" data-k="1:lit">either</span> visit the amusement park <span class="kw" data-k="1:lit">or</span> the zoo, <span class="kw" data-k="1:lit">but</span> you <span class="kw" data-k="1:lit">cannot</span> visit <span class="kw" data-k="1:lit">both</span> of the places.</p>
+  <div class="cards">
+    <div class="card" data-s="2" style="--d:0" data-k="3:yes"><span class="t">park only</span><span class="v" data-s="3">✓</span></div>
+    <div class="card" data-s="2" style="--d:1" data-k="3:yes"><span class="t">zoo only</span><span class="v" data-s="3" style="--d:1">✓</span></div>
+    <div class="card" data-s="2" style="--d:2" data-k="3:no"><span class="t">both</span><span class="v" data-s="3" style="--d:2">✗</span></div>
+    <div class="card" data-s="2" style="--d:3" data-k="3:no"><span class="t">neither</span><span class="v" data-s="3" style="--d:3">✗</span></div>
+  </div>
+  <p class="fx w" data-s="4"><i>p</i> ⊕ <i>z</i></p>
+</section>
+
+<!-- 12 Q7(ii) unless, in layers -->
+<section class="slide">
+  <div class="leg"><span class="h"><i>p</i>: you visit the amusement park</span><span class="c"><i>z</i>: you visit the zoo</span><span class="c"><i>v</i>: you enjoy your vacation</span></div>
+  <div class="tag">Spring 2025 mid · Q1(b)</div>
+  <p class="say"><span data-k="2:c">You cannot enjoy your vacation if you do not visit the zoo</span>, <span class="kw" data-k="1:lit">unless</span> <span data-k="2:h">you go to the amusement park</span>.</p>
+  <p class="fx sm" data-s="3"><i class="c">A</i> unless <i class="h">B</i> &nbsp;=&nbsp; ¬<i class="h">B</i> → <i class="c">A</i></p>
+  <div class="row" style="gap:80px">
+    <p class="fx sm" data-s="4"><i class="c">A</i> : ¬<i>z</i> → ¬<i>v</i></p>
+    <p class="fx sm" data-s="4" style="--d:3"><i class="h">B</i> : <i>p</i></p>
+  </div>
+  <p class="fx w" data-s="5">¬<i class="h">p</i> → <span class="c">(¬<i>z</i> → ¬<i>v</i>)</span></p>
+  <p class="fx sm" data-s="6"><span class="muted">≡</span> &nbsp;<i>v</i> → (<i>p</i> ∨ <i>z</i>)</p>
+</section>
+
+<!-- 13 Q7(ii) check -->
+<section class="slide">
+  <div class="tag">Spring 2025 mid · Q1(b)</div>
+  <table class="tt" style="font-size:36px">
+    <tr><th><i>p</i></th><th><i>z</i></th><th><i>v</i></th><th class="sep">¬<i>p</i> → (¬<i>z</i> → ¬<i>v</i>)</th><th></th></tr>
+    <tr data-k="2:fade"><td>T</td><td>T</td><td>T</td><td class="sep r" data-s="1" style="--d:0">T</td><td class="lab"></td></tr>
+    <tr data-k="2:fade"><td>T</td><td>T</td><td>F</td><td class="sep r" data-s="1" style="--d:1">T</td><td class="lab"></td></tr>
+    <tr data-k="2:fade"><td>T</td><td>F</td><td>T</td><td class="sep r" data-s="1" style="--d:2">T</td><td class="lab"></td></tr>
+    <tr data-k="2:fade"><td>T</td><td>F</td><td>F</td><td class="sep r" data-s="1" style="--d:3">T</td><td class="lab"></td></tr>
+    <tr data-k="2:fade"><td>F</td><td>T</td><td>T</td><td class="sep r" data-s="1" style="--d:4">T</td><td class="lab"></td></tr>
+    <tr data-k="2:fade"><td>F</td><td>T</td><td>F</td><td class="sep r" data-s="1" style="--d:5">T</td><td class="lab"></td></tr>
+    <tr data-k="2:bad"><td>F</td><td>F</td><td>T</td><td class="sep f" data-s="1" style="--d:6">F</td><td class="lab" data-s="3">no park, no zoo, still enjoyed</td></tr>
+    <tr data-k="2:fade"><td>F</td><td>F</td><td>F</td><td class="sep r" data-s="1" style="--d:7">T</td><td class="lab"></td></tr>
+  </table>
+</section>
+
+<!-- 14 Q10(i) -->
+<section class="slide">
+  <div class="leg"><span><i>p</i>: the museum is open</span><span class="h"><i>r</i>: the exhibition is crowded</span><span class="c"><i>q</i>: visitors need a ticket</span></div>
+  <div class="tag">Summer 2026 mid · Q1(a)</div>
+  <p class="say">The museum is open, <span class="kw" data-k="1:lit">but</span> <span data-k="3:c">visitors do not need a ticket</span> <span class="kw" data-k="3:lit">unless</span> <span data-k="3:h">the exhibition is crowded</span>.</p>
+  <div class="stack">
+    <p class="fx" data-s="2" data-h="4"><i>p</i> ∧ ( <span class="muted">…</span> )</p>
+    <p class="fx" data-s="4"><i>p</i> ∧ (¬<i class="h">r</i> → ¬<i class="c">q</i>)</p>
+  </div>
+  <p class="fx sm" data-s="5"><span class="muted">≡</span> &nbsp;<i>p</i> ∧ (<i>q</i> → <i>r</i>)</p>
+</section>
+
+<!-- 15 Q10(i) check -->
+<section class="slide">
+  <div class="tag">Summer 2026 mid · Q1(a)</div>
+  <table class="tt">
+    <tr><th><i>p</i></th><th><i>r</i></th><th><i>q</i></th><th class="sep"><i>p</i> ∧ (¬<i>r</i> → ¬<i>q</i>)</th><th></th></tr>
+    <tr data-s="1" data-k="1:bad"><td>T</td><td>F</td><td>T</td><td class="sep f">F</td><td class="lab">quiet day, ticket needed</td></tr>
+    <tr data-s="2" data-k="2:key"><td>T</td><td>T</td><td>F</td><td class="sep r">T</td><td class="lab">crowded, free entry</td></tr>
+    <tr data-s="3"><td>T</td><td>T</td><td>T</td><td class="sep r">T</td><td class="lab">crowded, ticket needed</td></tr>
+    <tr data-s="4" data-k="4:bad"><td>F</td><td>T</td><td>F</td><td class="sep f">F</td><td class="lab">museum closed</td></tr>
+  </table>
+</section>
+
+<!-- 16 Q10(ii) -->
+<section class="slide">
+  <div class="leg"><span class="h"><i>p</i>: the museum is open</span><span class="c"><i>r</i>: the exhibition is crowded</span></div>
+  <div class="tag">Summer 2026 mid · Q1(a)</div>
+  <p class="say"><span data-k="2:c">The exhibition is not crowded</span> <span class="kw" data-k="1:lit">whenever</span> <span data-k="2:h">the museum is closed</span>.</p>
+  <p class="fx w" data-s="3">¬<i class="h">p</i> → ¬<i class="c">r</i></p>
+  <div class="col" data-s="4">
+    <p class="fx sm"><span class="muted">≡</span> &nbsp;<i class="c">r</i> → <i class="h">p</i></p>
+    <p class="say muted sm">If the exhibition is crowded, the museum is open.</p>
+  </div>
+</section>
+
+<!-- 17 keyword board -->
+<section class="slide">
+  <table class="board">
+    <tr data-s="1"><td>neither <i>A</i> nor <i>B</i></td><td>¬<i>A</i> ∧ ¬<i>B</i></td></tr>
+    <tr data-s="2"><td>for <i>B</i>, <i>A</i> must happen</td><td><i class="h">B</i> → <i class="c">A</i></td></tr>
+    <tr data-s="3"><td><i>A</i> but <i>B</i></td><td><i>A</i> ∧ <i>B</i></td></tr>
+    <tr data-s="4"><td>either only <i>A</i> or <i>B</i></td><td><i>A</i> ⊕ <i>B</i></td></tr>
+    <tr data-s="5"><td><i>A</i> unless <i>B</i></td><td>¬<i class="h">B</i> → <i class="c">A</i></td></tr>
+    <tr data-s="6"><td><i>A</i> whenever <i>B</i></td><td><i class="h">B</i> → <i class="c">A</i></td></tr>
+    <tr data-s="7"><td><i>A</i> only if <i>B</i></td><td><i class="h">A</i> → <i class="c">B</i></td></tr>
+  </table>
+</section>
+
+<!-- 18 chapter -->
+<section class="slide">
+  <h2 class="chap">Converse and contrapositive</h2>
+  <div class="routine">
+    <span data-s="1" style="--d:0">Rewrite</span><span class="ar" data-s="1" style="--d:1">→</span>
+    <span data-s="1" style="--d:2">Symbols</span><span class="ar" data-s="1" style="--d:3">→</span>
+    <span data-s="1" style="--d:4">Swap or negate</span>
+  </div>
+</section>
+
+<!-- 19 Q12 master table -->
+<section class="slide">
+  <div class="leg"><span class="h"><i>s</i>: he studies hard</span><span class="c"><i>p</i>: he passes the exam</span></div>
+  <div class="tag">Spring 2020 mid · Q3(c)</div>
+  <p class="say"><span data-k="2:c">He will pass the exam</span> <span class="kw" data-k="1:lit">if</span> <span data-k="2:h">he studies hard</span>.</p>
+  <table class="tt" data-s="3">
+    <tr><th><i class="h">s</i></th><th><i class="c">p</i></th>
+      <th class="sep"><small>original</small><i>s</i> → <i>p</i></th>
+      <th><small>converse</small><i>p</i> → <i>s</i></th>
+      <th><small>inverse</small>¬<i>s</i> → ¬<i>p</i></th>
+      <th><small>contrapositive</small>¬<i>p</i> → ¬<i>s</i></th></tr>
+    <tr><td>T</td><td>T</td><td class="sep r" data-s="4">T</td><td class="r" data-s="5">T</td><td class="r" data-s="6">T</td><td class="r" data-s="7">T</td></tr>
+    <tr><td>T</td><td>F</td><td class="sep f" data-s="4" data-k="8:hit" style="--d:1">F</td><td class="r" data-s="5" style="--d:1">T</td><td class="r" data-s="6" style="--d:1">T</td><td class="f" data-s="7" data-k="8:hit" style="--d:1">F</td></tr>
+    <tr><td>F</td><td>T</td><td class="sep r" data-s="4" style="--d:2">T</td><td class="f" data-s="5" data-k="9:hit2" style="--d:2">F</td><td class="f" data-s="6" data-k="9:hit2" style="--d:2">F</td><td class="r" data-s="7" style="--d:2">T</td></tr>
+    <tr><td>F</td><td>F</td><td class="sep r" data-s="4" style="--d:3">T</td><td class="r" data-s="5" style="--d:3">T</td><td class="r" data-s="6" style="--d:3">T</td><td class="r" data-s="7" style="--d:3">T</td></tr>
+  </table>
+</section>
+
+<!-- 20 negating "but" -->
+<section class="slide">
+  <div class="leg"><span><i>p</i>: valid password</span><span><i>r</i>: paid the fee</span></div>
+  <p class="say">not a valid password <span class="kw" data-k="1:lit">but</span> paid the fee</p>
+  <div class="col" style="gap:14px">
+    <p class="fx md w" data-s="1">¬<i>p</i> ∧ <i>r</i></p>
+    <p class="fx md w" data-s="2">¬(¬<i>p</i> ∧ <i>r</i>)</p>
+    <p class="fx md w" data-s="3">¬¬<i>p</i> <span style="color:var(--bad)">∨</span> ¬<i>r</i></p>
+    <p class="fx md w" data-s="4"><i>p</i> ∨ ¬<i>r</i></p>
+  </div>
+</section>
+
+<!-- 21 chapter -->
+<section class="slide">
+  <h2 class="chap">Past mid questions</h2>
+</section>
+
+<!-- 22 Q13 -->
+<section class="slide">
+  <div class="leg"><span class="h"><i>l</i>: they have a lot on their plate</span><span class="c"><i>s</i>: people feel stressed</span></div>
+  <div class="tag">Fall 2021 mid · Q1(a)</div>
+  <p class="say"><span data-k="1:c">People feel stressed</span> <span class="kw" data-k="1:lit">when</span> <span data-k="1:h">they have a lot on their plate</span>.</p>
+  <p class="fx w" data-s="2"><i class="h">l</i> → <i class="c">s</i></p>
+  <div class="ans">
+    <span class="nm">inverse</span><span class="fx" data-s="3">¬<i>l</i> → ¬<i>s</i></span><span class="en" data-s="3">If people do not have a lot on their plate, they do not feel stressed.</span>
+    <span class="nm">converse</span><span class="fx" data-s="4"><i>s</i> → <i>l</i></span><span class="en" data-s="4">If people feel stressed, they have a lot on their plate.</span>
+    <span class="nm">contrapositive</span><span class="fx" data-s="5">¬<i>s</i> → ¬<i>l</i></span><span class="en" data-s="5">If people do not feel stressed, they do not have a lot on their plate.</span>
+  </div>
+</section>
+
+<!-- 23 Q17 -->
+<section class="slide">
+  <div class="leg"><span class="h"><i>h</i>: you work hard</span><span class="c"><i>s</i>: you succeed</span></div>
+  <div class="tag">Spring 2024 mid · Q1(a)</div>
+  <p class="say"><span data-k="1:h">Your hard work</span> is <span class="kw" data-k="1:lit">sufficient</span> for <span data-k="1:c">your success</span>.</p>
+  <p class="fx w" data-s="2"><i class="h">h</i> → <i class="c">s</i></p>
+  <div class="ans">
+    <span class="nm">contrapositive</span><span class="fx" data-s="3">¬<i>s</i> → ¬<i>h</i></span><span class="en" data-s="3">If you do not succeed, you did not work hard.</span>
+    <span class="nm">converse</span><span class="fx" data-s="4"><i>s</i> → <i>h</i></span><span class="en" data-s="4">If you succeed, you worked hard.</span>
+    <span class="nm">inverse</span><span class="fx" data-s="5">¬<i>h</i> → ¬<i>s</i></span><span class="en" data-s="5">If you do not work hard, you will not succeed.</span>
+  </div>
+</section>
+
+<!-- 24 Q14 -->
+<section class="slide">
+  <div class="leg"><span class="h"><i>q</i>: I buy a ticket</span><span class="c"><i>p</i>: my team qualifies for the final</span></div>
+  <div class="tag">Spring 2022 mid · Q1(a)</div>
+  <p class="say"><span data-k="1:c">My favorite football team qualifies for final</span> <span class="kw" data-k="1:lit">whenever</span> <span data-k="1:h">I buy a ticket</span>.</p>
+  <p class="fx w" data-s="2"><i class="h">q</i> → <i class="c">p</i></p>
+  <div class="ans">
+    <span class="nm">inverse</span><span class="fx" data-s="3">¬<i>q</i> → ¬<i>p</i></span><span class="en" data-s="3">If I do not buy a ticket, my team does not qualify for the final.</span>
+    <span class="nm">contrapositive</span><span class="fx" data-s="4">¬<i>p</i> → ¬<i>q</i></span><span class="en" data-s="4">If my team does not qualify for the final, I did not buy a ticket.</span>
+  </div>
+</section>
+
+<!-- 25 Q16 -->
+<section class="slide">
+  <div class="leg"><span class="h"><i>p</i>: the user enters a valid password</span><span class="h"><i>r</i>: the user has paid the fee</span><span class="c"><i>q</i>: access is granted</span></div>
+  <div class="tag">Summer 2023 mid · Q1(a)</div>
+  <p class="say sm">If <span data-k="1:h">the user has not entered a valid password <span class="kw" data-k="1:lit">but</span> has paid the subscription fee</span>, then <span data-k="1:c">the access is granted</span>.</p>
+  <p class="fx w" data-s="2"><span class="h">(¬<i>p</i> ∧ <i>r</i>)</span> → <i class="c">q</i></p>
+  <div class="ans">
+    <span class="nm">contrapositive</span><span class="fx" data-s="3">¬<i>q</i> → ¬(¬<i>p</i> ∧ <i>r</i>)</span><span class="en"></span>
+    <span class="nm"></span><span class="fx" data-s="4"><span class="muted">≡</span> ¬<i>q</i> → (<i>p</i> ∨ ¬<i>r</i>)</span><span class="en" data-s="5">If access is not granted, the user entered a valid password or did not pay the fee.</span>
+  </div>
+</section>
+
+<!-- 26 Q16 check -->
+<section class="slide">
+  <div class="tag">Summer 2023 mid · Q1(a)</div>
+  <table class="tt" style="font-size:36px">
+    <tr><th><i>p</i></th><th><i>q</i></th><th><i>r</i></th><th class="sep">(¬<i>p</i> ∧ <i>r</i>) → <i>q</i></th><th class="sep">¬<i>q</i> → (<i>p</i> ∨ ¬<i>r</i>)</th></tr>
+    <tr data-k="3:fade"><td>T</td><td>T</td><td>T</td><td class="sep r" data-s="1" style="--d:0">T</td><td class="sep r" data-s="2" style="--d:0">T</td></tr>
+    <tr data-k="3:fade"><td>T</td><td>T</td><td>F</td><td class="sep r" data-s="1" style="--d:1">T</td><td class="sep r" data-s="2" style="--d:1">T</td></tr>
+    <tr data-k="3:fade"><td>T</td><td>F</td><td>T</td><td class="sep r" data-s="1" style="--d:2">T</td><td class="sep r" data-s="2" style="--d:2">T</td></tr>
+    <tr data-k="3:fade"><td>T</td><td>F</td><td>F</td><td class="sep r" data-s="1" style="--d:3">T</td><td class="sep r" data-s="2" style="--d:3">T</td></tr>
+    <tr data-k="3:fade"><td>F</td><td>T</td><td>T</td><td class="sep r" data-s="1" style="--d:4">T</td><td class="sep r" data-s="2" style="--d:4">T</td></tr>
+    <tr data-k="3:fade"><td>F</td><td>T</td><td>F</td><td class="sep r" data-s="1" style="--d:5">T</td><td class="sep r" data-s="2" style="--d:5">T</td></tr>
+    <tr data-k="3:bad"><td>F</td><td>F</td><td>T</td><td class="sep f" data-s="1" style="--d:6">F</td><td class="sep f" data-s="2" style="--d:6">F</td></tr>
+    <tr data-k="3:fade"><td>F</td><td>F</td><td>F</td><td class="sep r" data-s="1" style="--d:7">T</td><td class="sep r" data-s="2" style="--d:7">T</td></tr>
+  </table>
+</section>
+
+<!-- 27 Q18 -->
+<section class="slide">
+  <div class="leg"><span class="h"><i>p</i>: Carlsen does not make mistakes</span><span class="h"><i>q</i>: Carlsen loses his queen</span><span class="c"><i>r</i>: Vladimir wins the match</span><span class="c"><i>s</i>: Vladimir retains his title</span></div>
+  <div class="tag">Summer 2024 mid · Q1(b)</div>
+  <p class="say sm">If <span data-k="1:h">Carlsen makes a mistake and loses his queen</span>, then <span data-k="1:c">Vladimir will win the chess match and retain his title</span>.</p>
+  <p class="fx w" data-s="2"><span class="h">(¬<i>p</i> ∧ <i>q</i>)</span> → <span class="c">(<i>r</i> ∧ <i>s</i>)</span></p>
+  <div class="ans">
+    <span class="nm">contrapositive</span><span class="fx" data-s="3">¬(<i>r</i> ∧ <i>s</i>) → ¬(¬<i>p</i> ∧ <i>q</i>)</span><span class="en"></span>
+    <span class="nm"></span><span class="fx" data-s="4"><span class="muted">≡</span> (¬<i>r</i> ∨ ¬<i>s</i>) → (<i>p</i> ∨ ¬<i>q</i>)</span><span class="en" data-s="5">If Vladimir does not win or does not keep his title, Carlsen made no mistake or did not lose his queen.</span>
+  </div>
+</section>
+
+<!-- 28 Q24 -->
+<section class="slide">
+  <div class="leg"><span class="h"><i>p</i>: the integer is prime</span><span class="c"><i>n</i>: it has no positive divisors other than 1 and itself</span></div>
+  <div class="tag">Summer 2026 mid · Q1(b)</div>
+  <p class="say sm"><span data-k="1:h">An integer greater than 1 is prime</span> <span class="kw" data-k="1:lit">only if</span> <span data-k="1:c">it has no positive divisors other than 1 and itself</span>.</p>
+  <p class="fx w" data-s="2"><i class="h">p</i> → <i class="c">n</i></p>
+  <div class="ans">
+    <span class="nm">contrapositive</span><span class="fx" data-s="3">¬<i>n</i> → ¬<i>p</i></span><span class="en" data-s="3">If it has a positive divisor other than 1 and itself, it is not prime.</span>
+    <span class="nm">converse</span><span class="fx" data-s="4"><i>n</i> → <i>p</i></span><span class="en" data-s="4">If it has no positive divisors other than 1 and itself, it is prime.</span>
+  </div>
+  <p class="note" data-s="5">The converse is true here only because this is the definition of prime.</p>
+</section>
+
+<!-- 29 exit ticket -->
+<section class="slide">
+  <p class="say big">“You can’t get a refund unless you have the receipt.”</p>
+  <div class="blanks"><span>symbols</span><span>converse</span><span>contrapositive</span></div>
+</section>
+
+<!-- 30 exit answers -->
+<section class="slide">
+  <div class="leg"><span class="h"><i>c</i>: you have the receipt</span><span class="c"><i>r</i>: you get a refund</span></div>
+  <p class="say"><span class="c">You can’t get a refund</span> <span class="kw lit">unless</span> <span class="h">you have the receipt</span>.</p>
+  <p class="fx w" data-s="1">¬<i class="h">c</i> → ¬<i class="c">r</i></p>
+  <div class="ans">
+    <span class="nm">converse</span><span class="fx" data-s="2">¬<i>r</i> → ¬<i>c</i></span><span class="en" data-s="2">If you don’t get a refund, you don’t have the receipt.</span>
+    <span class="nm">contrapositive</span><span class="fx" data-s="3"><i>r</i> → <i>c</i></span><span class="en" data-s="3">If you get a refund, you had the receipt.</span>
+  </div>
+</section>
+
+<!-- 31 homework -->
+<section class="slide">
+  <h2 class="chap">Practice sheet, section 2</h2>
+  <p class="fx md">15 · 19 · 20 · 22 · 23</p>
+</section>
+
+</div>
+<div id="bar"></div>
+<div class="num" id="num"></div>
+
+<script>
+(function(){
+  var stage=document.getElementById('stage');
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var bar=document.getElementById('bar'), num=document.getElementById('num');
+  var si=0, st=0;
+
+  function pairs(el){
+    return (el.getAttribute('data-k')||'').split(';').filter(Boolean).map(function(p){
+      var i=p.indexOf(':'); return {n:+p.slice(0,i), cls:p.slice(i+1).trim().split(/\s+/)};
+    });
+  }
+  var max=slides.map(function(s){
+    var m=0;
+    s.querySelectorAll('[data-s],[data-h],[data-k]').forEach(function(el){
+      if(el.hasAttribute('data-s')) m=Math.max(m,+el.getAttribute('data-s'));
+      if(el.hasAttribute('data-h')) m=Math.max(m,+el.getAttribute('data-h'));
+      pairs(el).forEach(function(p){ m=Math.max(m,p.n); });
+    });
+    return m;
+  });
+
+  function render(){
+    slides.forEach(function(s,i){ s.classList.toggle('cur', i===si); });
+    var s=slides[si];
+    s.querySelectorAll('[data-s]').forEach(function(el){ el.classList.toggle('on', st>=+el.getAttribute('data-s')); });
+    s.querySelectorAll('[data-h]').forEach(function(el){ el.classList.toggle('off', st>=+el.getAttribute('data-h')); });
+    s.querySelectorAll('[data-k]').forEach(function(el){
+      var want={};
+      pairs(el).forEach(function(p){ p.cls.forEach(function(c){ want[c]=want[c]||st>=p.n; }); });
+      Object.keys(want).forEach(function(c){ el.classList.toggle(c, want[c]); });
+    });
+    bar.style.width=((si+1)/slides.length*100)+'%';
+    num.textContent=si+1;
+    try{ history.replaceState(null,'','#s'+(si+1)); }catch(e){}
+  }
+  function go(i,toEnd){
+    si=Math.max(0,Math.min(slides.length-1,i));
+    st=toEnd?max[si]:0; render();
+  }
+  function next(){ if(st<max[si]){ st++; render(); } else if(si<slides.length-1){ go(si+1,false); } }
+  function prev(){ if(st>0){ st--; render(); } else if(si>0){ go(si-1,true); } }
+
+  function fit(){
+    var k=Math.min(innerWidth/1600, innerHeight/900);
+    stage.style.setProperty('--k',k);
+  }
+  addEventListener('resize',fit); fit();
+
+  addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    var k=e.key;
+    if(k==='ArrowRight'||k==='ArrowDown'||k==='PageDown'||k===' '||k==='Enter'){ e.preventDefault(); next(); }
+    else if(k==='ArrowLeft'||k==='ArrowUp'||k==='PageUp'||k==='Backspace'){ e.preventDefault(); prev(); }
+    else if(k==='Home'){ go(0,false); }
+    else if(k==='End'){ go(slides.length-1,true); }
+    else if(k==='f'||k==='F'){
+      var d=document.documentElement;
+      try{
+        if(!document.fullscreenElement){ var r=d.requestFullscreen&&d.requestFullscreen(); if(r&&r.catch) r.catch(function(){}); }
+        else { var x=document.exitFullscreen(); if(x&&x.catch) x.catch(function(){}); }
+      }catch(err){}
+    }
+  });
+  addEventListener('click',function(e){
+    if(e.button!==0) return;
+    if(e.clientX < innerWidth*0.25) prev(); else next();
+  });
+
+  var m=/^#s(\d+)$/.exec(location.hash||'');
+  go(m?(+m[1]-1):0,false);
+})();
+</script>
