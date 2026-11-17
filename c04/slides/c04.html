@@ -239,92 +239,6 @@
 </section>
 <section id="the-experiment" class="slide level2 b4" data-scene="experiment">
 <h2>The experiment</h2>
-</section>
-<section id="questions-on-bengios-model" class="slide level2 qz qz1">
-<h2>Questions on Bengio’s model</h2>
-<ol class="qz-list">
-  <li><span class="qz-q">A window has 5 words, and each row of C has 50 numbers. How many numbers does <span class="math inline">x</span> have?</span><span class="qz-a fragment" data-fragment-index="1">250</span></li>
-  <li><span class="qz-q">Three words have the scores 2, 0 and −1. What probability does the softmax give the first word?</span><span class="qz-a fragment" data-fragment-index="2"><span class="math inline">e^{2} / (e^{2} + e^{0} + e^{-1}) = 0.84</span></span></li>
-  <li><span class="qz-q">The network gives the true next word the probability 0.25. What is the loss?</span><span class="qz-a fragment" data-fragment-index="3"><span class="math inline">-\log 0.25 = 1.39</span></span></li>
-  <li><span class="qz-q">After one training step, which rows of C have changed?</span><span class="qz-a fragment" data-fragment-index="4">The rows of the four context words</span></li>
-</ol>
-<style>
-/* both quiz slides (qz1 and qz2): the questions stand from the start, and each build shows the next answer (Blue 60) */
-.reveal section.qz .qz-list { position: absolute; left: 64px; top: 120px; width: 1152px; margin: 0; padding: 0; list-style: none; counter-reset: qz; }
-.reveal section.qz .qz-list li { display: grid; grid-template-columns: 48px 640px 1fr; column-gap: 24px; align-items: baseline; margin: 0; padding: 14px 0;
-  border-bottom: var(--rule) solid var(--border-subtle); font-size: 28px; line-height: 36px; counter-increment: qz; }
-.reveal section.qz .qz-list li:first-child { border-top: var(--rule) solid var(--border-subtle); }
-.reveal section.qz .qz-list li::before { content: counter(qz); color: var(--text-helper); font-variant-numeric: tabular-nums; }
-.reveal section.qz .qz-q { color: var(--text-primary); text-wrap: pretty; }
-.reveal section.qz .qz-a { color: var(--interactive); font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; }
-/* a formula never breaks across two lines */
-.reveal section.qz .katex { font-size: 1.1em; white-space: nowrap; }
-</style>
-</section>
-<section id="part-3-word2vec" class="slide level2 divider dark d3" data-background-color="#161616" data-section="Word2vec">
-<h2>Part 3: Word2vec</h2>
-<p class="lead">A smaller model learns only the word vectors, from pairs of words.</p>
-</section>
-<section id="from-bengio-to-word2vec" class="slide level2 b4" data-scene="bridge" data-section="Word2vec">
-<h2>From Bengio to word2vec</h2>
-</section>
-<section id="pairs-of-words" class="slide level2 b4" data-scene="pairs">
-<h2>Pairs of words</h2>
-</section>
-<section id="two-tables" class="slide level2 b4" data-scene="tables">
-<h2>Two tables</h2>
-</section>
-<section id="neighbor-pairs" class="slide level2 b4" data-scene="scan">
-<h2>Neighbor pairs</h2>
-</section>
-<section id="noise-pairs" class="slide level2 b4" data-scene="noise">
-<h2>Noise pairs</h2>
-</section>
-<section id="from-words-to-numbers" class="slide level2 b4" data-scene="dots">
-<h2>From words to numbers</h2>
-</section>
-<section id="how-wrong-is-a-pair" class="slide level2 b4" data-scene="error">
-<h2>How wrong is a pair?</h2>
-</section>
-<section id="the-update" class="slide level2 b4" data-scene="update">
-<h2>The update</h2>
-</section>
-<section id="how-many-steps" class="slide level2 b4" data-scene="steps">
-<h2>How many steps?</h2>
-</section>
-<section id="when-to-stop" class="slide level2 b4" data-scene="stop">
-<h2>When to stop</h2>
-</section>
-<section id="what-we-keep" class="slide level2 b4" data-scene="keep">
-<h2>What we keep</h2>
-</section>
-<section id="cbow" class="slide level2 b4" data-scene="cbow">
-<h2>CBOW</h2>
-</section>
-<section id="questions-on-word2vec" class="slide level2 qz qz2">
-<h2>Questions on word2vec</h2>
-<ol class="qz-list">
-  <li><span class="qz-q">In “at night the cat will sleep on the bed”, with range 2, how many neighbor pairs has the target night?</span><span class="qz-a fragment" data-fragment-index="1">3</span></li>
-  <li><span class="qz-q">The target has <span class="math inline">w = (1, 2)</span> and a neighbor has <span class="math inline">c = (0.5, -1)</span>. What are <span class="math inline">c \cdot w</span> and its sigmoid?</span><span class="qz-a fragment" data-fragment-index="2"><span class="math inline">c \cdot w = -1.5</span>, <span class="math inline">\sigma(-1.5) = 0.182</span></span></li>
-  <li><span class="qz-q">What is the error of this neighbor pair, and which way does <span class="math inline">c</span> move?</span><span class="qz-a fragment" data-fragment-index="3"><span class="math inline">1 - 0.182 = 0.818</span>, toward <span class="math inline">w</span></span></li>
-  <li><span class="qz-q">What is the loss of this pair?</span><span class="qz-a fragment" data-fragment-index="4"><span class="math inline">-\log 0.182 = 1.70</span></span></li>
-</ol>
-</section>
-<section id="part-4-why-word2vec-mattered" class="slide level2 divider dark d4" data-background-color="#161616" data-section="Why word2vec mattered">
-<h2>Part 4: Why word2vec mattered</h2>
-<p class="lead">What changed once word vectors came from billions of words.</p>
-</section>
-<section id="thousands-of-times-more-text" class="slide level2 b4" data-scene="scale" data-section="Why word2vec mattered">
-<h2>Thousands of times more text</h2>
-</section>
-<section id="arithmetic-on-words" class="slide level2 b4" data-scene="analogy">
-<h2>Arithmetic on words</h2>
-</section>
-<section id="transfer-learning" class="slide level2 b4" data-scene="transfer">
-<h2>Transfer learning</h2>
-</section>
-<section id="what-we-learned" class="slide level2 b4" data-scene="recap" data-section="Summary">
-<h2>What we learned</h2>
 <!-- The board: loaded here, in the last board slide, so that every slide is in the page and Reveal.initialize
      has not run yet when board.js adds the fragments. -->
 <!-- GSAP, MathJax and JetBrains Mono are kept in board/lib/ so that the boards run without internet (board/lib/LICENSES.md);
@@ -354,24 +268,42 @@ window.MathJax = {
 <script src="board/lib/tex-svg-full.js"></script>
 <script src="board/board.js"></script>
 </section>
+<section id="questions-on-bengios-model" class="slide level2 qz qz1">
+<h2>Questions on Bengio’s model</h2>
+<ol class="qz-list">
+  <li><span class="qz-q">A window has 5 words, and each row of C has 50 numbers. How many numbers does <span class="math inline">x</span> have?</span><span class="qz-a fragment" data-fragment-index="1">250</span></li>
+  <li><span class="qz-q">Three words have the scores 2, 0 and −1. What probability does the softmax give the first word?</span><span class="qz-a fragment" data-fragment-index="2"><span class="math inline">e^{2} / (e^{2} + e^{0} + e^{-1}) = 0.84</span></span></li>
+  <li><span class="qz-q">The network gives the true next word the probability 0.25. What is the loss?</span><span class="qz-a fragment" data-fragment-index="3"><span class="math inline">-\log 0.25 = 1.39</span></span></li>
+  <li><span class="qz-q">After one training step, which rows of C have changed?</span><span class="qz-a fragment" data-fragment-index="4">The rows of the four context words</span></li>
+</ol>
+<style>
+/* the quiz slide: the questions stand from the start, and each build shows the next answer (Blue 60) */
+.reveal section.qz .qz-list { position: absolute; left: 64px; top: 120px; width: 1152px; margin: 0; padding: 0; list-style: none; counter-reset: qz; }
+.reveal section.qz .qz-list li { display: grid; grid-template-columns: 48px 640px 1fr; column-gap: 24px; align-items: baseline; margin: 0; padding: 14px 0;
+  border-bottom: var(--rule) solid var(--border-subtle); font-size: 28px; line-height: 36px; counter-increment: qz; }
+.reveal section.qz .qz-list li:first-child { border-top: var(--rule) solid var(--border-subtle); }
+.reveal section.qz .qz-list li::before { content: counter(qz); color: var(--text-helper); font-variant-numeric: tabular-nums; }
+.reveal section.qz .qz-q { color: var(--text-primary); text-wrap: pretty; }
+.reveal section.qz .qz-a { color: var(--interactive); font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; }
+/* a formula never breaks across two lines */
+.reveal section.qz .katex { font-size: 1.1em; white-space: nowrap; }
+</style>
+</section>
 <section id="references" class="slide level2 s45" data-section="References">
 <h2>References</h2>
 <div class="g refs">
 <div class="s8">
 <h4>Textbook</h4>
-<p>Jurafsky, D. and Martin, J. H. (2026). <em>Speech and Language Processing</em>, 3rd&nbsp;ed.&nbsp;draft, August 2026. <span class="so">Chapter 6, section 6.5, pp. 163–168 (the feedforward neural language model, eq. 6.24, fig. 6.14). Chapter 5, section 5.5, pp. 136–142 (word2vec: skip-gram with negative sampling, eqs. 5.15, 5.16 and 5.21); section 5.7, pp. 143–145 (analogies).</span></p>
+<p>Jurafsky, D. and Martin, J. H. (2026). <em>Speech and Language Processing</em>, 3rd&nbsp;ed.&nbsp;draft, August 2026. <span class="so">Chapter 6, section 6.5, pp. 163–168 (the feedforward neural language model, eq. 6.24, fig. 6.14).</span></p>
 <h4>Papers</h4>
 <p>Bengio, Y., Ducharme, R., Vincent, P. and Jauvin, C. (2003). <em>A neural probabilistic language model.</em> <span class="so">Journal of Machine Learning Research 3, 1137–1155.</span></p>
-<p>Mikolov, T., Chen, K., Corrado, G. and Dean, J. (2013). <em>Efficient estimation of word representations in vector space.</em> <span class="so">ICLR 2013 workshop, arXiv:1301.3781.</span></p>
-<p>Mikolov, T., Sutskever, I., Chen, K., Corrado, G. and Dean, J. (2013). <em>Distributed representations of words and phrases and their compositionality.</em> <span class="so">NIPS 26, 3111–3119.</span></p>
-<p>Mikolov, T., Yih, W. and Zweig, G. (2013). <em>Linguistic regularities in continuous space word representations.</em> <span class="so">NAACL-HLT 2013, 746–751.</span></p>
 </div>
 <div class="s8">
 <h4>Images</h4>
 <p>Yoshua Bengio in 2019: Maryse Boyce. <span class="so">CC BY 4.0, via Wikimedia Commons, File:Yoshua Bengio 2019 cropped.jpg; resized.</span></p>
 <p>The first page of Bengio et al. (2003), from the JMLR copy of the paper. <span class="so">Copyright 2003 by the authors; shown for teaching.</span></p>
 <h4>Boards</h4>
-<p>The animated boards were drawn for this class. The sizes, counts and results of Bengio’s model are those of the paper; cell values marked illustrative are made up for the picture. The word2vec example uses vectors of 2 numbers so that every step can be checked by hand.</p>
+<p>The animated boards were drawn for this class. The sizes, counts and results of Bengio’s model are those of the paper; cell values marked illustrative are made up for the picture.</p>
 </div>
 </div>
 <style>

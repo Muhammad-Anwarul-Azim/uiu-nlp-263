@@ -1,0 +1,88 @@
+/* The board of the class 4 deck inside a Carbon slide (2026-11-13, approved as specimen 2).
+   Inside the board the faces of class4-handoff/deck stay (kit/00-head.html there): STIX Two Text for words and
+   labels, JetBrains Mono for numbers and words in cells, MathJax for the maths, thick strokes. Its color roles stay,
+   in the colors of the course's Carbon theme (theme/tokens.scss):
+     ink          Gray 100   text-primary
+     sizes, notes Gray 70    text-secondary
+     given        Blue 60    interactive: the words in focus, the four context words and what comes from them
+     computed     Orange 70  topic-4: what is predicted or computed in this step (amber in the handoff deck)
+     wrong        Red 60     support-error: gradients, errors, noise words
+     good         Green 50   support-success, as the Solved lines of class 2
+   The slide around it is Carbon: the title, the line under the board, the question cards, the footer.
+   Slide 1280 x 720: title 24 to 74, board 52 to 668 (1600 x 900 units at 0.684), caption above the footer. */
+.reveal section.b4 {
+  --bg: #FFFFFF; --panel: var(--layer-01); --line: var(--mark-quiet); --faint: var(--border-subtle);
+  --fg: var(--text-primary); --dim: var(--text-secondary);
+  --blue: var(--interactive); --yellow: var(--topic-4); --red: var(--support-error); --green: var(--support-success);
+  --teal: var(--topic-6); --purple: var(--topic-1); --orange: var(--topic-4);
+  --f-text: 'STIX Two Text', Cambria, Georgia, 'Times New Roman', serif;
+  --f-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  padding-top: 24px;
+}
+.reveal section.b4 > h2 { position: relative; z-index: 1; }
+.reveal section.b4 .b4-stage { position: absolute; left: 92px; top: 52px; width: 1095px; height: 616px; display: block; overflow: visible;
+  user-select: none; -webkit-user-select: none; }
+.reveal section.b4 .b4-cap { position: absolute; left: var(--pad-side); right: var(--pad-side); bottom: 40px; margin: 0; min-height: 36px;
+  font-family: var(--sans); font-weight: var(--weight-regular); font-size: 28px; line-height: 36px; color: var(--text-primary); text-wrap: pretty; transition: opacity .2s; }
+.reveal section.b4 .b4-cap.swap { opacity: 0; }
+.reveal section.b4 .b4-cap b { font-weight: var(--weight-semibold); }
+.reveal section.b4 .b4-cap i { font-style: italic; }
+/* a Problem line is red and a Solved line green, the whole line, as in class 2 */
+.reveal section.b4 .b4-cap.b4-bad, .reveal section.b4 .b4-cap.b4-bad .b4-problem { color: var(--support-error); font-weight: var(--weight-semibold); }
+.reveal section.b4 .b4-cap.b4-good, .reveal section.b4 .b4-cap.b4-good .b4-solved { color: var(--support-success); font-weight: var(--weight-semibold); }
+.reveal section.b4 .b4-cap mjx-container { margin: 0 .08em; }
+.reveal section.b4 .b4-cap mjx-container svg path { stroke-width: 12; }
+.reveal section.b4 .b4-pz { position: absolute; right: 104px; bottom: 22px; font-family: var(--mono); font-size: var(--size-caption); line-height: 18px;
+  color: var(--text-helper); letter-spacing: 0.16px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+html.b4-paused .reveal section.b4.present .b4-pz { opacity: 1; }
+.reveal section.b4 .b4-f { display: none; }
+
+/* the question card: the question alone, large, in the middle of the slide (IBM Plex, as the rest of the deck) */
+.reveal section.b4 > h2, .reveal section.b4 .b4-stage { transition: opacity .35s; }
+.reveal section.b4 .b4-ask { position: absolute; inset: 0 0 40px; display: flex; align-items: center; justify-content: center; padding: 0 140px;
+  opacity: 0; pointer-events: none; transition: opacity .35s; }
+.reveal section.b4 .b4-ask p, .reveal section.b4 .b4-ask { font-family: var(--sans); font-weight: var(--weight-light); font-size: 56px; line-height: 68px;
+  color: var(--text-primary); text-align: center; text-wrap: balance; letter-spacing: 0; }
+.reveal section.b4 .b4-ask mjx-container svg path { stroke-width: 0; }
+.reveal section.b4.b4-asking .b4-ask { opacity: 1; }
+.reveal section.b4.b4-asking > h2, .reveal section.b4.b4-asking .b4-stage, .reveal section.b4.b4-asking .b4-cap { opacity: 0; }
+.reveal section.b4.b4-instant, .reveal section.b4.b4-instant * { transition: none !important; }
+
+/* ---------- board vocabulary (class4-handoff/deck/kit/00-head.html, #stage -> .b4-stage) ---------- */
+/* Specificity as in the handoff deck: the color roles first, then the shape rules (.ol, .fillk, ...) of equal weight,
+   which win by coming later; board text keeps no stroke, as #stage text did there. */
+.b4-stage .k-fg, .b4-cap .k-fg { --k: var(--fg); } .b4-stage .k-dim, .b4-cap .k-dim { --k: var(--dim); }
+.b4-stage .k-faint, .b4-cap .k-faint { --k: var(--faint); } .b4-stage .k-blue, .b4-cap .k-blue { --k: var(--blue); }
+.b4-stage .k-yellow, .b4-cap .k-yellow { --k: var(--yellow); } .b4-stage .k-red, .b4-cap .k-red { --k: var(--red); }
+.b4-stage .k-green, .b4-cap .k-green { --k: var(--green); } .b4-stage .k-teal, .b4-cap .k-teal { --k: var(--teal); }
+.b4-stage .k-purple, .b4-cap .k-purple { --k: var(--purple); } .b4-stage .k-orange, .b4-cap .k-orange { --k: var(--orange); }
+.b4-stage :is(.k-fg, .k-dim, .k-faint, .k-blue, .k-yellow, .k-red, .k-green, .k-teal, .k-purple, .k-orange),
+.b4-cap :is(.k-fg, .k-dim, .k-faint, .k-blue, .k-yellow, .k-red, .k-green, .k-teal, .k-purple, .k-orange) { color: var(--k); fill: var(--k); stroke: var(--k); }
+.reveal .b4-stage text { white-space: pre; stroke: none; fill: var(--k, var(--fg)); font-family: var(--f-text); font-weight: 500; }
+.reveal .b4-stage text.mono { font-family: var(--f-mono); font-weight: 500; font-variant-numeric: tabular-nums; }
+.b4-stage .tex { color: var(--k, var(--fg)); }
+.b4-stage .tex path, .b4-stage .tex rect { stroke-width: 14; }
+/* the Carbon .chip is an HTML token; on the board .chip is an SVG group */
+.b4-stage .chip { display: inline; height: auto; padding: 0; border: 0; background: none; font-size: inherit; white-space: normal; }
+.b4-stage .chip .box { fill: color-mix(in srgb, var(--k) 11%, var(--bg)); stroke: var(--k); stroke-width: 3; transition: fill .35s, stroke .35s; }
+.b4-stage .chip text { transition: fill .35s; }
+.b4-stage .arrow .ln { fill: none; stroke: var(--k); stroke-linecap: round; }
+.b4-stage .arrow .hd { fill: var(--k); stroke: none; }
+.b4-stage .plane .grid line { stroke: var(--blue); stroke-opacity: .2; stroke-width: 1.5; }
+.b4-stage .plane .grid line.axis { stroke: var(--fg); stroke-opacity: .7; stroke-width: 2.5; }
+.b4-stage .plane .frame { fill: none; stroke: var(--line); stroke-width: 2; }
+.b4-stage .mat .cell { fill: color-mix(in srgb, var(--k) 5%, var(--bg)); stroke: color-mix(in srgb, var(--k) 40%, var(--bg)); stroke-width: 1.5; transition: fill .3s; }
+.b4-stage .mat .hot .cell { fill: color-mix(in srgb, var(--k) 26%, var(--bg)); }
+.b4-stage .mat .brk { fill: none; stroke: var(--k); stroke-width: 4; stroke-linejoin: round; }
+.b4-stage .ol { fill: none; stroke: var(--k, var(--yellow)); stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
+.b4-stage .fillk { fill: var(--k); stroke: none; }
+.b4-stage .softk { fill: color-mix(in srgb, var(--k) 10%, var(--bg)); stroke: var(--k); stroke-width: 2.5; }
+.b4-stage .bar { fill: color-mix(in srgb, var(--k) 82%, var(--bg)); stroke: none; transition: fill .35s; }
+.b4-stage .sq { fill: var(--faint); stroke: none; transition: fill .3s; }
+.b4-stage .sq.lit { fill: var(--k); }
+.b4-stage .axisln { stroke: var(--dim); stroke-width: 2; fill: none; }
+.b4-stage .ctl { cursor: pointer; }
+.b4-stage .ctl .box { fill: var(--panel); stroke: var(--dim); stroke-width: 2; }
+.b4-stage .ctl.on .box { fill: color-mix(in srgb, var(--blue) 20%, var(--bg)); stroke: var(--blue); }
+.b4-stage .ctl text { fill: var(--fg); }
+.b4-stage .drag { cursor: grab; }

@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word arithmetic</title>
+<style>
+/* One 1280 x 720 slide in the deck's IBM Carbon theme (theme/tokens.scss, theme/course.scss).
+   Alone, the slide is scaled to the window. In the deck (c05.qmd loads it with ?embed), it fills
+   the top 656 px of the slide and the deck draws the footer band below. */
+@font-face { font-family: "IBM Plex Sans"; font-weight: 300; src: local("IBM Plex Sans Light"), local("IBMPlexSans-Light"), url("../../theme/fonts/IBMPlexSans-Light.otf") format("opentype"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; src: local("IBM Plex Sans"), local("IBMPlexSans"), url("../../theme/fonts/IBMPlexSans-Regular.otf") format("opentype"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 600; src: local("IBM Plex Sans SemiBold"), local("IBMPlexSans-SemiBold"), url("../../theme/fonts/IBMPlexSans-SemiBold.otf") format("opentype"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 400; src: local("IBM Plex Mono"), local("IBMPlexMono"), url("../../theme/fonts/IBMPlexMono-Regular.otf") format("opentype"); }
+
+:root {
+  --background: #ffffff; --layer-01: #f4f4f4; --border-subtle: #e0e0e0; --border-strong: #8d8d8d;
+  --text-primary: #161616; --text-secondary: #525252; --text-helper: #6f6f6f; --text-placeholder: #a8a8a8;
+  --interactive: #0f62fe; --interactive-hover: #0050e6; --highlight-subtle: #edf5ff;
+  --support-error: #da1e28; --mark-quiet: #c6c6c6;
+  --sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif; --mono: "IBM Plex Mono", Menlo, monospace;
+  --pad-top: 48px; --pad-side: 64px; --gutter: 32px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--background); overflow: hidden; }
+body { font-family: var(--sans); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+
+#stage { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; transform-origin: 0 0; font-size: 24px; line-height: 1.34; }
+body.embed #stage { height: 656px; }
+
+h2 { position: absolute; left: var(--pad-side); top: var(--pad-top); margin: 0; font-size: 42px; line-height: 50px; font-weight: 300; }
+
+/* the query: a Carbon text input */
+#q { position: absolute; left: var(--pad-side); top: 130px; width: 1152px; height: 64px; padding: 0 20px;
+     font: 400 30px var(--mono); color: var(--text-primary); background: var(--layer-01);
+     border: 0; border-bottom: 1px solid var(--border-strong); border-radius: 0; outline: none; }
+#q::placeholder { color: var(--text-placeholder); }
+#q:focus { outline: 2px solid var(--interactive); outline-offset: -2px; }
+
+/* presets: Carbon ghost buttons, then the switch */
+#bar { position: absolute; left: calc(var(--pad-side) - 12px); top: 206px; width: 1164px; display: flex; flex-wrap: wrap; align-items: center; column-gap: 4px; row-gap: 4px; }
+#bar button { font: 400 22px var(--sans); color: var(--interactive); background: none; border: 0; border-radius: 0;
+              padding: 6px 12px; cursor: pointer; }
+#bar button:hover { background: var(--layer-01); color: var(--interactive-hover); }
+#bar button.on { background: var(--highlight-subtle); }
+#bar label { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 22px; color: var(--text-secondary); cursor: pointer; padding: 6px 0; }
+#bar input { appearance: none; width: 40px; height: 22px; margin: 0; border-radius: 11px; background: var(--border-strong); position: relative; cursor: pointer; transition: background 110ms; }
+#bar input::after { content: ""; position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: left 110ms; }
+#bar input:checked { background: var(--interactive); }
+#bar input:checked::after { left: 21px; }
+
+/* the model: a Carbon content switcher, top right */
+#model { position: absolute; right: var(--pad-side); top: 56px; display: flex; border: 1px solid var(--border-strong); }
+#model button { font: 400 20px var(--sans); color: var(--text-secondary); background: none; border: 0; border-radius: 0; padding: 8px 16px; cursor: pointer; }
+#model button + button { border-left: 1px solid var(--border-strong); }
+#model button.on { background: var(--text-primary); color: #fff; }
+
+/* the nearest words */
+#out { position: absolute; left: var(--pad-side); top: 312px; width: 560px; }
+.r { display: grid; grid-template-columns: 36px 1fr 72px 150px; align-items: center; column-gap: 12px; height: 44px; border-bottom: 1px solid var(--border-subtle); }
+.r .n { font-size: 22px; color: var(--text-helper); }
+.r .w { font-size: 26px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.r .w:hover { color: var(--interactive); }
+.r .s { font: 400 22px var(--mono); text-align: right; }
+.r .b { height: 12px; background: var(--interactive); }
+.r.in .w, .r.in .s { color: var(--text-helper); }
+.r.in .b { background: var(--mark-quiet); }
+.msg { font-size: 22px; line-height: 32px; color: var(--text-secondary); padding-top: 8px; }
+.msg.bad { color: var(--support-error); }
+.msg a { color: var(--interactive); cursor: pointer; text-decoration: none; }
+
+/* the picture in two dimensions */
+#plot { position: absolute; left: 656px; top: 312px; width: 560px; height: 308px; background: var(--layer-01); }
+#plot text { font: 400 22px var(--sans); fill: var(--text-primary); }
+#plot .cap { font-size: 22px; fill: var(--text-helper); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <h2>Word arithmetic</h2>
+  <div id="model"></div>
+  <input id="q" autocomplete="off" spellcheck="false" placeholder="king − man + woman">
+  <div id="bar"></div>
+  <div id="out"></div>
+  <svg id="plot" viewBox="0 0 560 308"></svg>
+</div>
+
+<script src="vectors.js"></script>
+<script src="vectors_w2v.js?v=2"></script>
+<script>
+"use strict";
+const PRESETS = [
+  "king − man + woman",
+  "tokyo − japan + bangladesh",
+  "went − go + eat",
+  "bigger − big + small",
+  "doctor − man + woman",
+  "taka − bangladesh + japan",
+];
+const ROWS = 7;
+const EMBED = /[?&]embed/.test(location.search);
+if (EMBED) document.body.classList.add("embed");
+
+// ---- fit the 1280 x 720 slide to the window when the page is opened alone ----
+function fit() {
+  if (EMBED) return;
+  const s = Math.min(innerWidth / 1280, innerHeight / 720), st = document.getElementById("stage");
+  st.style.transform = `scale(${s})`;
+  st.style.left = (innerWidth - 1280 * s) / 2 + "px";
+  st.style.top = (innerHeight - 720 * s) / 2 + "px";
+}
+addEventListener("resize", fit); fit();
+
+// ---- the vectors: int8 values and one scale per word (build.py; vectors_w2v.js the same for word2vec) ----
+const bytes = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const MODELS = [{ name: "GloVe: 50,000 words, 100 numbers", src: window.VEC },
+                { name: "Word2vec: 40,000 words, 300 numbers", src: window.W2V }].filter(m => m.src);
+let D, N, WORDS, INDEX, Q, SCALE;
+function useModel(m) {
+  if (!m.WORDS) {
+    m.WORDS = m.src.words.split("\n"); m.INDEX = new Map(m.WORDS.map((w, i) => [w, i]));
+    m.Q = new Int8Array(bytes(m.src.q).buffer); m.SCALE = new Float32Array(bytes(m.src.scale).buffer);
+  }
+  D = m.src.dim; N = m.src.n; WORDS = m.WORDS; INDEX = m.INDEX; Q = m.Q; SCALE = m.SCALE;
+  document.querySelectorAll("#model button").forEach(b => b.classList.toggle("on", b.textContent === m.name));
+}
+document.getElementById("model").innerHTML = MODELS.length > 1 ? MODELS.map(m => `<button type="button">${m.name}</button>`).join("") : "";
+document.getElementById("model").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  useModel(MODELS.find(m => m.name === b.textContent)); run(); deckFocus();
+});
+useModel(MODELS[0]);
+
+function vec(i) {                       // the word's vector, length 1
+  const v = new Float32Array(D), s = SCALE[i];
+  for (let j = 0; j < D; j++) v[j] = Q[i * D + j] * s;
+  return v;
+}
+
+function nearest(t, k) {                // the k words with the largest cosine with t
+  let norm = 0; for (let j = 0; j < D; j++) norm += t[j] * t[j];
+  norm = Math.sqrt(norm);
+  const top = [];
+  for (let i = 0; i < N; i++) {
+    let d = 0; const o = i * D;
+    for (let j = 0; j < D; j++) d += Q[o + j] * t[j];
+    const s = d * SCALE[i] / norm;
+    if (top.length < k || s > top[top.length - 1][1]) {
+      top.push([i, s]); top.sort((a, b) => b[1] - a[1]);
+      if (top.length > k) top.pop();
+    }
+  }
+  return top;
+}
+
+// ---- close spellings for a word that is not in the vocabulary ----
+function editDistance(a, b) {
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++)
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[b.length];
+}
+function suggest(w) {
+  const c = [];
+  for (const x of WORDS) {
+    if (Math.abs(x.length - w.length) > 2) continue;
+    const d = editDistance(w, x);
+    if (d <= 2) c.push([d, x]);
+    if (c.length > 200) break;
+  }
+  return c.sort((a, b) => a[0] - b[0]).slice(0, 3).map(p => p[1]);
+}
+
+// ---- "king − man + woman" into signed words ----
+function parse(text) {
+  const toks = text.toLowerCase().replace(/[−–—]/g, "-").match(/[+-]|[^\s+-]+/g) || [];
+  const terms = []; let sign = 1;
+  for (const t of toks) {
+    if (t === "+") sign = 1;
+    else if (t === "-") sign = -1;
+    else { terms.push({ word: t, sign }); sign = 1; }
+  }
+  return terms;
+}
+
+const $ = id => document.getElementById(id);
+const q = $("q"), out = $("out"), bar = $("bar"), svg = $("plot");
+bar.innerHTML = PRESETS.map(p => `<button type="button">${p}</button>`).join("") +
+  `<label><input type="checkbox" id="showin">Show input words</label>`;
+const showin = $("showin");
+
+function run() {
+  const terms = parse(q.value);
+  [...bar.querySelectorAll("button")].forEach(b => b.classList.toggle("on", b.textContent === q.value));
+  out.innerHTML = ""; svg.innerHTML = "";
+  if (!terms.length) return;
+  const missing = terms.filter(t => !INDEX.has(t.word));
+  if (missing.length) {
+    out.innerHTML = missing.map(t => {
+      const s = suggest(t.word);
+      return `<div class="msg bad">“${t.word}” is not in the vocabulary.` +
+        (s.length ? `</div><div class="msg">Did you mean ${s.map(x => `<a data-from="${t.word}" data-to="${x}">${x}</a>`).join(", ")}?` : "") + `</div>`;
+    }).join("");
+    return;
+  }
+  const t = new Float32Array(D);
+  for (const term of terms) {
+    const v = vec(INDEX.get(term.word));
+    for (let j = 0; j < D; j++) t[j] += term.sign * v[j];
+  }
+  const inputs = new Set(terms.map(x => x.word));
+  const top = nearest(t, ROWS + inputs.size).filter(([i]) => showin.checked || !inputs.has(WORDS[i])).slice(0, ROWS);
+  out.innerHTML = top.map(([i, s], r) => {
+    const w = WORDS[i];
+    return `<div class="r${inputs.has(w) ? " in" : ""}"><span class="n">${r + 1}</span><span class="w">${w}</span>` +
+      `<span class="s">${s.toFixed(2)}</span><span class="b" style="width:${Math.max(0, s) * 150}px"></span></div>`;
+  }).join("");
+
+  // the picture: for a − b + c, the arrows b → a and c → the answer; for one word, its neighbors
+  const best = top.find(([i]) => !inputs.has(WORDS[i]));
+  const pos = terms.filter(x => x.sign > 0), neg = terms.filter(x => x.sign < 0);
+  if (terms.length === 3 && pos.length === 2 && neg.length === 1 && best)
+    plot([neg[0].word, pos[0].word, pos[1].word, WORDS[best[0]]], true);
+  else if (terms.length === 1)
+    plot([terms[0].word, ...top.slice(0, 6).map(([i]) => WORDS[i]).filter(w => w !== terms[0].word)], false);
+  else
+    plot([...terms.map(x => x.word), ...(best ? [WORDS[best[0]]] : [])], false);
+}
+
+// ---- PCA of a few words: the top two eigenvectors of their Gram matrix ----
+function pca2(vs) {
+  const k = vs.length, mean = new Float32Array(D);
+  vs.forEach(v => v.forEach((x, j) => mean[j] += x / k));
+  const X = vs.map(v => v.map((x, j) => x - mean[j]));
+  const G = X.map(a => X.map(b => a.reduce((s, x, j) => s + x * b[j], 0)));
+  const comps = [];
+  for (let c = 0; c < 2; c++) {
+    let u = Array.from({ length: k }, (_, i) => Math.sin(i + 1 + c)), lam = 0;
+    for (let it = 0; it < 300; it++) {
+      let w = G.map(row => row.reduce((s, x, j) => s + x * u[j], 0));
+      for (const p of comps) {                     // remove the earlier component
+        const d = p.u.reduce((s, x, j) => s + x * w[j], 0);
+        w = w.map((x, j) => x - d * p.u[j]);
+      }
+      lam = Math.hypot(...w);
+      if (lam < 1e-9) break;
+      u = w.map(x => x / lam);
+    }
+    comps.push({ u, lam });
+  }
+  return vs.map((_, i) => comps.map(p => p.u[i] * Math.sqrt(p.lam)));
+}
+
+function plot(ws, pairs) {
+  ws = [...new Set(ws)];
+  if (ws.length < 2) return;
+  const P = pca2(ws.map(w => vec(INDEX.get(w))));
+  const W = 560, H = 308, padX = 120, padY = 44;    // side margins leave room for labels
+  const xs = P.map(p => p[0]), ys = P.map(p => p[1]);
+  const spanX = Math.max(...xs) - Math.min(...xs) || 1, spanY = Math.max(...ys) - Math.min(...ys) || 1;
+  const k = Math.min((W - 2 * padX) / spanX, (H - 2 * padY) / spanY);   // one scale for both axes
+  const cx = (Math.max(...xs) + Math.min(...xs)) / 2, cy = (Math.max(...ys) + Math.min(...ys)) / 2;
+  const sx = x => W / 2 + (x - cx) * k, sy = y => H / 2 - (y - cy) * k;
+  let s = `<defs><marker id="arr" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">` +
+          `<path d="M0,0 L10,5 L0,10 z" fill="#0f62fe"/></marker></defs>`;
+  if (pairs)
+    for (let i = 0; i + 1 < ws.length; i += 2) {
+      const [x1, y1, x2, y2] = [sx(P[i][0]), sy(P[i][1]), sx(P[i + 1][0]), sy(P[i + 1][1])];
+      const L = Math.hypot(x2 - x1, y2 - y1) || 1, cut = 10 / L;
+      s += `<line x1="${x1}" y1="${y1}" x2="${x2 - (x2 - x1) * cut}" y2="${y2 - (y2 - y1) * cut}" ` +
+           `stroke="#0f62fe" stroke-width="2" marker-end="url(#arr)"/>`;
+    }
+  ws.forEach((w, i) => {
+    const x = sx(P[i][0]), y = sy(P[i][1]);
+    let anchor = x > W - 140 ? "end" : "start", tx = x + (anchor === "end" ? -12 : 12), ty = y - 10;
+    const j = i % 2 ? i - 1 : i + 1;              // in a pair, the label goes on the side away from the arrow
+    if (pairs && j < ws.length) {
+      const dx = x - sx(P[j][0]), dy = y - sy(P[j][1]), L = Math.hypot(dx, dy) || 1;
+      anchor = dx >= 0 ? "start" : "end";
+      tx = x + dx / L * 14; ty = y + dy / L * 14 + 8;
+    }
+    const first = !pairs && i === 0;              // the looked-up word, in the accent
+    s += `<circle cx="${x}" cy="${y}" r="5" fill="${first ? "#0f62fe" : "#161616"}"/>` +
+         `<text x="${tx}" y="${ty}" text-anchor="${anchor}"${first ? ' style="fill:#0f62fe"' : ""}>${w}</text>`;
+  });
+  svg.innerHTML = s;
+}
+
+// ---- wiring ----
+function deckFocus() { if (EMBED) { document.activeElement.blur(); try { parent.focus(); } catch (e) {} } }
+bar.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  q.value = b.textContent; run(); deckFocus();       // in the deck, the arrow keys go back to the slides
+});
+showin.addEventListener("change", () => { run(); deckFocus(); });
+q.addEventListener("keydown", e => {
+  if (e.key === "Enter") run();
+  if (e.key === "Escape") { q.blur(); deckFocus(); }
+});
+out.addEventListener("click", e => {
+  if (e.target.classList.contains("w")) { q.value = e.target.textContent; run(); deckFocus(); }
+  const a = e.target.closest("a"); if (!a) return;
+  q.value = q.value.toLowerCase().replace(new RegExp(`\\b${a.dataset.from}\\b`), a.dataset.to); run();
+});
+if (EMBED) addEventListener("keydown", e => {        // keys outside the input move the deck
+  if (document.activeElement === q) return;
+  const R = parent.Reveal; if (!R) return;
+  if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(e.key)) { R.next(); e.preventDefault(); }
+  if (["ArrowLeft", "ArrowUp", "PageUp"].includes(e.key)) { R.prev(); e.preventDefault(); }
+});
+
+q.value = PRESETS[0]; run();
+if (!EMBED) q.focus();
+</script>
+</body>
+</html>
