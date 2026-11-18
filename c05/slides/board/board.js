@@ -4768,6 +4768,280 @@ scene({
       } },
   ],
 });
+/* Class 5 specimen (2026-11-18): "Updating the contexts", the fourth of six boards planned in place of "The update"
+   (24-update.js), on the pattern of "Updating the target" (24-uptarget.js). Storyboard: c05/notes.md,
+   "Updating the contexts".
+   The board starts from the end picture of "Updating the target": the three pairs with their errors on the left,
+   and in the plane w at its new place (0.63, 0.77), a faint arrow at its old place (1, 0.5), and the three context
+   vectors. Every update of one step uses the vectors from before the step, so each context vector moves along the
+   OLD w: the dashed direction line starts on the faint arrow and comes to the tip of c.
+   One pair per build: the step eta * error * w is worked under the rule (the step size leaves the rule, the error
+   leaves its row, the two numbers of the old w leave the name of the faint arrow), it is drawn at the tip of c
+   and its two numbers go into the row of the pair; then it is added to c and the arrow moves, with a faint copy
+   left at its old place. The last two builds compute the scores and the loss again with every new vector.
+
+   Arithmetic. The steps are computed from the errors as they are printed (0.31, -0.87, -0.33). Every product
+   has three decimals, so every printed number checks by hand:
+     0.2 * 0.31 * (1, 0.5) = (0.062, 0.031)       (0.2, 1.2) + (0.062, 0.031) = (0.262, 1.231)
+     0.2 * -0.87 * (1, 0.5) = (-0.174, -0.087)    (2.2, -0.6) + (-0.174, -0.087) = (2.026, -0.687)
+     0.2 * -0.33 * (1, 0.5) = (-0.066, -0.033)    (0, -1.4) + (-0.066, -0.033) = (-0.066, -1.433)
+   The new vectors agree with SG.cNew at two decimals (checked in init). Every other number is read from SG. */
+const upcontextG = {
+  PX: 222, EX: 470, RX: 682, RR: 808, Y: [130, 216, 302], SC: 0.56, HY: 78,   // rows: centre of the pair, of the error, of the step column, its right end
+  SLX: 521, LY: 440,                                                           // last build: the right end of the word "loss"; its row
+  OX: 588, AX: 657, NX: 742,                                                   // last builds: old score (small), arrow, new score
+  plane: { x: 864, y: 62, U: 190, xr: [-1.05, 2.6], yr: [-1.7, 2.0] },         // the plane of "Updating the target"
+  FX: 420, FY: 500, AY: 592, BY: 652, SIZE: 26,                                // the rule and the two lines of arithmetic
+  GHOST: 0.4, DIM: 0.3, M: 0.22,                                                // opacity of an old vector; of the arrows not in use; the direction line runs this far (in lengths of w) past the step
+};
+const upcontextK = (q) => (SG.kind[q] === 'neighbor' ? 'green' : 'red');
+/* a number as it is written by hand, with at most three decimals: 1, 0.5, 0.062, 0 */
+const upcontextShort = (v) => String(+(+v).toFixed(3)).replace('-', MINUS);
+const upcontextTup = (v, f) => '(' + v.map(f).join(', ') + ')';
+
+/* The pair look of slide 18 (pairsPair in 18-pairs.js, repeated so this file builds alone), with a
+   scale o.sc so that three pairs fit in the left third. Strokes are thickened to stay heavy when small. */
+function upcontextPair(parent, a, b, cx, y, o = {}) {
+  const BW = 230, BH = 96, D = 150, size = 52, sc = o.sc || 1;
+  const outer = grp(parent, '', o.o);
+  gsap.set(outer.node(), { x: cx, y });
+  const g = outer.append('g').attr('transform', `scale(${sc})`);
+  [-1, 1].forEach((sx) => g.append('path').attr('class', 'ol k-fg').style('stroke-width', Math.max(5, 3.6 / sc))
+    .attr('d', `M${sx * 288},-58Q${sx * 320},0 ${sx * 288},58`));
+  stext(g, ',', 0, 34, { size: 76, mono: false });
+  const mk = (word, x, k) => {
+    const bx = g.append('g').attr('class', 'chip k-' + k);
+    bx.append('rect').attr('class', 'box').attr('x', -BW / 2).attr('y', -BH / 2).attr('width', BW).attr('height', BH).attr('rx', 18).style('stroke-width', Math.max(4, 3 / sc));
+    bx.append('text').attr('class', 'mono').attr('text-anchor', 'middle').attr('dy', '0.35em').style('font-size', size + 'px').text(word);
+    gsap.set(bx.node(), { x, y: 0 });
+    return bx;
+  };
+  mk(a, -D, 'blue'); mk(b, D, o.kR || 'fg');
+  return outer;
+}
+/* a loose number at (x, y): centred, or with its right end there (o.anchor 'end') */
+function upcontextNum(parent, str, x, y, o = {}) {
+  const g = grp(parent, o.k ? 'k-' + o.k : '', o.o);
+  g.txt = stext(g, str, 0, 0, { size: o.size || 34, weight: o.weight, anchor: o.anchor }).attr('dy', '0.35em');
+  gsap.set(g.node(), { x, y });
+  return g;
+}
+/* One line of worked arithmetic, centred on cx: numbers in the mono face, signs as TeX.
+   items: { str, k, weight } or { op: TeX source }. Returns the pieces, each { g, w, x, y }, all hidden. */
+function upcontextLine(parent, items, cx, y, size) {
+  const gap = size * 0.45, cw = size * 0.6;
+  const ps = items.map((it) => {
+    const g = it.op ? tex(parent, it.op, { size: size + 6, va: 'middle', o: 0 })
+      : upcontextNum(parent, it.str, 0, 0, { size, k: it.k, weight: it.weight, o: 0 });
+    return { g, w: it.op ? g.w : it.str.length * cw };
+  });
+  let x = cx - (d3.sum(ps, (p) => p.w) + gap * (ps.length - 1)) / 2;
+  ps.forEach((p) => { p.x = x + p.w / 2; p.y = y; place(p.g, p.x, y); x += p.w + gap; });
+  return ps;
+}
+/* A short arrow in the plane, from tail to v. Its head keeps a readable shape when the arrow is
+   only a few board units long (the kit's arrow makes the head thinner than the line there). */
+function upcontextStub(pl, layer, o) {
+  const g = layer.append('g').attr('class', 'arrow k-' + o.k).style('opacity', 0);
+  const ln = g.append('path').attr('class', 'ln').style('stroke-width', o.width || 5), hd = g.append('path').attr('class', 'hd');
+  const A = { g, set(v, tail) {
+    const [x1, y1] = pl.px(tail), [x2, y2] = pl.px(v), dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy);
+    if (L < 0.5) { ln.attr('d', ''); hd.attr('d', ''); return A; }
+    const ux = dx / L, uy = dy / L, h = Math.min(o.head || 16, L * 0.8), bx = x2 - ux * h, by = y2 - uy * h, wv = h * 0.5;
+    ln.attr('d', L - h > 1 ? `M${x1},${y1}L${bx},${by}` : '');
+    hd.attr('d', `M${x2},${y2}L${bx - uy * wv},${by + ux * wv}L${bx + uy * wv},${by - ux * wv}Z`);
+    return A;
+  } };
+  return A;
+}
+/* The build of pair i: the direction of the old w comes to the tip of c, the step is worked under the rule and
+   drawn, its two numbers go into the row of the pair, and the step is added to c: the arrow moves. */
+function upcontextPairRun(i) {
+  return (c) => {
+    const s = c.s, G = upcontextG, tl = c.tl(), q = s.words[i], h = s.steps[i], A = s.A[i], B = s.B[i], R = s.rail[q], st = s.stub[q];
+    const fly = (p, from, t, dur = 0.5) => tl.fromTo(p.g.node(), { x: from[0], y: from[1], opacity: 0 },
+      { x: p.x, y: p.y, opacity: 1, duration: dur, ease: 'power2.inOut' }, t);
+    const on = (p, t) => tl.add(show(p.g, 0.2), t);
+    if (i > 0) {
+      const r = s.words[i - 1];
+      tl.add(hide([s.bands[i - 1], s.rail[r].ln, s.A[i - 1].map((p) => p.g), s.B[i - 1].map((p) => p.g)], 0.3), 0);
+    }
+    tl.add(show(s.bands[i], 0.3), 0);
+    s.focus(tl, q, 0);
+    /* the direction of the old w, first on the faint arrow, then through the tip of c */
+    tl.to(R.ln.node(), { opacity: 0.85, duration: 0.2 }, 0.3);
+    tl.add(c.tween(0.7, (u) => R.set(u)), 0.45);
+    /* the step size leaves the rule, the error leaves its row, the two numbers of the old w leave its name */
+    fly(A[0], s.sym.eta, 1.25); on(A[1], 1.6);
+    fly(A[2], [G.EX, G.Y[i]], 1.65); on(A[3], 2.0);
+    fly(A[4], s.oldAt, 2.05, 0.6); on(A[5], 2.55);
+    tl.fromTo(A[6].g.node(), { opacity: 0, y: A[6].y - 16 }, { opacity: 1, y: A[6].y, duration: 0.35, ease: 'power2.out' }, 2.65);
+    /* the step, at the tip of c */
+    tl.set(N(st), { opacity: 1 }, 3.15);
+    tl.add(c.tween(0.5, (u) => st.set(s.lerp(h.from, h.to, u), h.from), { ease: 'power2.out' }), 3.15);
+    /* its two numbers take their place in the row */
+    if (i === 0) tl.add(write(s.resH, 0.5), 3.6);
+    tl.fromTo(N(s.res[i]), { x: A[6].x + A[6].w / 2, y: A[6].y, opacity: 0 }, { x: G.RR, y: G.Y[i], opacity: 1, duration: 0.6, ease: 'power2.inOut' }, 3.7);
+    /* the step is added to c: its two numbers leave the name of the arrow, and the arrow moves */
+    fly(B[0], s.labAt[q], 4.5); on(B[1], 4.9);
+    fly(B[2], [A[6].x, A[6].y], 4.95); on(B[3], 5.35);
+    tl.set(B[4].g.node(), { opacity: 1 }, 5.45);
+    tl.set(N(s.ghost[q]), { opacity: G.GHOST }, 5.5);
+    tl.add(c.tween(0.9, (u) => {
+      s.arrow[q].set(s.lerp(h.from, h.to, u));
+      B[4].g.txt.text(upcontextTup(u < 1 ? s.lerp(h.from, h.to, u) : h.to, u < 1 ? fmt3 : upcontextShort));
+    }), 5.5);
+    tl.to(N(st), { opacity: 0, duration: 0.3 }, 6.1);
+    B[4].g.txt.text(upcontextTup(h.from, fmt3));
+    tl.timeScale(1.25);
+  };
+}
+
+scene({
+  id: 'upcontext', act: 'III · word2vec', title: 'Updating the contexts',
+  init(c) {
+    const s = c.s, root = c.root, G = upcontextG, words = SG.ctx, eta = SG.eta, w = SG.w;
+    const lerp = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+
+    /* ---------- the arithmetic of the board, from the errors as they are printed and the old w ---------- */
+    const e2 = {}; words.forEach((q) => { e2[q] = +SG.err[q].toFixed(2); });
+    s.steps = words.map((q) => {
+      const d = w.map((v) => eta * e2[q] * v), from = SG.c[q], to = from.map((v, i) => v + d[i]);
+      if (upcontextTup(to, fmt2) !== upcontextTup(SG.cNew[q], fmt2)) Deck.errors.push('upcontext: the arithmetic by hand does not give SG.cNew of ' + q);
+      return { q, e: e2[q], d, from, to };
+    });
+    Object.assign(s, { words, lerp });
+
+    /* ---------- left: the three pairs, their errors and their steps ---------- */
+    s.bands = words.map((q, i) => root.append('rect').attr('class', 'softk k-' + upcontextK(q)).style('opacity', 0)
+      .attr('x', 42).attr('y', G.Y[i] - 41).attr('width', 780).attr('height', 82).attr('rx', 12));
+    words.forEach((q, i) => upcontextPair(root, SG.target, q, G.PX, G.Y[i], { kR: upcontextK(q), sc: G.SC }));
+    s.errH = tex(root, '\\text{error}', { x: G.EX, y: G.HY, size: 34 });
+    s.errs = words.map((q, i) => upcontextNum(root, fmt2(SG.err[q]), G.EX, G.Y[i], { size: 34, weight: 700 }));
+    s.resH = tex(root, '\\eta \\cdot \\text{error} \\cdot \\kb{w}', { x: G.RX, y: G.HY, size: 34, o: 0 });
+    /* right ends in one line, so that the numbers stand under one another */
+    s.res = s.steps.map((h, i) => upcontextNum(root, upcontextTup(h.d, upcontextShort), G.RR, G.Y[i], { size: 26, anchor: 'end', o: 0 }));
+
+    /* ---------- right: the plane, as "Updating the target" leaves it ---------- */
+    const P = G.plane;
+    const pl = s.pl = new Plane(root, { x: P.x, y: P.y, w: (P.xr[1] - P.xr[0]) * P.U, h: (P.yr[1] - P.yr[0]) * P.U, xr: P.xr, yr: P.yr, step: 1 });
+    stext(pl.gridG, '1', pl.sx(1), pl.sy(0) + 34, { size: 26, k: 'dim' });
+    stext(pl.gridG, '1', pl.sx(0) - 16, pl.sy(1), { size: 26, k: 'dim', anchor: 'end' }).attr('dy', '0.35em');
+    /* layers, from the back: direction lines, the old vectors, the four vectors, the steps */
+    const layer = () => ({ layer: pl.layer.append('g'), px: (v) => pl.px(v) });
+    const LR = layer(), LG = layer(), LM = layer(), LP = layer();
+    const at = (v, d) => { const p = pl.px(v); return [P.x + p[0] + d[0], P.y + p[1] + d[1]]; };   // a place on the board, d board units from the point v of the plane
+
+    /* where the name of each context vector stands from its tip, clear of the direction line through the tip */
+    const lo = { sleep: [-34, -46], write: [26, 56], paint: [72, 30] };
+    s.vec = { w: { a: SG.wNew, k: 'blue', tex: 'w', size: 46, ld: 44 } };
+    words.forEach((q) => { s.vec[q] = { a: SG.c[q], k: upcontextK(q), tex: `c_{\\text{${q}}}`, size: 40, lo: lo[q] || [64, -22] }; });
+    s.ghostW = new PVec(LG, w, { k: 'blue', width: 6, head: 20, o: G.GHOST });
+    s.ghost = {}; s.arrow = {};
+    words.forEach((q) => { s.ghost[q] = new PVec(LG, SG.c[q], { k: upcontextK(q), width: 6, head: 20, o: 0 }); });
+    ['w'].concat(words).forEach((key) => {
+      const V = s.vec[key];
+      s.arrow[key] = new PVec(LM, V.a, { k: V.k, width: 8, head: 24, tex: V.tex, size: V.size, lo: V.lo, ld: V.ld });
+    });
+    /* the name of the faint arrow; the two numbers of the old w start from there */
+    s.oldAt = at(w, [66, -22]);
+    s.oldLab = tex(root, '\\kd{\\text{old }} \\kb{w}', { x: s.oldAt[0], y: s.oldAt[1], size: 36, va: 'middle', o: 0 });
+    /* where the name of a context vector stands on the board: its two numbers start from there */
+    s.labAt = {};
+    words.forEach((q) => { s.labAt[q] = at(SG.c[q], s.vec[q].lo); });
+
+    /* the step of each pair: a dashed line with the direction of the old w, and eta * error * w on it at the tip of c */
+    const inside = (v) => v[0] > P.xr[0] + 0.03 && v[0] < P.xr[1] - 0.03 && v[1] > P.yr[0] + 0.03 && v[1] < P.yr[1] - 0.03;
+    s.rail = {}; s.stub = {};
+    s.steps.forEach((h) => {
+      const q = h.q, f = eta * h.e, along = (base, u) => [base[0] + u * w[0], base[1] + u * w[1]];
+      let u0 = Math.min(0, f) - G.M, u1 = Math.max(0, f) + G.M;
+      while (u0 < 0 && !inside(along(h.from, u0))) u0 += 0.01;
+      while (u1 > 0 && !inside(along(h.from, u1))) u1 -= 0.01;
+      const from = [0.15, 0.85].map((u) => pl.px(along([0, 0], u))), to = [u0, u1].map((u) => pl.px(along(h.from, u)));
+      const ln = LR.layer.append('line').attr('class', 'ol k-blue').style('stroke-width', 3).style('stroke-dasharray', '9 8').style('opacity', 0);
+      const R = s.rail[q] = { ln, set(t) {
+        const p = from.map((pt, j) => lerp(pt, to[j], t));
+        ln.attr('x1', p[0][0]).attr('y1', p[0][1]).attr('x2', p[1][0]).attr('y2', p[1][1]);
+      } };
+      R.set(0);
+      s.stub[q] = upcontextStub(pl, LP.layer, { k: 'fg', width: 6, head: 16 }).set(h.from, h.from);
+    });
+    /* the context vector in use stands at full strength and the others step back; q 'all': every one at full strength */
+    s.focus = (tl, q, t) => words.forEach((r) => tl.to(N(s.arrow[r]), { opacity: q === 'all' || r === q ? 1 : G.DIM, duration: 0.3 }, t));
+
+    /* ---------- the rule and the two lines of arithmetic ---------- */
+    s.fw = tex(root, 'c \\leftarrow \\class{upcontext-c}{c} + \\class{upcontext-eta}{\\eta} \\cdot \\text{error} \\cdot \\kb{w}',
+      { x: G.FX, y: G.FY, size: 46, o: 0 });
+    /* where a symbol of the rule stands on the board */
+    const sym = (cls) => { const n = s.fw.select('.' + cls).node(), b = sbox(n || s.fw, 0); return [b.cx, b.cy]; };
+    s.sym = { c: sym('upcontext-c'), eta: sym('upcontext-eta') };
+    s.A = s.steps.map((h) => upcontextLine(root, [
+      { str: upcontextShort(eta) }, { op: '\\times' }, { str: fmt2(h.e), weight: 700 }, { op: '\\times' }, { str: upcontextTup(w, upcontextShort), k: 'blue' }, { op: '=' },
+      { str: upcontextTup(h.d, upcontextShort) },
+    ], G.FX, G.AY, G.SIZE));
+    s.B = s.steps.map((h) => upcontextLine(root, [
+      { str: upcontextTup(h.from, upcontextShort), k: upcontextK(h.q) }, { op: '+' }, { str: upcontextTup(h.d, upcontextShort) }, { op: '=' },
+      { str: upcontextTup(h.to, upcontextShort), k: upcontextK(h.q), weight: 700 },
+    ], G.FX, G.BY, G.SIZE));
+
+    /* ---------- last two builds: the scores and the loss with every new vector, old value small beside the new one ---------- */
+    s.hDot = tex(root, 'c\\cdot\\kb{w}', { x: G.NX, y: G.HY, size: 36, o: 0 });
+    const flip = (a, b, y) => ({
+      a, b, old: upcontextNum(root, fmt2(a), G.NX, y, { size: 38, weight: 700, o: 0 }),
+      arr: tex(root, '\\rightarrow', { x: G.AX, y, size: 30, va: 'middle', k: 'dim', o: 0 }),
+      now: upcontextNum(root, fmt2(a), G.NX, y, { size: 38, weight: 700, o: 0 }),
+    });
+    s.flips = words.map((q, i) => flip(SG.s[q], SG.sNew[q], G.Y[i]));
+    s.lossLab = label(root, 'loss', { x: G.SLX, y: G.LY, size: 38, anchor: 'end', va: 'middle', o: 0 });
+    s.lossFlip = flip(SG.L, SG.LNew, G.LY);
+    /* the old value steps aside and becomes small; the new value counts up or down in its place */
+    s.flip = (tl, F, t) => {
+      tl.call(() => { setK(F.old, 'dim'); F.old.txt.style('font-weight', 500); }, null, t);
+      tl.to(F.old.node(), { x: G.OX, duration: 0.45, ease: 'power2.inOut' }, t);
+      tl.to(F.old.txt.node(), { fontSize: 28, duration: 0.45, ease: 'power2.inOut' }, t);
+      tl.add(show(F.arr, 0.25), t + 0.3);
+      tl.set(F.now.node(), { opacity: 1 }, t + 0.4);
+      tl.add(c.tween(0.55, (u) => F.now.txt.text(fmt2(F.a + (F.b - F.a) * u))), t + 0.4);
+    };
+  },
+  steps: [
+    { ask: 'Why did the target\'s vector get three pushes, and each context vector only one?' },
+    { cap: 'Each context vector is in one pair, so it gets one push: its error times $w$.',
+      run(c) { c.tl().add(write(c.s.fw, 0.9), 0.2); } },
+    { cap: 'Every update uses the vectors from before the step, so this $w$ is the old one.',
+      run(c) {
+        const s = c.s, G = upcontextG, tl = c.tl();
+        tl.to(N(s.arrow.w), { opacity: G.DIM, duration: 0.4 }, 0);
+        tl.to(N(s.ghostW), { opacity: 1, duration: 0.4 }, 0);
+        tl.add(write(s.oldLab, 0.6), 0.4);
+        tl.to(N(s.arrow.w), { opacity: 1, duration: 0.5 }, 1.6);
+        tl.to(N(s.ghostW), { opacity: G.GHOST, duration: 0.5 }, 1.6);
+      } },
+    { cap: 'The neighbor\'s error is positive, so $c_{\\text{sleep}}$ takes a step along the old $w$.', run: upcontextPairRun(0) },
+    { cap: 'The error of write is negative, so $c_{\\text{write}}$ takes a step against the old $w$.', run: upcontextPairRun(1) },
+    { cap: 'The error of paint is negative too, but smaller, so its step is shorter.', run: upcontextPairRun(2) },
+    { ask: 'Did the whole step help?' },
+    { cap: 'After both updates, the neighbor pair scores higher and both noise pairs score lower.',
+      run(c) {
+        const s = c.s, tl = c.tl(), n = s.words.length - 1;
+        tl.add(hide([s.bands[n], s.rail[s.words[n]].ln, s.A[n].map((p) => p.g), s.B[n].map((p) => p.g), s.fw, s.resH, s.res], 0.4), 0);
+        s.focus(tl, 'all', 0);
+        /* the errors on the board belong to the old vectors */
+        tl.to(N([s.errH, s.errs]), { opacity: 0.3, duration: 0.4 }, 0);
+        tl.add(write(s.hDot, 0.5), 0.3);
+        s.flips.forEach((F, i) => tl.add(show(F.old, 0.3), 0.7 + i * 0.12));
+        s.flips.forEach((F, i) => s.flip(tl, F, 1.5 + i * 0.5));
+        tl.timeScale(1.15);
+      } },
+    { cap: 'The loss of the three pairs falls from 2.81 to 1.69 in one step.',
+      run(c) {
+        const s = c.s, tl = c.tl();
+        tl.add(show([s.lossLab, s.lossFlip.old], 0.3), 0);
+        s.flip(tl, s.lossFlip, 0.8);
+      } },
+  ],
+});
 /* Class 4 deck (2026-11-13): copied from class4-handoff/deck/slides/24-update.js; question cards, one sentence per build,
    Problem and Solved lines and cuts added; any timing change is marked where it is made. */
 /* ============ 24. The update ============ */
@@ -5088,6 +5362,317 @@ scene({
         tl.add(show([s.lossLab, s.lossFlip.old], 0.3), 3.4);
         s.flip(tl, s.lossFlip, 4.0);
         tl.timeScale(1.15);
+      } },
+  ],
+});
+/* Class 5 specimen (2026-11-18): "Updating the target", the third of six boards planned in place of "The update"
+   (24-update.js). Storyboard: c05/notes.md, "Updating the target".
+   Left: the three pairs with their errors, where "The update" has them, and a column for the push of each pair,
+   error * c. Right: the plane with the four vectors of the worked example at their true coordinates.
+   One pair per build: a dashed line with the direction of c comes to the place where the push starts, the push
+   error * c is drawn on it, and its two numbers go into the row of the pair. The pushes stand tip to tail from
+   the tip of w. Then they are added (one dark arrow), the step size keeps one fifth of the sum, and w moves.
+   The last build computes the three scores again with the new w and the old context vectors.
+
+   Arithmetic. The pushes are computed from the errors as they are printed (0.31, -0.87, -0.33), and the step
+   size is applied after the sum, in the order of the rule. In that order every product has at most three
+   decimals, so every printed number checks by hand:
+     0.31 (0.2, 1.2) = (0.062, 0.372)    -0.87 (2.2, -0.6) = (-1.914, 0.522)    -0.33 (0, -1.4) = (0, 0.462)
+     sum (-1.852, 1.356)    0.2 * sum = (-0.37, 0.27)    (1, 0.5) + (-0.37, 0.27) = (0.63, 0.77), which is SG.wNew
+     scores with the new w and the old c: 1.05, 0.92, -1.08 (before: 0.80, 1.90, -0.70)
+   With the step size inside each push, the second numbers print as 0.07, 0.10 and 0.09, which add to 0.26 and
+   not to 0.27. Every other number is read from SG. */
+const uptargetG = {
+  PX: 222, EX: 470, RX: 682, RR: 808, Y: [130, 216, 302], SC: 0.56, HY: 78,   // rows: centre of the pair, of the error, of the push column, its right end
+  RULE: 350, SY: 394, SLX: 521,                                                // the line under the column; the sum; the right end of its name
+  OX: 588, AX: 657, NX: 742,                                                   // last build: old score (small), arrow, new score
+  plane: { x: 864, y: 62, U: 190, xr: [-1.05, 2.6], yr: [-1.7, 2.0] },
+  FX: 420, FY: 500, AY: 592, BY: 660, LY: 440,                                          // the rule and the two lines of arithmetic
+  GHOST: 0.4, DIM: 0.3,                                                        // opacity of the old w; of the arrows that are not in use
+};
+const uptargetK = (q) => (SG.kind[q] === 'neighbor' ? 'green' : 'red');
+/* a number as it is written by hand, with at most three decimals: 1, 0.5, 0.062, 0 */
+const uptargetShort = (v) => String(+(+v).toFixed(3)).replace('-', MINUS);
+const uptargetTup = (v, f) => '(' + v.map(f).join(', ') + ')';
+
+/* The pair look of slide 18 (pairsPair in 18-pairs.js, repeated so this file builds alone), with a
+   scale o.sc so that three pairs fit in the left third. Strokes are thickened to stay heavy when small. */
+function uptargetPair(parent, a, b, cx, y, o = {}) {
+  const BW = 230, BH = 96, D = 150, size = 52, sc = o.sc || 1;
+  const outer = grp(parent, '', o.o);
+  gsap.set(outer.node(), { x: cx, y });
+  const g = outer.append('g').attr('transform', `scale(${sc})`);
+  [-1, 1].forEach((sx) => g.append('path').attr('class', 'ol k-fg').style('stroke-width', Math.max(5, 3.6 / sc))
+    .attr('d', `M${sx * 288},-58Q${sx * 320},0 ${sx * 288},58`));
+  stext(g, ',', 0, 34, { size: 76, mono: false });
+  const mk = (word, x, k) => {
+    const bx = g.append('g').attr('class', 'chip k-' + k);
+    bx.append('rect').attr('class', 'box').attr('x', -BW / 2).attr('y', -BH / 2).attr('width', BW).attr('height', BH).attr('rx', 18).style('stroke-width', Math.max(4, 3 / sc));
+    bx.append('text').attr('class', 'mono').attr('text-anchor', 'middle').attr('dy', '0.35em').style('font-size', size + 'px').text(word);
+    gsap.set(bx.node(), { x, y: 0 });
+    return bx;
+  };
+  mk(a, -D, 'blue'); mk(b, D, o.kR || 'fg');
+  return outer;
+}
+/* a loose number at (x, y): centred, or with its right end there (o.anchor 'end') */
+function uptargetNum(parent, str, x, y, o = {}) {
+  const g = grp(parent, o.k ? 'k-' + o.k : '', o.o);
+  g.txt = stext(g, str, 0, 0, { size: o.size || 34, weight: o.weight, anchor: o.anchor }).attr('dy', '0.35em');
+  gsap.set(g.node(), { x, y });
+  return g;
+}
+/* One line of worked arithmetic, centred on cx: numbers in the mono face, signs as TeX.
+   items: { str, k, weight } or { op: TeX source }. Returns the pieces, each { g, w, x, y }, all hidden. */
+function uptargetLine(parent, items, cx, y, size) {
+  const gap = size * 0.45, cw = size * 0.6;
+  const ps = items.map((it) => {
+    const g = it.op ? tex(parent, it.op, { size: size + 6, va: 'middle', o: 0 })
+      : uptargetNum(parent, it.str, 0, 0, { size, k: it.k, weight: it.weight, o: 0 });
+    return { g, w: it.op ? g.w : it.str.length * cw };
+  });
+  let x = cx - (d3.sum(ps, (p) => p.w) + gap * (ps.length - 1)) / 2;
+  ps.forEach((p) => { p.x = x + p.w / 2; p.y = y; place(p.g, p.x, y); x += p.w + gap; });
+  return ps;
+}
+/* A short arrow in the plane, from tail to v. Its head keeps a readable shape when the arrow is
+   only a few board units long (the kit's arrow makes the head thinner than the line there). */
+function uptargetStub(pl, layer, o) {
+  const g = layer.append('g').attr('class', 'arrow k-' + o.k).style('opacity', 0);
+  const ln = g.append('path').attr('class', 'ln').style('stroke-width', o.width || 5), hd = g.append('path').attr('class', 'hd');
+  const A = { g, set(v, tail) {
+    const [x1, y1] = pl.px(tail), [x2, y2] = pl.px(v), dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy);
+    if (L < 0.5) { ln.attr('d', ''); hd.attr('d', ''); return A; }
+    const ux = dx / L, uy = dy / L, h = Math.min(o.head || 16, L * 0.8), bx = x2 - ux * h, by = y2 - uy * h, wv = h * 0.5;
+    ln.attr('d', L - h > 1 ? `M${x1},${y1}L${bx},${by}` : '');
+    hd.attr('d', `M${x2},${y2}L${bx - uy * wv},${by + ux * wv}L${bx + uy * wv},${by - ux * wv}Z`);
+    return A;
+  } };
+  return A;
+}
+/* The build of pair i: the direction of its context vector comes to the place where the push starts, the
+   arithmetic is written under the rule, the push is drawn, and its two numbers go into the row of the pair. */
+function uptargetPairRun(i) {
+  return (c) => {
+    const s = c.s, G = uptargetG, tl = c.tl(), q = s.words[i], A = s.A[i], h = s.chain[i], R = s.rail[q], pu = s.push[q];
+    const fly = (p, from, t, dur = 0.5) => tl.fromTo(p.g.node(), { x: from[0], y: from[1], opacity: 0 },
+      { x: p.x, y: p.y, opacity: 1, duration: dur, ease: 'power2.inOut' }, t);
+    const on = (p, t) => tl.add(show(p.g, 0.2), t);
+    if (i > 0) tl.add(hide([s.bands[i - 1], s.rail[s.words[i - 1]].ln, s.A[i - 1].map((p) => p.g)], 0.3), 0);
+    tl.add(show(s.bands[i], 0.3), 0);
+    s.focus(tl, q, 0);
+    /* the direction of c, first on c itself, then through the place where the push starts */
+    tl.to(R.ln.node(), { opacity: 0.85, duration: 0.2 }, 0.3);
+    tl.add(c.tween(0.6, (u) => R.set(u)), 0.45);
+    /* the error leaves its row and the two numbers of c leave the name of the arrow */
+    fly(A[0], [G.EX, G.Y[i]], 1.15, 0.6); on(A[1], 1.6);
+    fly(A[2], s.labAt[q], 1.7, 0.6); on(A[3], 2.2);
+    tl.fromTo(A[4].g.node(), { opacity: 0, y: A[4].y - 16 }, { opacity: 1, y: A[4].y, duration: 0.35, ease: 'power2.out' }, 2.3);
+    /* the push, in the plane */
+    tl.set(N(pu), { opacity: 1 }, 2.85);
+    tl.add(c.tween(0.6, (u) => pu.set(s.lerp(h.from, h.to, u), h.from), { ease: 'power2.out' }), 2.85);
+    /* its two numbers take their place in the row */
+    if (i === 0) tl.add(write(s.resH, 0.5), 3.5);
+    tl.fromTo(N(s.res[i]), { x: A[4].x + A[4].w / 2, y: A[4].y, opacity: 0 }, { x: G.RR, y: G.Y[i], opacity: 1, duration: 0.6, ease: 'power2.inOut' }, 3.6);
+    tl.timeScale(1.2);
+  };
+}
+
+scene({
+  id: 'uptarget', act: 'III · word2vec', title: 'Updating the target',
+  init(c) {
+    const s = c.s, root = c.root, G = uptargetG, words = SG.ctx, eta = SG.eta, w = SG.w;
+    const lerp = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+
+    /* ---------- the arithmetic of the board, from the errors as they are printed ---------- */
+    const e2 = {}; words.forEach((q) => { e2[q] = +SG.err[q].toFixed(2); });
+    let tip = w.slice();
+    s.chain = words.map((q) => {
+      const d = SG.c[q].map((v) => e2[q] * v), from = tip;
+      tip = [tip[0] + d[0], tip[1] + d[1]];
+      return { q, d, from, to: tip };
+    });
+    const sum = [tip[0] - w[0], tip[1] - w[1]], step = sum.map((v) => eta * v), wHand = w.map((v, i) => v + step[i]);
+    if (uptargetTup(wHand, fmt2) !== uptargetTup(SG.wNew, fmt2)) Deck.errors.push('uptarget: the arithmetic by hand does not give SG.wNew');
+    Object.assign(s, { words, lerp, end: tip, wHand });
+
+    /* ---------- left: the three pairs, their errors and their pushes ---------- */
+    s.bands = words.map((q, i) => root.append('rect').attr('class', 'softk k-' + uptargetK(q)).style('opacity', 0)
+      .attr('x', 42).attr('y', G.Y[i] - 41).attr('width', 780).attr('height', 82).attr('rx', 12));
+    words.forEach((q, i) => uptargetPair(root, SG.target, q, G.PX, G.Y[i], { kR: uptargetK(q), sc: G.SC }));
+    s.errH = tex(root, '\\text{error}', { x: G.EX, y: G.HY, size: 34 });
+    s.errs = words.map((q, i) => uptargetNum(root, fmt2(SG.err[q]), G.EX, G.Y[i], { size: 34, weight: 700 }));
+    s.resH = tex(root, '\\text{error} \\cdot c', { x: G.RX, y: G.HY, size: 34, o: 0 });
+    /* right ends in one line, so that the numbers stand under one another as in a sum on paper */
+    s.res = s.chain.map((h, i) => uptargetNum(root, uptargetTup(h.d, uptargetShort), G.RR, G.Y[i], { size: 28, anchor: 'end', o: 0 }));
+    s.rule = root.append('line').attr('class', 'ol k-fg').style('stroke-width', 3).style('opacity', 0)
+      .attr('x1', 550).attr('y1', G.RULE).attr('x2', G.RR + 6).attr('y2', G.RULE);
+    s.sumLab = label(root, 'sum', { x: G.SLX, y: G.SY, size: 34, anchor: 'end', va: 'middle', k: 'dim', o: 0 });
+    s.sum = uptargetNum(root, uptargetTup(sum, uptargetShort), G.RR, G.SY, { size: 28, weight: 700, anchor: 'end', o: 0 });
+
+    /* ---------- right: the plane ---------- */
+    const P = G.plane;
+    const pl = s.pl = new Plane(root, { x: P.x, y: P.y, w: (P.xr[1] - P.xr[0]) * P.U, h: (P.yr[1] - P.yr[0]) * P.U, xr: P.xr, yr: P.yr, step: 1, o: 0 });
+    stext(pl.gridG, '1', pl.sx(1), pl.sy(0) + 34, { size: 26, k: 'dim' });
+    stext(pl.gridG, '1', pl.sx(0) - 16, pl.sy(1), { size: 26, k: 'dim', anchor: 'end' }).attr('dy', '0.35em');
+    /* layers, from the back: direction lines, the old w, the four vectors, the pushes */
+    const layer = () => ({ layer: pl.layer.append('g'), px: (v) => pl.px(v) });
+    const LR = layer(), LG = layer(), LM = layer(), LP = layer();
+    const stub = (k, o) => uptargetStub(pl, LP.layer, Object.assign({ k, width: 6, head: 18 }, o));
+
+    s.vec = { w: { a: w, k: 'blue', tex: 'w', size: 46, ld: 44 } };
+    const lo = { neighbor: [64, -22], noise: [[-10, 50], [72, 30]] };   // where the name stands from the tip, clear of the pushes
+    let nNoise = 0;
+    words.forEach((q) => {
+      s.vec[q] = { a: SG.c[q], k: uptargetK(q), tex: `c_{\\text{${q}}}`, size: 40,
+        lo: SG.kind[q] === 'neighbor' ? lo.neighbor : lo.noise[nNoise++ % 2] };
+    });
+    s.keys = ['w'].concat(words);
+    s.ghost = new PVec(LG, w, { k: 'blue', width: 6, head: 20, o: 0 });
+    s.arrow = {};
+    s.keys.forEach((key) => {
+      const V = s.vec[key];
+      s.arrow[key] = new PVec(LM, V.a, { k: V.k, width: 8, head: 24, tex: V.tex, size: V.size, lo: V.lo, ld: V.ld, o: 0 });
+    });
+    /* where the name of a context vector stands on the board: its two numbers start from there */
+    s.labAt = {};
+    words.forEach((q) => { const p = pl.px(SG.c[q]), V = s.vec[q]; s.labAt[q] = [P.x + p[0] + V.lo[0], P.y + p[1] + V.lo[1]]; });
+
+    /* the push of each pair: a dashed line with the direction of c, and error * c on it; the pushes stand tip to tail */
+    const inside = (v) => v[0] > P.xr[0] + 0.03 && v[0] < P.xr[1] - 0.03 && v[1] > P.yr[0] + 0.03 && v[1] < P.yr[1] - 0.03;
+    s.rail = {}; s.push = {};
+    s.chain.forEach((h) => {
+      const q = h.q, cq = SG.c[q], e = e2[q], at = (base, u) => [base[0] + u * cq[0], base[1] + u * cq[1]];
+      let u0 = Math.min(0, e) - 0.14, u1 = Math.max(0, e) + 0.14;
+      while (u0 < 0 && !inside(at(h.from, u0))) u0 += 0.01;
+      while (u1 > 0 && !inside(at(h.from, u1))) u1 -= 0.01;
+      const from = [0.15, 0.85].map((u) => pl.px(at([0, 0], u))), to = [u0, u1].map((u) => pl.px(at(h.from, u)));
+      const ln = LR.layer.append('line').attr('class', 'ol k-' + uptargetK(q)).style('stroke-width', 3).style('stroke-dasharray', '9 8').style('opacity', 0);
+      const R = s.rail[q] = { ln, set(t) {
+        const p = from.map((pt, j) => lerp(pt, to[j], t));
+        ln.attr('x1', p[0][0]).attr('y1', p[0][1]).attr('x2', p[1][0]).attr('y2', p[1][1]);
+      } };
+      R.set(0);
+      s.push[q] = stub(uptargetK(q)).set(h.from, h.from);
+    });
+    /* the sum of the pushes, from the tip of the old w; the step size then shortens it */
+    s.total = stub('fg', { width: 7, head: 20 }).set(w, w);
+
+    /* an arrow grows out of the origin */
+    s.grow = (tl, key, t) => {
+      const A = s.arrow[key], v = s.vec[key].a;
+      A.set([0, 0]);
+      tl.set(N(A), { opacity: 1 }, t);
+      tl.add(c.tween(0.6, (u) => A.set([v[0] * u, v[1] * u]), { ease: 'power2.out' }), t);
+    };
+    /* the context vector in use stands at full strength and the others step back; q 'all': every one at full strength */
+    s.focus = (tl, q, t) => words.forEach((r) => tl.to(N(s.arrow[r]), { opacity: q === 'all' || r === q ? 1 : G.DIM, duration: 0.3 }, t));
+
+    /* ---------- the rule and the lines of arithmetic ---------- */
+    s.fw = tex(root, '\\kb{w} \\leftarrow \\class{uptarget-w}{\\kb{w}} + \\class{uptarget-eta}{\\eta} \\sum \\text{error} \\cdot c',
+      { x: G.FX, y: G.FY, size: 46, o: 0 });
+    /* where a symbol of the rule stands on the board */
+    const sym = (cls) => { const n = s.fw.select('.' + cls).node(), b = sbox(n || s.fw, 0); return [b.cx, b.cy]; };
+    s.sym = { w: sym('uptarget-w'), eta: sym('uptarget-eta') };
+    s.A = s.chain.map((h) => uptargetLine(root, [
+      { str: fmt2(e2[h.q]), weight: 700 }, { op: '\\times' }, { str: uptargetTup(SG.c[h.q], uptargetShort), k: uptargetK(h.q) }, { op: '=' },
+      { str: uptargetTup(h.d, uptargetShort) },
+    ], G.FX, G.AY, 30));
+    s.E = uptargetLine(root, [
+      { str: uptargetShort(eta) }, { op: '\\times' }, { str: uptargetTup(sum, uptargetShort) }, { op: '=' }, { str: uptargetTup(step, fmt2), weight: 700 },
+    ], G.FX, G.AY, 30);
+    s.F = uptargetLine(root, [
+      { str: uptargetTup(w, uptargetShort), k: 'blue' }, { op: '+' }, { str: uptargetTup(step, fmt2) }, { op: '=' },
+      { str: uptargetTup(SG.wNew, fmt2), k: 'blue', weight: 700 },
+    ], G.FX, G.BY, 30);
+
+    /* ---------- last two builds: the scores and the loss with the new w and the old context vectors, old value small beside the new one ---------- */
+    s.hDot = tex(root, 'c\\cdot\\kb{w}', { x: G.NX, y: G.HY, size: 36, o: 0 });
+    const flip = (a, b, y) => ({
+      a, b, old: uptargetNum(root, fmt2(a), G.NX, y, { size: 38, weight: 700, o: 0 }),
+      arr: tex(root, '\\rightarrow', { x: G.AX, y, size: 30, va: 'middle', k: 'dim', o: 0 }),
+      now: uptargetNum(root, fmt2(a), G.NX, y, { size: 38, weight: 700, o: 0 }),
+    });
+    s.flips = words.map((q, i) => flip(SG.s[q], SG.dot(SG.c[q], SG.wNew), G.Y[i]));
+    /* the loss of the three pairs with the new w and the old context vectors: 0.30 + 1.26 + 0.29 = 1.85 (before: 2.81) */
+    const lossNew = d3.sum(words, (q) => { const p = SG.sigmoid(SG.dot(SG.c[q], SG.wNew)); return -Math.log(SG.t[q] ? p : 1 - p); });
+    s.lossLab = label(root, 'loss', { x: G.SLX, y: G.LY, size: 38, anchor: 'end', va: 'middle', o: 0 });
+    s.lossFlip = flip(SG.L, lossNew, G.LY);
+    /* the old value steps aside and becomes small; the new value counts up or down in its place */
+    s.flip = (tl, F, t) => {
+      tl.call(() => { setK(F.old, 'dim'); F.old.txt.style('font-weight', 500); }, null, t);
+      tl.to(F.old.node(), { x: G.OX, duration: 0.45, ease: 'power2.inOut' }, t);
+      tl.to(F.old.txt.node(), { fontSize: 28, duration: 0.45, ease: 'power2.inOut' }, t);
+      tl.add(show(F.arr, 0.25), t + 0.3);
+      tl.set(F.now.node(), { opacity: 1 }, t + 0.4);
+      tl.add(c.tween(0.55, (u) => F.now.txt.text(fmt2(F.a + (F.b - F.a) * u))), t + 0.4);
+    };
+  },
+  steps: [
+    { ask: 'How does one step change the target\'s vector?' },
+    { cap: 'Each pair pushes $w$ by its error times its context vector.',
+      run(c) {
+        const s = c.s, tl = c.tl();
+        tl.add(show(s.pl.g, 0.6), 0);
+        s.keys.forEach((key, n) => s.grow(tl, key, 0.5 + n * 0.45));
+        tl.add(write(s.fw, 0.9), 2.5);
+      } },
+    { cap: 'The neighbor\'s error is positive, so its push points along $c_{\\text{sleep}}$.', run: uptargetPairRun(0) },
+    { cap: 'The error of write is negative, so its push points against $c_{\\text{write}}$.', run: uptargetPairRun(1) },
+    { cap: 'The error of paint is negative too, but smaller, so its push is shorter.', run: uptargetPairRun(2) },
+    { cap: 'The three pushes are added into one.',
+      run(c) {
+        const s = c.s, G = uptargetG, tl = c.tl(), n = s.words.length - 1;
+        tl.add(hide([s.bands[n], s.rail[s.words[n]].ln, s.A[n].map((p) => p.g)], 0.3), 0);
+        s.focus(tl, null, 0);
+        /* on the left as a sum on paper: a line under the column and the total below it */
+        tl.add(draw(s.rule, 0.4), 0.3);
+        tl.add(show(s.sumLab, 0.3), 0.6);
+        tl.fromTo(N(s.sum), { opacity: 0, y: G.SY - 16 }, { opacity: 1, y: G.SY, duration: 0.35, ease: 'power2.out' }, 0.7);
+        /* in the plane: one arrow from the tip of w to the end of the last push */
+        tl.set(N(s.total), { opacity: 1 }, 1.3);
+        tl.add(c.tween(0.9, (u) => s.total.set(s.lerp(SG.w, s.end, u), SG.w)), 1.3);
+        tl.to(N(s.words.map((q) => s.push[q])), { opacity: G.DIM, duration: 0.4 }, 2.0);
+      } },
+    /* the cut at 2.6 s is after the sum has become short and before w moves */
+    { cap: ['The step size $\\eta = 0.2$ keeps one fifth of the sum.', 'This is added to $w$, and the target\'s vector moves.'], cut: [2.6],
+      run(c) {
+        const s = c.s, G = uptargetG, tl = c.tl(), E = s.E, F = s.F;
+        const fly = (p, from, t, dur = 0.5) => tl.fromTo(p.g.node(), { x: from[0], y: from[1], opacity: 0 },
+          { x: p.x, y: p.y, opacity: 1, duration: dur, ease: 'power2.inOut' }, t);
+        const on = (p, t) => tl.add(show(p.g, 0.2), t);
+        /* 0.2 leaves the rule and the sum leaves its row */
+        fly(E[0], s.sym.eta, 0); on(E[1], 0.4);
+        fly(E[2], [G.RR - E[2].w / 2, G.SY], 0.5, 0.6); on(E[3], 1.0);
+        tl.fromTo(E[4].g.node(), { opacity: 0, y: E[4].y - 16 }, { opacity: 1, y: E[4].y, duration: 0.35, ease: 'power2.out' }, 1.1);
+        tl.add(hide(s.words.map((q) => s.push[q]), 0.4), 1.2);
+        tl.add(c.tween(0.9, (u) => s.total.set(s.lerp(s.end, s.wHand, u), SG.w)), 1.4);
+        /* the old w and the short arrow are added; w swings to the end of the short arrow */
+        fly(F[0], s.sym.w, 2.8); on(F[1], 3.2);
+        fly(F[2], [E[4].x, E[4].y], 3.25); on(F[3], 3.65);
+        tl.set(F[4].g.node(), { opacity: 1 }, 3.75);
+        s.focus(tl, 'all', 2.8);
+        tl.set(N(s.ghost), { opacity: G.GHOST }, 3.8);
+        tl.add(c.tween(1.0, (u) => { const v = s.lerp(SG.w, SG.wNew, u); s.arrow.w.set(v); F[4].g.txt.text(uptargetTup(v, fmt2)); }), 3.8);
+        F[4].g.txt.text(uptargetTup(SG.w, fmt2));
+      } },
+    { ask: 'Did this move help?' },
+    { cap: 'With the new $w$, the neighbor pair scores higher and both noise pairs score lower.',
+      run(c) {
+        const s = c.s, tl = c.tl();
+        tl.add(hide([s.fw, s.E.map((p) => p.g), s.F.map((p) => p.g), s.resH, s.res, s.rule, s.sumLab, s.sum], 0.4), 0);
+        /* the errors on the board belong to the old w */
+        tl.to(N([s.errH, s.errs]), { opacity: 0.3, duration: 0.4 }, 0);
+        tl.add(write(s.hDot, 0.5), 0.3);
+        s.flips.forEach((F, i) => tl.add(show(F.old, 0.3), 0.7 + i * 0.12));
+        s.flips.forEach((F, i) => s.flip(tl, F, 1.5 + i * 0.5));
+        tl.timeScale(1.15);
+      } },
+    { cap: 'Every pair is now less wrong, so the loss of the three pairs falls.',
+      run(c) {
+        const s = c.s, tl = c.tl();
+        tl.add(show([s.lossLab, s.lossFlip.old], 0.3), 0);
+        s.flip(tl, s.lossFlip, 0.8);
       } },
   ],
 });
@@ -5594,6 +6179,237 @@ scene({
         tl.add(show(s.key[1], 0.4), 1.6);
         tl.add(c.tween(0.6, (u) => { s.reach = u; s.link(); }, { ease: 'power2.out' }), 2.0);
         tl.add(c.tween(1.4, s.pull), 2.8);
+      } },
+  ],
+});
+/* Class 5 specimen (2026-11-18): two boards that answer "Why two vectors per word, and not one?" after the whole
+   training process has been shown. They are to take the place of "Why two vectors?" (19-twovec.js), which the
+   instructor found too brief. Storyboard: c05/notes.md, "One table or two?".
+   Scene onetable    the small text, the two rules side by side, and the pair (cat, sleep) trained alone on each side.
+   Scene onetablerun the same pairs trained with one table and with W and C, side by side.
+
+   The small text has four words. Cat and dog are found beside sleep and run; sleep and run are found beside cat
+   and dog. Neighbor pairs: (cat, sleep) (cat, run) (dog, sleep) (dog, run) and the same four with the words swapped.
+   Noise pairs, the pairs never found together: (cat, dog) (dog, cat) (sleep, run) (run, sleep).
+   Nothing on these boards is chosen by hand except the starting vectors: every later vector, score and loss is
+   the result of the update rule of the deck (eta = 0.2), run in the page by onetableSim. One pass is one update
+   for each of the 12 pairs, in the order of onetablePairs. With one table the target and the context of a pair are
+   rows of the same table; with two, W starts from the same rows and C from onetableC0.
+   After 20 passes: loss 7.35 -> 3.42 with one table, 10.47 -> 0.29 with two; cosine of cat and dog -0.59 and 1.00;
+   score of (cat, cat) 13.01 and -3.41. */
+const onetablePairs = [
+  ['cat', 'sleep', 1], ['cat', 'run', 1], ['cat', 'dog', 0], ['dog', 'sleep', 1], ['dog', 'run', 1], ['dog', 'cat', 0],
+  ['sleep', 'cat', 1], ['sleep', 'dog', 1], ['sleep', 'run', 0], ['run', 'cat', 1], ['run', 'dog', 1], ['run', 'sleep', 0],
+];
+const onetableWords = ['cat', 'dog', 'sleep', 'run'];
+const onetableW0 = { cat: [1, 0.5], dog: [-0.6, 0.9], sleep: [0.2, 1.2], run: [0.9, -0.8] };
+const onetableC0 = { cat: [0.4, -1.1], dog: [1.2, 0.3], sleep: [0.9, -0.9], run: [0.5, 1.0] };
+const onetablePasses = 20;
+const onetableCopy = (T) => { const o = {}; onetableWords.forEach((q) => { o[q] = T[q].slice(); }); return o; };
+/* frames[p]: the rows of W, the loss of the 12 pairs and the score of (cat, cat) after p passes */
+function onetableSim(two, passes) {
+  const W = onetableCopy(onetableW0), C = two ? onetableCopy(onetableC0) : W, frames = [];
+  for (let p = 0; p <= passes; p++) {
+    const L = d3.sum(onetablePairs, ([t, q, y]) => { const pr = SG.sigmoid(SG.dot(W[t], C[q])); return -Math.log(y ? pr : 1 - pr); });
+    frames.push({ W: onetableCopy(W), L, self: SG.dot(W.cat, C.cat) });
+    onetablePairs.forEach(([t, q, y]) => {
+      const e = y - SG.sigmoid(SG.dot(W[t], C[q])), w = W[t].slice(), cv = C[q].slice();
+      W[t] = W[t].map((v, i) => v + SG.eta * e * cv[i]);
+      C[q] = C[q].map((v, i) => v + SG.eta * e * w[i]);
+    });
+  }
+  return frames;
+}
+/* the pair (cat, sleep) trained alone: n updates; one table moves v_cat and v_sleep, two tables move w_cat and c_sleep */
+function onetableDuo(two, n) {
+  let a = onetableW0.cat.slice(), b = two ? onetableC0.sleep.slice() : onetableW0.sleep.slice();
+  const out = [[a, b]];
+  for (let i = 0; i < n; i++) {
+    const e = 1 - SG.sigmoid(SG.dot(a, b)), a2 = a.map((v, j) => v + SG.eta * e * b[j]), b2 = b.map((v, j) => v + SG.eta * e * a[j]);
+    a = a2; b = b2; out.push([a, b]);
+  }
+  return out;
+}
+/* the value of a list of frames at a place between two of them */
+const onetableAt = (list, f, get) => {
+  const i = Math.min(list.length - 1, Math.floor(f)), j = Math.min(list.length - 1, i + 1), u = f - i, a = get(list[i]), b = get(list[j]);
+  return Array.isArray(a) ? a.map((v, k) => v + (b[k] - v) * u) : a + (b - a) * u;
+};
+/* The pair look of slide 18 (pairsPair in 18-pairs.js, repeated so this file builds alone), at scale sc */
+function onetablePair(parent, a, ka, b, kb, cx, y, sc, o) {
+  const BW = 230, BH = 96, D = 150, size = 52;
+  const outer = grp(parent, '', o);
+  gsap.set(outer.node(), { x: cx, y });
+  const g = outer.append('g').attr('transform', `scale(${sc})`);
+  [-1, 1].forEach((sx) => g.append('path').attr('class', 'ol k-fg').style('stroke-width', Math.max(5, 3.6 / sc))
+    .attr('d', `M${sx * 288},-58Q${sx * 320},0 ${sx * 288},58`));
+  stext(g, ',', 0, 34, { size: 76, mono: false });
+  [[a, ka, -D], [b, kb, D]].forEach(([word, k, x]) => {
+    const bx = g.append('g').attr('class', 'chip k-' + k);
+    bx.append('rect').attr('class', 'box').attr('x', -BW / 2).attr('y', -BH / 2).attr('width', BW).attr('height', BH).attr('rx', 18).style('stroke-width', Math.max(4, 3 / sc));
+    bx.append('text').attr('class', 'mono').attr('text-anchor', 'middle').attr('dy', '0.35em').style('font-size', size + 'px').text(word);
+    gsap.set(bx.node(), { x, y: 0 });
+  });
+  return outer;
+}
+function onetableNum(parent, str, x, y, o = {}) {
+  const g = grp(parent, o.k ? 'k-' + o.k : '', o.o);
+  g.txt = stext(g, str, 0, 0, { size: o.size || 38, weight: o.weight, anchor: o.anchor }).attr('dy', '0.35em');
+  gsap.set(g.node(), { x, y });
+  return g;
+}
+
+/* ============ One table or two? ============ */
+scene({
+  id: 'onetable', act: 'III · word2vec', title: 'One table or two?',
+  init(c) {
+    const s = c.s, root = c.root, SC = 0.5;
+    /* the pairs of the small text: neighbor pairs above, noise pairs below */
+    const nb = [['cat', 'sleep'], ['cat', 'run'], ['dog', 'sleep'], ['dog', 'run']], nz = [['cat', 'dog'], ['sleep', 'run']];
+    s.nb = nb.map(([a, b], i) => onetablePair(root, a, 'blue', b, 'green', 290 + i * 340, 112, SC, 0));
+    s.nz = nz.map(([a, b], i) => onetablePair(root, a, 'blue', b, 'red', 630 + i * 340, 208, SC, 0));
+
+    /* the two rules for the pair (cat, sleep) */
+    const X = [400, 1200];
+    s.h = ['one table', 'W and C'].map((t, i) => label(root, t, { x: X[i], y: 306, size: 34, it: true, k: 'dim', o: 0 }));
+    const rule = (a, b, x, y) => tex(root, `${a} \\leftarrow ${a} + \\eta \\cdot \\text{error} \\cdot ${b}`, { x, y, size: 38, o: 0 });
+    const vc = '\\kb{v_{\\text{cat}}}', vs = '\\kb{v_{\\text{sleep}}}', wc = '\\kb{w_{\\text{cat}}}', cs = '\\kg{c_{\\text{sleep}}}';
+    s.rules = [[rule(vc, vs, X[0], 366), rule(vs, vc, X[0], 428)], [rule(wc, cs, X[1], 366), rule(cs, wc, X[1], 428)]];
+    s.div = root.append('line').attr('class', 'ol k-faint').style('stroke-width', 2).style('opacity', 0)
+      .attr('x1', 800).attr('y1', 290).attr('x2', 800).attr('y2', 810);
+
+    /* the pair trained alone: 10 updates on each side */
+    s.duo = [onetableDuo(false, 10), onetableDuo(true, 10)];
+    s.pl = X.map((x) => new Plane(root, { x: x - 170, y: 472, w: 340, h: 340, xr: [-2.2, 2.2], step: 1, o: 0 }));
+    const vec = (pl, v, src, k, lo) => pl.vec(v, { k, tex: src, size: 36, width: 6, head: 20, lo, o: 0 });
+    const d0 = s.duo[0][0], d1 = s.duo[1][0];
+    s.vCat = vec(s.pl[0], d0[0], 'v_{\\text{cat}}', 'blue', [56, 22]);
+    s.vSleep = vec(s.pl[0], d0[1], 'v_{\\text{sleep}}', 'blue', [-62, -18]);
+    s.wSleep = vec(s.pl[1], onetableW0.sleep, 'w_{\\text{sleep}}', 'blue', [62, -18]);
+    s.wCat = vec(s.pl[1], d1[0], 'w_{\\text{cat}}', 'blue', [56, 22]);
+    s.cSleep = vec(s.pl[1], d1[1], 'c_{\\text{sleep}}', 'green', [-64, -14]);
+    /* faint copies at the starting places */
+    const ghost = (pl, v, k) => pl.vec(v, { k, width: 5, head: 16, o: 0 });
+    s.g0 = [ghost(s.pl[0], d0[0], 'blue'), ghost(s.pl[0], d0[1], 'blue')];
+    s.g1 = [ghost(s.pl[1], d1[0], 'blue'), ghost(s.pl[1], d1[1], 'green')];
+    [s.vCat, s.vSleep, s.wSleep, s.wCat, s.cSleep].forEach((p) => p.g.raise());
+    /* the two arrows of a side follow its 10 updates */
+    s.train = (tl, side, A, B, t) => tl.add(c.tween(2.2, (u) => {
+      const f = u * (s.duo[side].length - 1);
+      A.set(onetableAt(s.duo[side], f, (d) => d[0])); B.set(onetableAt(s.duo[side], f, (d) => d[1]));
+    }, { ease: 'power1.inOut' }), t);
+  },
+  steps: [
+    { ask: 'Why does every word have two vectors? Why not one?' },
+    { cap: 'In this small text, cat and dog are found beside sleep and run.',
+      run(c) { c.tl().add(show(c.s.nb, 0.4, { stagger: 0.15 }), 0); } },
+    { cap: 'Cat is never found beside dog, so (cat, dog) is a noise pair.',
+      run(c) { c.tl().add(show(c.s.nz, 0.4, { stagger: 0.15 }), 0); } },
+    { ask: 'What changes in the update with one table?' },
+    { cap: 'With one table, both words of a pair are rows of the same table.',
+      run(c) {
+        const s = c.s, tl = c.tl();
+        tl.to(N([s.nb.slice(1), s.nz]), { opacity: 0.3, duration: 0.4 }, 0);
+        tl.add(show([s.h, s.div], 0.4), 0.2);
+        s.rules.forEach((r, i) => { tl.add(write(r[0], 0.9), 0.6 + i * 1.6); tl.add(write(r[1], 0.9), 1.3 + i * 1.6); });
+      } },
+    { cap: 'With one table, the pair (cat, sleep) moves the word sleep itself toward cat.',
+      run(c) {
+        const s = c.s, tl = c.tl();
+        tl.add(show(s.pl[0].g, 0.5), 0);
+        tl.add(s.vCat.grow(c, 0.5), 0.4); tl.add(s.vSleep.grow(c, 0.5), 0.7);
+        tl.to(N(s.g0), { opacity: 0.35, duration: 0.2 }, 1.4);
+        s.train(tl, 0, s.vCat, s.vSleep, 1.5);
+      } },
+    { cap: 'With two tables only $c_{\\text{sleep}}$ moves, and $w_{\\text{sleep}}$ stays where it is.',
+      run(c) {
+        const s = c.s, tl = c.tl();
+        tl.add(show(s.pl[1].g, 0.5), 0);
+        tl.add(s.wCat.grow(c, 0.5), 0.4); tl.add(s.wSleep.grow(c, 0.5), 0.7); tl.add(s.cSleep.grow(c, 0.5), 1.0);
+        tl.to(N(s.g1), { opacity: 0.35, duration: 0.2 }, 1.7);
+        s.train(tl, 1, s.wCat, s.cSleep, 1.8);
+      } },
+  ],
+});
+
+/* ============ Training with one table and with two ============ */
+scene({
+  id: 'onetablerun', act: 'III · word2vec', title: 'Training with one table and with two',
+  init(c) {
+    const s = c.s, root = c.root, n = onetablePasses, X = [400, 1200], PW = 540;
+    s.sim = [onetableSim(false, n), onetableSim(true, n)];
+    const R = Math.ceil(d3.max(s.sim.flat(), (f) => d3.max(onetableWords, (q) => Math.max(Math.abs(f.W[q][0]), Math.abs(f.W[q][1])))) * 1.25 * 2) / 2;
+    s.h = ['one table', 'W and C'].map((t, i) => label(root, t, { x: X[i], y: 92, size: 34, it: true, k: 'dim', o: 0 }));
+    s.pl = X.map((x) => new Plane(root, { x: x - PW / 2, y: 112, w: PW, h: PW, xr: [-R, R], step: 1, o: 0 }));
+    /* the rows of W on each side (C is not drawn): animals blue, actions green; the names stand clear of one another */
+    const kOf = { cat: 'blue', dog: 'blue', sleep: 'green', run: 'green' }, lo0 = { cat: [14, -30], dog: [-46, 4], sleep: [8, -34], run: [14, 34] };
+    /* where the names stand after training, when two arrows of the plane of W lie on each other */
+    const lo1 = [lo0, { cat: [-52, -26], dog: [-52, 22], sleep: [58, -16], run: [46, 32] }];
+    s.vec = s.pl.map((pl, i) => {
+      const o = {};
+      onetableWords.forEach((q) => { o[q] = pl.vec(s.sim[i][0].W[q], { k: kOf[q], tex: `${i ? 'w' : 'v'}_{\\text{${q}}}`, size: 34, width: 6, head: 20, lo: lo0[q].slice(), o: 0 }); });
+      return o;
+    });
+    /* under each plane: the loss of the 12 pairs, then the score of (cat, cat) */
+    s.lossLab = X.map((x) => label(root, 'loss', { x: x - 16, y: 706, size: 38, anchor: 'end', va: 'middle', o: 0 }));
+    s.loss = X.map((x, i) => onetableNum(root, fmt2(s.sim[i][0].L), x + 16, 706, { weight: 700, anchor: 'start', o: 0 }));
+    const selfTex = ['\\kb{v_{\\text{cat}}} \\cdot \\kb{v_{\\text{cat}}} =', '\\kb{w_{\\text{cat}}} \\cdot c_{\\text{cat}} ='];
+    s.selfLab = X.map((x, i) => tex(root, selfTex[i], { x: x + 40, y: 778, size: 38, anchor: 'end', va: 'middle', o: 0 }));
+    s.self = X.map((x, i) => onetableNum(root, fmt2(s.sim[i][n].self), x + 62, 778, { weight: 700, anchor: 'start', o: 0 }));
+    /* between the planes: the number of passes */
+    s.passLab = label(root, 'passes', { x: 800, y: 340, size: 30, k: 'dim', o: 0 });
+    s.pass = onetableNum(root, '0', 800, 392, { size: 46, weight: 700, o: 0 });
+    /* build 3, in the plane of one table: sleep pulls cat and dog (green), the noise pair pushes them apart (red) */
+    const end = s.sim[0][n].W, px = (v) => s.pl[0].px(v);
+    const seg = (a, b, k) => { const p = px(end[a]), q = px(end[b]); return s.pl[0].layer.append('line').attr('class', 'ol k-' + k).style('stroke-width', 4)
+      .style('stroke-dasharray', '10 9').style('opacity', 0).attr('x1', p[0]).attr('y1', p[1]).attr('x2', q[0]).attr('y2', q[1]); };
+    s.pull = [seg('cat', 'sleep', 'green'), seg('dog', 'sleep', 'green')];
+    s.push = seg('cat', 'dog', 'red');
+    s.setPass = (f) => {
+      s.sim.forEach((fr, i) => {
+        onetableWords.forEach((q) => {
+          const u = f / onetablePasses;
+          s.vec[i][q].o.lo = lo0[q].map((v, k) => v + (lo1[i][q][k] - v) * u);
+          s.vec[i][q].set(onetableAt(fr, f, (d) => d.W[q]));
+        });
+        s.loss[i].txt.text(fmt2(onetableAt(fr, f, (d) => d.L)));
+      });
+      s.pass.txt.text(String(Math.round(f)));
+    };
+  },
+  steps: [
+    { cap: 'Both sides train on the same pairs with the same update rule.',
+      run(c) {
+        const s = c.s, tl = c.tl();
+        tl.add(show([s.h, s.pl.map((p) => p.g)], 0.5), 0);
+        s.vec.forEach((o, i) => onetableWords.forEach((q, j) => tl.add(o[q].grow(c, 0.5), 0.5 + j * 0.25 + i * 0.1)));
+        tl.add(show([s.lossLab, s.loss, s.passLab, s.pass], 0.4), 1.8);
+      } },
+    { cap: 'After 20 passes the loss is near zero with two tables and still large with one.',
+      run(c) { const s = c.s; c.tl().add(c.tween(6, (u) => s.setPass(u * onetablePasses), { ease: 'power1.inOut' }), 0.2); } },
+    { ask: 'Why does the loss stop falling with one table?' },
+    { cap: 'Problem: sleep pulls cat and dog together, but (cat, dog) is a noise pair.',
+      run(c) {
+        const s = c.s, tl = c.tl();
+        tl.to(N([s.vec[0].run, s.pl[1].g, s.lossLab[1], s.loss[1], s.h[1]]), { opacity: 0.3, duration: 0.4 }, 0);
+        tl.add(draw(s.pull, 0.6), 0.4);
+        tl.add(draw(s.push, 0.6), 1.4);
+      } },
+    { cap: 'Solved: with two tables cat and dog get the same row of W, and so do sleep and run.',
+      run(c) {
+        const s = c.s, tl = c.tl();
+        tl.add(hide([s.pull, s.push], 0.3), 0);
+        tl.to(N([s.vec[0].run, s.pl[1].g, s.lossLab[1], s.loss[1], s.h[1]]), { opacity: 1, duration: 0.4 }, 0);
+        tl.to(N([s.pl[0].g, s.lossLab[0], s.loss[0], s.h[0]]), { opacity: 0.3, duration: 0.4 }, 0);
+        tl.add(indicate([s.vec[1].cat.lg, s.vec[1].dog.lg], { scale: 1.3 }), 0.6);
+        tl.add(indicate([s.vec[1].sleep.lg, s.vec[1].run.lg], { scale: 1.3 }), 1.3);
+      } },
+    { cap: 'Cat is never beside cat, yet one table gives (cat, cat) a higher score than any real pair.',
+      run(c) {
+        const s = c.s, tl = c.tl();
+        tl.to(N([s.pl[0].g, s.lossLab[0], s.loss[0], s.h[0]]), { opacity: 1, duration: 0.4 }, 0);
+        tl.add(show([s.selfLab[0], s.self[0]], 0.4), 0.4);
+        tl.add(show([s.selfLab[1], s.self[1]], 0.4), 1.4);
       } },
   ],
 });
