@@ -65,6 +65,10 @@ img{display:block}
 .score .v{font-size:44px;line-height:66px;font-weight:700;margin-top:10px}
 .score .l{font-weight:600}
 .score p{margin:4px 0 0;font-size:15px;line-height:22.5px;font-weight:500;color:var(--text)}
+/* an item with its own page, src/NAME/index.html, is an a.c element that links to NAME/ (README.md) */
+.score a.c{display:block;margin:-12px -14px;padding:12px 14px;border-radius:5px;color:var(--ink);font-weight:inherit}
+.score a.c:hover{background:rgba(47,72,88,.06);text-decoration:none}.score a.c .l{color:var(--teal)}.score a.c:hover .l{text-decoration:underline}
+.score .go{display:inline-block;width:9px;height:9px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(-45deg);margin:0 0 2px 8px}
 
 .shrow{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin:60px 0 20px}.shrow h2{font-size:30px;line-height:45px;margin:0}
 .tools{display:flex;align-items:center;gap:20px}.sw{display:flex;gap:6px}
@@ -164,6 +168,7 @@ footer .end{margin:40px 0 0;font-size:15px;line-height:21px;color:rgba(255,255,2
   .tools{width:100%;flex-wrap:wrap;gap:8px 16px}.sw{width:100%}.sw button{flex:1;justify-content:center;padding:0 12px}
   .score{grid-template-columns:1fr;gap:0}.score .c{display:grid;grid-template-columns:64px 1fr;gap:0 16px;padding:12px 0;border-top:1px solid var(--line)}
   .score .b{display:none}.score .v{font-size:30px;line-height:40px;margin:0;grid-row:span 2}.score p{margin:0}
+  .score a.c{display:grid;margin:0;padding:12px 0;border-radius:0}
   .line{padding:8px 16px 8px 52px}.line:before,.line .prog{left:22px}
   .part h3{position:static;width:auto;margin:0 0 8px 20px}.part h3 .pn{display:inline;margin-right:8px}
   .st .hd{grid-template-columns:30px 1fr 20px;gap:0 12px;padding:16px 14px}.st .no,.st .chev{grid-row:1}.st h4,.st .d{grid-column:2}.st .chev{grid-column:3;margin-top:9px}.st.open .chev,.st.peek .chev{margin-top:15px}.st .d{font-size:16px;line-height:24px}
@@ -187,7 +192,7 @@ footer .end{margin:40px 0 0;font-size:15px;line-height:21px;color:rgba(255,255,2
   .st .x{grid-template-rows:1fr!important}.st,.mo,.score .c,.spec .c,.legend{break-inside:avoid}h2,h3,.shrow{break-after:avoid}
   .months{display:grid!important;grid-template-columns:1fr 1fr!important;grid-auto-flow:row!important;gap:28px 40px!important;overflow:visible!important}
   footer{margin-top:40px;padding:24px 0 0;border-top:1px solid var(--line)}
-  a{color:var(--ink)}
+  a,.score a.c .l{color:var(--ink)}.score .go{display:none}
 }
 </style>
 </head>
@@ -216,7 +221,7 @@ footer .end{margin:40px 0 0;font-size:15px;line-height:21px;color:rgba(255,255,2
 <h2 class="sh" id="assessment">Assessment</h2>
 <div class="score">
   <div class="c"><div class="b"><i style="width:5%"></i></div><div class="v">5</div><div class="l">Attendance</div></div>
-  <div class="c"><div class="b"><i style="width:20%"></i></div><div class="v">20</div><div class="l">Class tests</div></div>
+  <a class="c" href="class-tests/"><div class="b"><i style="width:20%"></i></div><div class="v">20</div><div class="l">Class tests<span class="go" aria-hidden="true"></span></div></a>
   <div class="c"><div class="b"><i style="width:10%"></i></div><div class="v">10</div><div class="l">Leaderboard</div></div>
   <div class="c"><div class="b"><i style="width:25%"></i></div><div class="v">25</div><div class="l">Term paper</div></div>
   <div class="c"><div class="b"><i style="width:40%"></i></div><div class="v">40</div><div class="l">Final examination</div></div>
